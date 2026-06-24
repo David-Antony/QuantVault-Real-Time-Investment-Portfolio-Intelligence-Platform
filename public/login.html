@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Management System - Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="signup-page">
+    <div class="market-orb ticker-crystal" aria-hidden="true">
+        <div class="market-orb__scene">
+            <span class="market-orb__ring market-orb__ring--outer"></span>
+            <span class="market-orb__ring market-orb__ring--inner"></span>
+            <span class="market-orb__ring market-orb__ring--halo"></span>
+            <div class="market-orb__core">
+                <span class="market-orb__shine"></span>
+                <span class="market-orb__shine market-orb__shine--soft"></span>
+                <span class="market-orb__ribbon"></span>
+            </div>
+            <div class="market-orb__signal" aria-hidden="true"></div>
+        </div>
+    </div>
+    <main class="signup-shell">
+        <section class="signup-hero">
+            <div class="signup-hero-content">
+                <div class="signup-brand">
+                    <div class="signup-brand-mark">PM</div>
+                    <span>Portfolio Manager</span>
+                </div>
+                <h1>Welcome back</h1>
+                <p>
+                    Log in to continue managing your portfolio, review reports, and keep your account in sync.
+                </p>
+
+                <div class="signup-benefits">
+                    <div class="signup-benefit">
+                        <strong>Fast access</strong>
+                        <span>Jump straight into your dashboards and data.</span>
+                    </div>
+                    <div class="signup-benefit">
+                        <strong>Account continuity</strong>
+                        <span>Your saved transactions and profile stay linked.</span>
+                    </div>
+                    <div class="signup-benefit">
+                        <strong>Secure session</strong>
+                        <span>Resume where you left off with a valid session.</span>
+                    </div>
+                    <div class="signup-benefit">
+                        <strong>Modern UI</strong>
+                        <span>Continue in the same polished interface.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="signup-hero-footer">
+                Built for returning users who need a clean, direct login.
+            </div>
+        </section>
+
+        <section class="signup-card" aria-labelledby="loginTitle">
+            <h2 id="loginTitle">Login</h2>
+            <p>Enter your credentials to continue.</p>
+
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="submit-btn primary">Login</button>
+            </form>
+
+            <div class="login-link">
+                New here? <a href="signup.html" id="signupLink">Create an account</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+    <script src="js/api/apiClient.js"></script>
+    <script src="js/api/authApi.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var loginForm = document.getElementById('loginForm');
+            var errorMessage = document.getElementById('errorMessage');
+            var successMessage = document.getElementById('successMessage');
+
+            if (AuthApi.isLoggedIn()) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+            }
+
+            function showSuccess(message) {
+                successMessage.textContent = message;
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+            }
+
+            loginForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                var email = document.getElementById('email').value.trim();
+                var password = document.getElementById('password').value;
+
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+
+                if (!email || !password) {
+                    showError('Please enter your email and password');
+                    return;
+                }
+
+                try {
+                    var result = await AuthManager.login(email, password);
+                    if (result.success) {
+                        showSuccess('Login successful! Redirecting...');
+                        setTimeout(function() {
+                            window.location.href = 'index.html';
+                        }, 800);
+                    } else {
+                        showError(result.message || 'Login failed');
+                    }
+                } catch (err) {
+                    showError('Connection error. Please try again.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

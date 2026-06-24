@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Management System - Sign Up</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="signup-page">
+    <div class="market-orb ticker-crystal" aria-hidden="true">
+        <div class="market-orb__scene">
+            <span class="market-orb__ring market-orb__ring--outer"></span>
+            <span class="market-orb__ring market-orb__ring--inner"></span>
+            <span class="market-orb__ring market-orb__ring--halo"></span>
+            <div class="market-orb__core">
+                <span class="market-orb__shine"></span>
+                <span class="market-orb__shine market-orb__shine--soft"></span>
+                <span class="market-orb__ribbon"></span>
+            </div>
+            <div class="market-orb__signal" aria-hidden="true"></div>
+        </div>
+    </div>
+    <main class="signup-shell">
+        <section class="signup-hero">
+            <div class="signup-hero-content">
+                <div class="signup-brand">
+                    <div class="signup-brand-mark">PM</div>
+                    <span>Portfolio Manager</span>
+                </div>
+                <h1>Create a professional investing workspace</h1>
+                <p>
+                    Track transactions, understand portfolio growth, and manage your account with a clean,
+                    modern interface built for clarity.
+                </p>
+
+                <div class="signup-benefits">
+                    <div class="signup-benefit">
+                        <strong>Clear analytics</strong>
+                        <span>See your portfolio values and performance at a glance.</span>
+                    </div>
+                    <div class="signup-benefit">
+                        <strong>Secure profile</strong>
+                        <span>Keep your account details and avatar linked to your profile.</span>
+                    </div>
+                    <div class="signup-benefit">
+                        <strong>Fast workflows</strong>
+                        <span>Add, review, and organize transactions without clutter.</span>
+                    </div>
+                    <div class="signup-benefit">
+                        <strong>Consistent design</strong>
+                        <span>Enjoy the same polished UI across every page.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="signup-hero-footer">
+                Built for investors who want structure, speed, and visual polish.
+            </div>
+        </section>
+
+        <section class="signup-card" aria-labelledby="signupTitle">
+            <h2 id="signupTitle">Create Account</h2>
+            <p>Sign up to start managing your investment portfolio.</p>
+
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <form id="signupForm" novalidate>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required minlength="6">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+
+                <button type="submit" class="submit-btn primary">Create Account</button>
+            </form>
+
+            <div class="login-link">
+                Already have an account? <a href="login.html" id="loginLink">Login here</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+    <script src="js/api/apiClient.js"></script>
+    <script src="js/api/authApi.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var signupForm = document.getElementById('signupForm');
+            var errorMessage = document.getElementById('errorMessage');
+            var successMessage = document.getElementById('successMessage');
+
+            if (AuthApi.isLoggedIn()) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+            }
+
+            function showSuccess(message) {
+                successMessage.textContent = message;
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+            }
+
+            signupForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                var username = document.getElementById('username').value.trim();
+                var email = document.getElementById('email').value.trim();
+                var password = document.getElementById('password').value;
+                var confirmPassword = document.getElementById('confirmPassword').value;
+
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+
+                if (!username || !email || !password || !confirmPassword) {
+                    showError('Please fill in all fields');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    showError('Password must be at least 6 characters long');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    showError('Passwords do not match');
+                    return;
+                }
+
+                try {
+                    var result = await AuthManager.register(username, email, password);
+                    if (result.success) {
+                        showSuccess('Account created! Redirecting...');
+                        setTimeout(function() {
+                            window.location.href = 'index.html';
+                        }, 800);
+                    } else {
+                        showError(result.message || 'Registration failed');
+                    }
+                } catch (err) {
+                    showError('Connection error. Please try again.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

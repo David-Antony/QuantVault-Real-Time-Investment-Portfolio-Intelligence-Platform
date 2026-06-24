@@ -1,0 +1,71 @@
+// Prisma Schema for Portfolio Management System
+// PostgreSQL Database
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  username     String     @unique @db.VarChar(100)
+  email        String     @unique @db.VarChar(255)
+  passwordHash String     @map("password_hash") @db.VarChar(255)
+  avatarPreset String     @default("default") @map("avatar_preset") @db.VarChar(50)
+  avatarConfig Json       @default("{}") @map("avatar_config") @db.JsonB
+  refreshToken String?    @map("refresh_token") @db.Text
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz()
+  lastLogin    DateTime?  @map("last_login") @db.Timestamptz()
+  portfolio    Portfolio?
+
+  @@map("users")
+}
+
+model Portfolio {
+  id           Int           @id @default(autoincrement())
+  userId       Int           @unique @map("user_id")
+  name         String        @default("My Portfolio") @db.VarChar(200)
+  cashBalance  Decimal       @default(100000.00) @map("cash_balance") @db.Decimal(15, 2)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz()
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assets       Asset[]
+  transactions Transaction[]
+
+  @@map("portfolios")
+}
+
+model Asset {
+  id           Int       @id @default(autoincrement())
+  portfolioId  Int       @map("portfolio_id")
+  name         String    @db.VarChar(100)
+  type         String    @db.VarChar(50)
+  currentPrice Decimal   @map("current_price") @db.Decimal(15, 2)
+  quantity     Decimal   @db.Decimal(15, 6)
+  averageCost  Decimal   @map("average_cost") @db.Decimal(15, 2)
+  totalInvested Decimal  @map("total_invested") @db.Decimal(15, 2)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  portfolio    Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@map("assets")
+}
+
+model Transaction {
+  id          Int       @id @default(autoincrement())
+  portfolioId Int       @map("portfolio_id")
+  assetName   String    @map("asset_name") @db.VarChar(100)
+  type        String    @db.VarChar(20)
+  amount      Decimal   @db.Decimal(15, 2)
+  price       Decimal?  @db.Decimal(15, 2)
+  quantity    Decimal?  @db.Decimal(15, 6)
+  status      String    @default("completed") @db.VarChar(20)
+  date        DateTime  @db.Date
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}

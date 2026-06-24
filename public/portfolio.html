@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Overview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="main-content">
+        <nav class="navbar">
+            <div class="nav-logo">Portfolio Manager</div>
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger"></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="portfolio.html" class="active">Portfolio Overview</a></li>
+                <li><a href="transactions.html">Transactions</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+
+        <section class="portfolio-overview">
+        <h1>Your Portfolio Overview</h1>
+
+        <div class="portfolio-summary" id="portfolio-summary">
+            <div class="summary-item">
+                <h3>Total Value</h3>
+                <p id="totalValue">Loading...</p>
+            </div>
+            <div class="summary-item">
+                <h3>Growth</h3>
+                <p id="growth">Loading...</p>
+            </div>
+            <div class="summary-item">
+                <h3>Risk Level</h3>
+                <p id="riskLevel">Loading...</p>
+            </div>
+            <div class="summary-item">
+                <h3>Cash Balance</h3>
+                <p id="cashBalance">Loading...</p>
+            </div>
+        </div>
+
+        <div class="portfolio-actions">
+            <button onclick="window.location.href='transactions.html'">Add Transaction</button>
+            <button onclick="exportPortfolioData()">Export Data</button>
+            <button onclick="resetPortfolio()" style="background-color: #e74c3c;">Reset Portfolio</button>
+        </div>
+
+        <!-- Asset Allocation Section -->
+        <div class="asset-allocation">
+            <h3>Asset Allocation</h3>
+            <div id="assetAllocation">
+                <p>Loading asset allocation...</p>
+            </div>
+        </div>
+
+        <!-- Recent Transactions Table -->
+        <h2>Recent Transactions</h2>
+        <div id="portfolioTransactionList">
+            <p>Loading transactions...</p>
+        </div>
+    </section>
+    </div> <!-- Close main-content -->
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-copy">
+                <span>© 2026 Portfolio Manager</span>
+                <span>All rights reserved.</span>
+            </div>
+            <div class="footer-newsletter">
+                <form id="newsletterForm">
+                    <input type="email" placeholder="Your email" aria-label="Email for newsletter">
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/api/apiClient.js"></script>
+    <script src="js/api/authApi.js"></script>
+    <script src="js/api/portfolioApi.js"></script>
+    <script src="js/data-models.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        async function exportPortfolioData() {
+            var data = await PortfolioDataStore.exportData();
+            if (!data) {
+                showNotification('Export failed', 'error');
+                return;
+            }
+            var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'portfolio-data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification('Portfolio data exported successfully!', 'success');
+        }
+
+        async function resetPortfolio() {
+            if (confirm('Are you sure you want to reset your portfolio? This will delete all your data and cannot be undone.')) {
+                var result = await PortfolioDataStore.clearAllTransactions();
+                if (result.success) {
+                    showNotification('Portfolio reset successfully. Reloading page...', 'success');
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showNotification(result.message || 'Reset failed', 'error');
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>

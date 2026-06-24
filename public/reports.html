@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports/Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="main-content">
+        <nav class="navbar">
+            <div class="nav-logo">Portfolio Manager</div>
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger"></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="portfolio.html">Portfolio Overview</a></li>
+                <li><a href="transactions.html">Transactions</a></li>
+                <li><a href="reports.html" class="active">Reports</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+
+        <section class="reports">
+            <h1>Performance Reports</h1>
+
+        <!-- Portfolio Performance Metrics Section -->
+        <section class="portfolio-performance">
+            <h2>Portfolio Performance</h2>
+            <div class="metrics">
+                <div class="metric">
+                    <h3>Total Portfolio Value</h3>
+                    <p id="reportTotalValue">Loading...</p>
+                </div>
+                <div class="metric">
+                    <h3>Overall Growth</h3>
+                    <p id="reportGrowth">Loading...</p>
+                </div>
+                <div class="metric">
+                    <h3>Top Performing Asset</h3>
+                    <p id="reportTopAsset">Loading...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chart Container for Portfolio Performance -->
+        <section class="chart-section">
+            <h2>Portfolio Growth Over Time</h2>
+            <div class="chart-container">
+                <!-- Chart.js interactive chart -->
+                <canvas id="portfolioChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Transaction Summary Table -->
+        <section class="transaction-summary">
+            <h2>Recent Transactions</h2>
+            <div class="table-wrapper">
+                <table class="transactions-table reports-transactions-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Asset</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportsTransactionTable">
+                        <!-- Dynamic content will be inserted here -->
+                        <tr>
+                            <td colspan="5" style="text-align: center;">Loading transactions...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        </section>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-copy">
+                <span>© 2026 Portfolio Manager</span>
+                <span>All rights reserved.</span>
+            </div>
+            <div class="footer-newsletter">
+                <form id="newsletterForm">
+                    <input type="email" placeholder="Your email" aria-label="Email for newsletter">
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/api/apiClient.js"></script>
+    <script src="js/api/authApi.js"></script>
+    <script src="js/api/portfolioApi.js"></script>
+    <script src="js/data-models.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
