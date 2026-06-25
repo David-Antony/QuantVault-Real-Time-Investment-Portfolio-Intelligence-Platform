@@ -742,24 +742,17 @@ async function exportTransactions() {
         return;
     }
 
-    const exportData = await PortfolioDataStore.exportData();
-    if (!exportData) {
-        showNotification('Export failed', 'error');
-        return;
+    const btn = document.querySelector('.export-btn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="btn-icon">⏳</span> Exporting...'; }
+
+    try {
+        await PortfolioApi.exportCSV();
+        showNotification('✅ CSV downloaded successfully! Open in Excel or Google Sheets.', 'success');
+    } catch (err) {
+        showNotification('Export failed. Please try again.', 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<span class="btn-icon">📥</span> Export CSV'; }
     }
-
-    const jsonStr = JSON.stringify(exportData, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `portfolio_${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    showNotification('Portfolio exported successfully', 'success');
 }
 
 async function clearAllTransactions() {
