@@ -364,11 +364,77 @@ const clearAllTransactions = async (req, res, next) => {
   }
 };
 
+const exportCSV = async (req, res, next) => {
+  try {
+    const portfolio = await prisma.portfolio.findUnique({
+      where: { userId: req.userId },
+      include: {
+        assets: true,
+        transactions: {
+          orderBy: { date: 'desc' }
+        }
+      }
+    });
+
+    if (!portfolio) {
+      throw ApiError.notFound('Portfolio not found');
+    }
+
+    // --- Build CSV for Transactions ---
+    const txHeaders = ['Date', 'Asset Name', 'Type', 'Amount ($)', 'Price ($)', 'Quantity', 'Status'];
+    const txRows = portfolio.transactions.map((t) => [
+      t.date ? new Date(t.date).toISOString().split('T')[0] : '',
+      `"${t.assetName}"`,
+      t.type,
+      Number(t.amount).toFixed(2),
+      t.price ? Number(t.price).toFixed(2) : '',
+      t.quantity ? Number(t.quantity).toFixed(6) : '',
+      t.status
+    ]);
+
+    // --- Build CSV for Assets ---
+    const assetHeaders = ['Asset Name', 'Type', 'Quantity', 'Avg Cost ($)', 'Current Price ($)', 'Total Invested ($)'];
+    const assetRows = portfolio.assets.map((a) => [
+      `"${a.name}"`,
+      a.type,
+      Number(a.quantity).toFixed(6),
+      Number(a.averageCost).toFixed(2),
+      Number(a.currentPrice).toFixed(2),
+      Number(a.totalInvested).toFixed(2)
+    ]);
+
+    // Combine into a single CSV with section labels
+    const lines = [
+      `QuantVault Portfolio Export — ${new Date().toISOString()}`,
+      `Portfolio Name: "${portfolio.name}"`,
+      `Cash Balance: $${Number(portfolio.cashBalance).toFixed(2)}`,
+      '',
+      '=== TRANSACTIONS ===',
+      txHeaders.join(','),
+      ...txRows.map((r) => r.join(',')),
+      '',
+      '=== HOLDINGS ===',
+      assetHeaders.join(','),
+      ...assetRows.map((r) => r.join(','))
+    ];
+
+    const csvContent = lines.join('\r\n');
+    const filename = `quantvault_portfolio_${new Date().toISOString().split('T')[0]}.csv`;
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send('\uFEFF' + csvContent); // BOM for Excel compatibility
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getPortfolio,
   getTransactions,
   createTransaction,
   deleteTransaction,
   exportPortfolio,
+  exportCSV,
   clearAllTransactions
 };
