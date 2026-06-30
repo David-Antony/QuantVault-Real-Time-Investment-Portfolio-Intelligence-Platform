@@ -3,16 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports/Analytics</title>
+    <title>QuantVault — Performance Reports & Analytics</title>
+    <meta name="description" content="Advanced portfolio analytics including Sharpe ratio, volatility, win rate, and max drawdown.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin: 1.5rem 0 2rem;
+        }
+        .analytics-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 16px;
+            padding: 1.4rem 1.2rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+        .analytics-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .analytics-card .card-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .analytics-card .card-label {
+            font-size: 0.78rem; opacity: 0.65; font-weight: 500;
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;
+        }
+        .analytics-card .card-value {
+            font-size: 1.6rem; font-weight: 700; font-family: 'Poppins', sans-serif;
+        }
+        .analytics-card .card-tooltip {
+            font-size: 0.72rem; opacity: 0.5; margin-top: 0.3rem;
+        }
+        .card-value.positive { color: #2ecc71; }
+        .card-value.negative { color: #e74c3c; }
+        .card-value.neutral { color: #f39c12; }
+        .section-header-row {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .range-btns { display: flex; gap: 0.5rem; }
+        .range-btn {
+            padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);
+            background: transparent; color: inherit; cursor: pointer; font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .range-btn.active { background: rgba(102,126,234,0.3); border-color: #667eea; }
+        .tx-breakdown {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 0.8rem; margin-top: 1rem;
+        }
+        .tx-breakdown-item {
+            text-align: center; padding: 0.8rem;
+            background: rgba(255,255,255,0.05); border-radius: 12px;
+        }
+        .tx-breakdown-item .tx-count { font-size: 1.4rem; font-weight: 700; }
+        .tx-breakdown-item .tx-label { font-size: 0.75rem; opacity: 0.6; margin-top: 0.2rem; }
+        .analytics-loading { text-align: center; opacity: 0.5; padding: 2rem; }
+    </style>
 </head>
 <body>
     <div class="main-content">
         <nav class="navbar">
-            <div class="nav-logo">Portfolio Manager</div>
+            <div class="nav-logo">QuantVault</div>
             <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
                 <span class="hamburger"></span>
             </button>
@@ -21,6 +77,7 @@
                 <li><a href="portfolio.html">Portfolio Overview</a></li>
                 <li><a href="transactions.html">Transactions</a></li>
                 <li><a href="reports.html" class="active">Reports</a></li>
+                <li><a href="alerts.html">Alerts</a></li>
                 <li><a href="profile.html">Profile</a></li>
             </ul>
         </nav>
@@ -28,71 +85,94 @@
         <section class="reports">
             <h1>Performance Reports</h1>
 
-        <!-- Portfolio Performance Metrics Section -->
-        <section class="portfolio-performance">
-            <h2>Portfolio Performance</h2>
-            <div class="metrics">
-                <div class="metric">
-                    <h3>Total Portfolio Value</h3>
-                    <p id="reportTotalValue">Loading...</p>
+            <!-- Portfolio Performance Metrics -->
+            <section class="portfolio-performance">
+                <h2>Portfolio Performance</h2>
+                <div class="metrics">
+                    <div class="metric">
+                        <h3>Total Portfolio Value</h3>
+                        <p id="reportTotalValue">Loading...</p>
+                    </div>
+                    <div class="metric">
+                        <h3>Overall Growth</h3>
+                        <p id="reportGrowth">Loading...</p>
+                    </div>
+                    <div class="metric">
+                        <h3>Top Performing Asset</h3>
+                        <p id="reportTopAsset">Loading...</p>
+                    </div>
                 </div>
-                <div class="metric">
-                    <h3>Overall Growth</h3>
-                    <p id="reportGrowth">Loading...</p>
-                </div>
-                <div class="metric">
-                    <h3>Top Performing Asset</h3>
-                    <p id="reportTopAsset">Loading...</p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Chart Container for Portfolio Performance -->
-        <section class="chart-section">
-            <h2>Portfolio Growth Over Time</h2>
-            <div class="chart-container">
-                <!-- Chart.js interactive chart -->
-                <canvas id="portfolioChart"></canvas>
-            </div>
-        </section>
+            <!-- Advanced Analytics Cards -->
+            <section class="portfolio-performance">
+                <h2>📊 Advanced Analytics</h2>
+                <div id="analyticsGrid" class="analytics-grid">
+                    <div class="analytics-loading">Computing analytics...</div>
+                </div>
+                <!-- Transaction Breakdown -->
+                <div id="txBreakdownSection" style="display:none;">
+                    <h3 style="margin-bottom:0.5rem;font-size:1rem;opacity:0.8;">Transaction Breakdown</h3>
+                    <div class="tx-breakdown">
+                        <div class="tx-breakdown-item">
+                            <div class="tx-count" id="txBuy">—</div>
+                            <div class="tx-label">Buy Orders</div>
+                        </div>
+                        <div class="tx-breakdown-item">
+                            <div class="tx-count" id="txSell">—</div>
+                            <div class="tx-label">Sell Orders</div>
+                        </div>
+                        <div class="tx-breakdown-item">
+                            <div class="tx-count" id="txDividend">—</div>
+                            <div class="tx-label">Dividends</div>
+                        </div>
+                        <div class="tx-breakdown-item">
+                            <div class="tx-count" id="txTotal">—</div>
+                            <div class="tx-label">Total Transactions</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-        <!-- Transaction Summary Table -->
-        <section class="transaction-summary">
-            <h2>Recent Transactions</h2>
-            <div class="table-wrapper">
-                <table class="transactions-table reports-transactions-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Asset</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reportsTransactionTable">
-                        <!-- Dynamic content will be inserted here -->
-                        <tr>
-                            <td colspan="5" style="text-align: center;">Loading transactions...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+            <!-- Chart -->
+            <section class="chart-section">
+                <div class="section-header-row">
+                    <h2>Portfolio Growth Over Time</h2>
+                    <div class="range-btns">
+                        <button class="range-btn active" onclick="loadChart(30, this)">30D</button>
+                        <button class="range-btn" onclick="loadChart(90, this)">90D</button>
+                        <button class="range-btn" onclick="loadChart(365, this)">1Y</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="portfolioChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Recent Transactions Table -->
+            <section class="transaction-summary">
+                <h2>Recent Transactions</h2>
+                <div class="table-wrapper">
+                    <table class="transactions-table reports-transactions-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th><th>Asset</th><th>Type</th><th>Amount</th><th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTransactionTable">
+                            <tr><td colspan="5" style="text-align:center;">Loading transactions...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </section>
     </div>
 
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-copy">
-                <span>© 2026 Portfolio Manager</span>
+                <span>© 2026 QuantVault</span>
                 <span>All rights reserved.</span>
-            </div>
-            <div class="footer-newsletter">
-                <form id="newsletterForm">
-                    <input type="email" placeholder="Your email" aria-label="Email for newsletter">
-                    <button type="submit">Subscribe</button>
-                </form>
             </div>
         </div>
     </footer>
@@ -105,5 +185,153 @@
     <script src="js/data-models.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/script.js"></script>
+    <script>
+        let chartInstance = null;
+
+        // Load Advanced Analytics
+        async function loadAnalytics() {
+            try {
+                const token = localStorage.getItem('accessToken');
+                const res = await fetch('/api/portfolio/analytics', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const json = await res.json();
+                if (!json.success) return;
+                const d = json.data;
+
+                const sharpeColor = d.sharpeRatio === 'N/A' ? '' : (parseFloat(d.sharpeRatio) >= 1 ? 'positive' : parseFloat(d.sharpeRatio) >= 0 ? 'neutral' : 'negative');
+
+                document.getElementById('analyticsGrid').innerHTML = `
+                    <div class="analytics-card">
+                        <div class="card-icon">🏆</div>
+                        <div class="card-label">Win Rate</div>
+                        <div class="card-value ${d.winRate >= 50 ? 'positive' : 'negative'}">${d.winRate.toFixed(1)}%</div>
+                        <div class="card-tooltip">${d.winningAssets} of ${d.totalAssets} assets positive</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="card-icon">⚡</div>
+                        <div class="card-label">Sharpe Ratio</div>
+                        <div class="card-value ${sharpeColor}">${d.sharpeRatio}</div>
+                        <div class="card-tooltip">Risk-adjusted return (>1 = good)</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="card-icon">📉</div>
+                        <div class="card-label">Max Drawdown</div>
+                        <div class="card-value ${d.maxDrawdown > 15 ? 'negative' : d.maxDrawdown > 5 ? 'neutral' : 'positive'}">-${d.maxDrawdown.toFixed(2)}%</div>
+                        <div class="card-tooltip">Largest peak-to-trough decline</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="card-icon">🌊</div>
+                        <div class="card-label">Volatility</div>
+                        <div class="card-value ${d.volatility > 10 ? 'negative' : d.volatility > 5 ? 'neutral' : 'positive'}">${d.volatility.toFixed(2)}%</div>
+                        <div class="card-tooltip">Std dev of monthly returns</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="card-icon">🌐</div>
+                        <div class="card-label">Diversification</div>
+                        <div class="card-value ${d.diversificationScore >= 70 ? 'positive' : d.diversificationScore >= 40 ? 'neutral' : 'negative'}">${d.diversificationScore}/100</div>
+                        <div class="card-tooltip">Entropy-based spread score</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="card-icon">💰</div>
+                        <div class="card-label">Passive Income</div>
+                        <div class="card-value positive">$${d.passiveIncome.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</div>
+                        <div class="card-tooltip">Dividends + interest received</div>
+                    </div>
+                    ${d.bestPerformer ? `
+                    <div class="analytics-card">
+                        <div class="card-icon">🚀</div>
+                        <div class="card-label">Best Performer</div>
+                        <div class="card-value positive" style="font-size:1.1rem">${d.bestPerformer.name}</div>
+                        <div class="card-tooltip">${d.bestPerformer.returnPct >= 0 ? '+' : ''}${d.bestPerformer.returnPct.toFixed(2)}% return</div>
+                    </div>` : ''}
+                    ${d.worstPerformer ? `
+                    <div class="analytics-card">
+                        <div class="card-icon">⚠️</div>
+                        <div class="card-label">Worst Performer</div>
+                        <div class="card-value negative" style="font-size:1.1rem">${d.worstPerformer.name}</div>
+                        <div class="card-tooltip">${d.worstPerformer.returnPct >= 0 ? '+' : ''}${d.worstPerformer.returnPct.toFixed(2)}% return</div>
+                    </div>` : ''}
+                `;
+
+                // Breakdown
+                if (d.txBreakdown) {
+                    document.getElementById('txBreakdownSection').style.display = 'block';
+                    document.getElementById('txBuy').textContent = d.txBreakdown.buy;
+                    document.getElementById('txSell').textContent = d.txBreakdown.sell;
+                    document.getElementById('txDividend').textContent = d.txBreakdown.dividend;
+                    document.getElementById('txTotal').textContent = d.txBreakdown.total;
+                }
+            } catch (err) {
+                document.getElementById('analyticsGrid').innerHTML = '<div class="analytics-loading">Analytics unavailable</div>';
+            }
+        }
+
+        // Load real portfolio history chart
+        async function loadChart(days, btn) {
+            if (btn) {
+                document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            try {
+                const token = localStorage.getItem('accessToken');
+                const res = await fetch(`/api/portfolio/history?days=${days}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const json = await res.json();
+                const snapshots = json.success ? json.data : [];
+
+                const canvas = document.getElementById('portfolioChart');
+                if (chartInstance) chartInstance.destroy();
+
+                if (snapshots.length === 0) {
+                    // Fallback to simulated data
+                    updatePortfolioChart();
+                    return;
+                }
+
+                const labels = snapshots.map(s => new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                const values = snapshots.map(s => s.totalValue);
+
+                chartInstance = new Chart(canvas.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Portfolio Value',
+                            data: values,
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102,126,234,0.15)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 3,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: { display: false },
+                            tooltip: { callbacks: { label: (ctx) => `$${ctx.parsed.y.toLocaleString('en-US', {minimumFractionDigits:2})}` } },
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: { callback: (val) => '$' + val.toLocaleString() }
+                            }
+                        }
+                    }
+                });
+            } catch {
+                updatePortfolioChart(); // Fallback
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadAnalytics();
+            await loadChart(30);
+        });
+    </script>
 </body>
 </html>

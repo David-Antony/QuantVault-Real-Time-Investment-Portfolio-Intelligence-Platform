@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Management System</title>
+    <title>QuantVault — Real-Time Investment Portfolio Intelligence Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 <body>
     <div class="main-content">
         <nav class="navbar">
-            <div class="nav-logo">Portfolio Manager</div>
+            <div class="nav-logo">QuantVault</div>
             <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
                 <span class="hamburger"></span>
             </button>
@@ -21,13 +21,14 @@
                 <li><a href="portfolio.html">Portfolio Overview</a></li>
                 <li><a href="transactions.html">Transactions</a></li>
                 <li><a href="reports.html">Reports</a></li>
+                <li><a href="alerts.html">Alerts</a></li>
                 <li><a href="profile.html">Profile</a></li>
             </ul>
         </nav>
 
         <section class="hero">
-            <h1>Welcome to Your Portfolio Management System</h1>
-            <p>Track your investments and optimize your portfolio for maximum growth.</p>
+            <h1>Welcome to QuantVault</h1>
+            <p>Real-time investment intelligence — track, analyse, and be alerted the moment markets move.</p>
             <button onclick="window.location.href='portfolio.html'">View Portfolio</button>
             
             <div class="features">
@@ -35,23 +36,23 @@
                 <div class="feature-grid">
                     <div class="feature-card">
                         <div class="feature-icon">📈</div>
-                        <h3>Real-Time Analytics</h3>
-                        <p>Stay updated with real-time insights on your investments.</p>
+                        <h3>Live Price Feeds</h3>
+                        <p>WebSocket-powered real-time price ticks update your portfolio value every 8 seconds.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔔</div>
+                        <h3>Smart Price Alerts</h3>
+                        <p>Set target price triggers — get notified the moment an asset crosses your threshold.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">📊</div>
-                        <h3>Comprehensive Reports</h3>
-                        <p>Generate detailed reports to track growth and performance.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">💼</div>
-                        <h3>Asset Tracking</h3>
-                        <p>Manage stocks, bonds, real estate, and more in one place.</p>
+                        <h3>Advanced Analytics</h3>
+                        <p>Sharpe ratio, volatility, max drawdown, win rate, and diversification score.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">🔒</div>
                         <h3>Secure & Private</h3>
-                        <p>Your data is protected with top-notch security measures.</p>
+                        <p>JWT refresh rotation, bcrypt hashing, httpOnly cookies, rate limiting.</p>
                     </div>
                 </div>
             </div>
@@ -62,7 +63,7 @@
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-copy">
-                <span>© 2026 Portfolio Manager</span>
+                <span>© 2026 QuantVault</span>
                 <span>All rights reserved.</span>
             </div>
             <div class="footer-newsletter">

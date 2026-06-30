@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>QuantVault — Your Profile</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
 <body>
     <div class="main-content">
         <nav class="navbar">
-            <div class="nav-logo">Portfolio Manager</div>
+            <div class="nav-logo">QuantVault</div>
             <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
                 <span class="hamburger"></span>
             </button>
@@ -21,6 +21,7 @@
                 <li><a href="portfolio.html">Portfolio Overview</a></li>
                 <li><a href="transactions.html">Transactions</a></li>
                 <li><a href="reports.html">Reports</a></li>
+                <li><a href="alerts.html">Alerts</a></li>
                 <li><a href="profile.html" class="active">Profile</a></li>
             </ul>
         </nav>
@@ -67,13 +68,21 @@
                     <div id="avatarGrid" class="avatar-grid"></div>
                 </section>
             </div>
+
+            <!-- Activity Log -->
+            <section class="profile-card" style="margin-top:1.5rem;">
+                <h2>Recent Activity</h2>
+                <div id="activityLog" style="font-size:0.85rem;opacity:0.8;">
+                    <div style="text-align:center;padding:1rem;opacity:0.5;">Loading activity...</div>
+                </div>
+            </section>
         </section>
     </div>
 
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-copy">
-                <span>© 2026 Portfolio Manager</span>
+                <span>© 2026 QuantVault</span>
                 <span>All rights reserved.</span>
             </div>
             <div class="footer-newsletter">
@@ -92,5 +101,45 @@
     <script src="js/data-models.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/script.js"></script>
+    <script>
+        const ACTION_ICONS = {
+            LOGIN: '🔑', LOGOUT: '🚪', REGISTER: '✨',
+            TRANSACTION_BUY: '📈', TRANSACTION_SELL: '📉',
+            TRANSACTION_DELETE: '🗑️', TRANSACTION_DIVIDEND: '💵',
+            TRANSACTION_INTEREST: '💰'
+        };
+
+        async function loadActivityLog() {
+            try {
+                const token = localStorage.getItem('accessToken');
+                const res = await fetch('/api/audit', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                const container = document.getElementById('activityLog');
+                if (!data.success || data.data.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;padding:1rem;opacity:0.5;">No activity recorded yet.</div>';
+                    return;
+                }
+                container.innerHTML = data.data.slice(0, 20).map(log => {
+                    const icon = ACTION_ICONS[log.action] || '📌';
+                    const label = log.action.replace(/_/g, ' ');
+                    const when = new Date(log.createdAt).toLocaleString();
+                    const meta = log.metadata && Object.keys(log.metadata).length > 0
+                        ? `<span style="opacity:0.55;margin-left:6px;">(${Object.values(log.metadata).filter(v => typeof v === 'string' || typeof v === 'number').slice(0,2).join(', ')})</span>`
+                        : '';
+                    return `<div style="display:flex;align-items:center;gap:10px;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+                        <span style="font-size:1.2rem;">${icon}</span>
+                        <div style="flex:1;">
+                            <div style="font-weight:600;">${label}${meta}</div>
+                            <div style="font-size:0.75rem;opacity:0.5;">${when}${log.ip ? ' · ' + log.ip : ''}</div>
+                        </div>
+                    </div>`;
+                }).join('');
+            } catch {
+                document.getElementById('activityLog').innerHTML = '<div style="text-align:center;opacity:0.5;">Could not load activity.</div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadActivityLog);
+    </script>
 </body>
 </html>
