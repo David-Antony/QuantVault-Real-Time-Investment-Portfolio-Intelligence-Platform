@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const { prisma } = require('../config/db');
 const ApiError = require('../utils/ApiError');
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt');
+const { logAudit } = require('../utils/auditLogger');
 
 const register = async (req, res, next) => {
   try {
@@ -51,6 +52,8 @@ const register = async (req, res, next) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
+    await logAudit(user.id, 'REGISTER', { username, email }, req);
+
     res.status(201).json({
       success: true,
       message: 'Registration successful',
@@ -99,6 +102,8 @@ const login = async (req, res, next) => {
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
+
+    await logAudit(user.id, 'LOGIN', { email }, req);
 
     res.json({
       success: true,
@@ -175,6 +180,8 @@ const logout = async (req, res, next) => {
       where: { id: req.userId },
       data: { refreshToken: null }
     });
+
+    await logAudit(req.userId, 'LOGOUT', {}, req);
 
     res.clearCookie('refreshToken');
 
