@@ -3,6 +3,7 @@ const { body } = require('express-validator');
 const validate = require('../middleware/validate');
 const { authenticate } = require('../middleware/auth');
 const portfolioController = require('../controllers/portfolioController');
+const { getAnalytics } = require('../controllers/analyticsController');
 
 const router = express.Router();
 
@@ -33,6 +34,8 @@ const transactionValidation = [
 ];
 
 router.get('/', portfolioController.getPortfolio);
+router.get('/analytics', getAnalytics);
+router.get('/history', portfolioController.getPortfolioHistory);
 router.get('/transactions', portfolioController.getTransactions);
 router.post('/transactions', validate(transactionValidation), portfolioController.createTransaction);
 router.delete('/transactions/:id', portfolioController.deleteTransaction);
