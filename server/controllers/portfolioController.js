@@ -1,5 +1,6 @@
 const { prisma } = require('../config/db');
 const ApiError = require('../utils/ApiError');
+const { logAudit } = require('../utils/auditLogger');
 
 const getPortfolio = async (req, res, next) => {
   try {
@@ -230,6 +231,8 @@ const createTransaction = async (req, res, next) => {
       data: { cashBalance: newCashBalance }
     });
 
+    await logAudit(req.userId, `TRANSACTION_${type.toUpperCase()}`, { assetName, type, amount, quantity }, req);
+
     res.status(201).json({
       success: true,
       message: 'Transaction added successfully',
@@ -273,6 +276,8 @@ const deleteTransaction = async (req, res, next) => {
     }
 
     await prisma.transaction.delete({ where: { id: parseInt(id) } });
+
+    await logAudit(req.userId, 'TRANSACTION_DELETE', { transactionId: parseInt(id) }, req);
 
     res.json({
       success: true,
@@ -429,6 +434,42 @@ const exportCSV = async (req, res, next) => {
   }
 };
 
+const getPortfolioHistory = async (req, res, next) => {
+  try {
+    const portfolio = await prisma.portfolio.findUnique({
+      where: { userId: req.userId }
+    });
+
+    if (!portfolio) {
+      return res.json({ success: true, data: [] });
+    }
+
+    const days = parseInt(req.query.days) || 30;
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+
+    const snapshots = await prisma.portfolioSnapshot.findMany({
+      where: {
+        portfolioId: portfolio.id,
+        date: { gte: since }
+      },
+      orderBy: { date: 'asc' }
+    });
+
+    res.json({
+      success: true,
+      data: snapshots.map((s) => ({
+        date: s.date,
+        totalValue: Number(s.totalValue),
+        cashBalance: Number(s.cashBalance),
+        totalGainLoss: Number(s.totalGainLoss)
+      }))
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getPortfolio,
   getTransactions,
@@ -436,5 +477,7 @@ module.exports = {
   deleteTransaction,
   exportPortfolio,
   exportCSV,
-  clearAllTransactions
+  clearAllTransactions,
+  getPortfolioHistory
 };
+
