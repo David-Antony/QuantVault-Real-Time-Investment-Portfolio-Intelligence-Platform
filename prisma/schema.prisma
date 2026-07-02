@@ -1,4 +1,4 @@
-// Prisma Schema for Portfolio Management System
+// Prisma Schema for QuantVault — Real-Time Investment Portfolio Intelligence Platform
 // PostgreSQL Database
 
 generator client {
@@ -11,45 +11,48 @@ datasource db {
 }
 
 model User {
-  id           Int        @id @default(autoincrement())
-  username     String     @unique @db.VarChar(100)
-  email        String     @unique @db.VarChar(255)
-  passwordHash String     @map("password_hash") @db.VarChar(255)
-  avatarPreset String     @default("default") @map("avatar_preset") @db.VarChar(50)
-  avatarConfig Json       @default("{}") @map("avatar_config") @db.JsonB
-  refreshToken String?    @map("refresh_token") @db.Text
-  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz()
-  lastLogin    DateTime?  @map("last_login") @db.Timestamptz()
+  id           Int            @id @default(autoincrement())
+  username     String         @unique @db.VarChar(100)
+  email        String         @unique @db.VarChar(255)
+  passwordHash String         @map("password_hash") @db.VarChar(255)
+  avatarPreset String         @default("default") @map("avatar_preset") @db.VarChar(50)
+  avatarConfig Json           @default("{}") @map("avatar_config") @db.JsonB
+  refreshToken String?        @map("refresh_token") @db.Text
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz()
+  lastLogin    DateTime?      @map("last_login") @db.Timestamptz()
   portfolio    Portfolio?
+  auditLogs    AuditLog[]
+  priceAlerts  PriceAlert[]
 
   @@map("users")
 }
 
 model Portfolio {
-  id           Int           @id @default(autoincrement())
-  userId       Int           @unique @map("user_id")
-  name         String        @default("My Portfolio") @db.VarChar(200)
-  cashBalance  Decimal       @default(100000.00) @map("cash_balance") @db.Decimal(15, 2)
-  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz()
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           Int                 @id @default(autoincrement())
+  userId       Int                 @unique @map("user_id")
+  name         String              @default("My Portfolio") @db.VarChar(200)
+  cashBalance  Decimal             @default(100000.00) @map("cash_balance") @db.Decimal(15, 2)
+  createdAt    DateTime            @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt    DateTime            @updatedAt @map("updated_at") @db.Timestamptz()
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   assets       Asset[]
   transactions Transaction[]
+  snapshots    PortfolioSnapshot[]
 
   @@map("portfolios")
 }
 
 model Asset {
-  id           Int       @id @default(autoincrement())
-  portfolioId  Int       @map("portfolio_id")
-  name         String    @db.VarChar(100)
-  type         String    @db.VarChar(50)
-  currentPrice Decimal   @map("current_price") @db.Decimal(15, 2)
-  quantity     Decimal   @db.Decimal(15, 6)
-  averageCost  Decimal   @map("average_cost") @db.Decimal(15, 2)
-  totalInvested Decimal  @map("total_invested") @db.Decimal(15, 2)
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz()
-  portfolio    Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  id            Int       @id @default(autoincrement())
+  portfolioId   Int       @map("portfolio_id")
+  name          String    @db.VarChar(100)
+  type          String    @db.VarChar(50)
+  currentPrice  Decimal   @map("current_price") @db.Decimal(15, 2)
+  quantity      Decimal   @db.Decimal(15, 6)
+  averageCost   Decimal   @map("average_cost") @db.Decimal(15, 2)
+  totalInvested Decimal   @map("total_invested") @db.Decimal(15, 2)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  portfolio     Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
 
   @@map("assets")
 }
@@ -68,4 +71,51 @@ model Transaction {
   portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
 
   @@map("transactions")
+}
+
+// ─── Audit Log ───────────────────────────────────────────────────────────────
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  action    String   @db.VarChar(60)
+  metadata  Json     @default("{}")
+  ip        String?  @db.VarChar(60)
+  userAgent String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("audit_logs")
+}
+
+// ─── Portfolio Daily Snapshots (real chart history) ───────────────────────────
+model PortfolioSnapshot {
+  id            Int       @id @default(autoincrement())
+  portfolioId   Int       @map("portfolio_id")
+  totalValue    Decimal   @map("total_value") @db.Decimal(15, 2)
+  cashBalance   Decimal   @map("cash_balance") @db.Decimal(15, 2)
+  totalGainLoss Decimal   @map("total_gain_loss") @db.Decimal(15, 2)
+  date          DateTime  @db.Date
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  portfolio     Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@unique([portfolioId, date])
+  @@index([portfolioId])
+  @@map("portfolio_snapshots")
+}
+
+// ─── Price Alerts ─────────────────────────────────────────────────────────────
+model PriceAlert {
+  id          Int       @id @default(autoincrement())
+  userId      Int       @map("user_id")
+  assetName   String    @map("asset_name") @db.VarChar(100)
+  condition   String    @db.VarChar(10)
+  targetPrice Decimal   @map("target_price") @db.Decimal(15, 2)
+  isActive    Boolean   @default(true) @map("is_active")
+  triggeredAt DateTime? @map("triggered_at") @db.Timestamptz()
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("price_alerts")
 }
