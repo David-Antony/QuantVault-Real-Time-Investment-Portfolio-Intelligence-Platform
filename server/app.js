@@ -9,6 +9,8 @@ const rateLimit = require('express-rate-limit');
 const authRoutes = require('./routes/auth');
 const portfolioRoutes = require('./routes/portfolio');
 const profileRoutes = require('./routes/profile');
+const alertRoutes = require('./routes/alerts');
+const auditRoutes = require('./routes/audit');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -50,7 +52,8 @@ const apiLimiter = rateLimit({
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'Portfolio Management API is running',
+    message: 'QuantVault API is running',
+    version: '2.1.0',
     timestamp: new Date().toISOString()
   });
 });
@@ -58,6 +61,8 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/portfolio', apiLimiter, portfolioRoutes);
 app.use('/api/profile', apiLimiter, profileRoutes);
+app.use('/api/alerts', apiLimiter, alertRoutes);
+app.use('/api/audit', apiLimiter, auditRoutes);
 
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
@@ -67,7 +72,7 @@ app.get('*', (req, res) => {
   const validPages = [
     'index.html', 'login.html', 'signup.html',
     'portfolio.html', 'transactions.html',
-    'reports.html', 'profile.html'
+    'reports.html', 'profile.html', 'alerts.html'
   ];
 
   const requestedPage = req.path.replace(/^\//, '');
