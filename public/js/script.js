@@ -1,190 +1,164 @@
 const AVATAR_PRESETS = [
-    { id: 'face-01', faceRatio: 1.38, faceWidth: 0.66, eyeSpacing: 0.205, eyeSize: 0.052, browOffset: -0.07, mouthCurve: 0.04, hair: 'side', hairColor: '#2a251f', glasses: false, beard: false, cheekWidth: 0.28, jawWidth: 0.20, noseLength: 0.15, noseWidth: 0.06, earScale: 1.0, hairHeight: 0.30, shoulderWidth: 0.56, shirtColor: '#d9959d' },
-    { id: 'face-02', faceRatio: 1.15, eyeSpacing: 0.20, eyeSize: 0.055, browOffset: -0.05, mouthCurve: 0.06, hair: 'side', hairColor: '#3a2f1b', glasses: true, beard: false },
-    { id: 'face-03', faceRatio: 1.3, eyeSpacing: 0.24, eyeSize: 0.065, browOffset: -0.07, mouthCurve: -0.05, hair: 'curly', hairColor: '#1f1f1f', glasses: false, beard: true },
-    { id: 'face-04', faceRatio: 1.18, eyeSpacing: 0.21, eyeSize: 0.055, browOffset: -0.04, mouthCurve: 0.12, hair: 'bald', hairColor: '#000000', glasses: false, beard: false },
-    { id: 'face-05', faceRatio: 1.22, eyeSpacing: 0.23, eyeSize: 0.06, browOffset: -0.06, mouthCurve: 0.0, hair: 'messy', hairColor: '#4a2f2f', glasses: false, beard: false },
-    { id: 'face-06', faceRatio: 1.28, eyeSpacing: 0.19, eyeSize: 0.06, browOffset: -0.06, mouthCurve: -0.08, hair: 'short', hairColor: '#222222', glasses: false, beard: true },
-    { id: 'face-07', faceRatio: 1.12, eyeSpacing: 0.2, eyeSize: 0.05, browOffset: -0.03, mouthCurve: 0.18, hair: 'fringe', hairColor: '#2b2b2b', glasses: false, beard: false },
-    { id: 'face-08', faceRatio: 1.35, eyeSpacing: 0.25, eyeSize: 0.07, browOffset: -0.08, mouthCurve: -0.12, hair: 'receed', hairColor: '#222222', glasses: false, beard: false },
-    { id: 'face-09', faceRatio: 1.2, eyeSpacing: 0.21, eyeSize: 0.06, browOffset: -0.05, mouthCurve: 0.14, hair: 'short', hairColor: '#1b1b1b', glasses: true, beard: false },
-    { id: 'face-10', faceRatio: 1.3, eyeSpacing: 0.22, eyeSize: 0.065, browOffset: -0.06, mouthCurve: 0.02, hair: 'bald', hairColor: '#000000', glasses: false, beard: true },
-    { id: 'face-11', faceRatio: 1.16, eyeSpacing: 0.2, eyeSize: 0.055, browOffset: -0.04, mouthCurve: 0.08, hair: 'side', hairColor: '#3c2b2b', glasses: false, beard: false },
-    { id: 'face-12', faceRatio: 1.24, eyeSpacing: 0.23, eyeSize: 0.06, browOffset: -0.05, mouthCurve: -0.02, hair: 'short', hairColor: '#2a2a2a', glasses: false, beard: false }
+    { id: 'face-01', bgGrad: ['#818cf8', '#c084fc'], skinColor: '#fde047', hairType: 'short', hairColor: '#1e293b', shirtColor: '#f43f5e', glasses: false, beard: false },
+    { id: 'face-02', bgGrad: ['#38bdf8', '#818cf8'], skinColor: '#fed7aa', hairType: 'long', hairColor: '#78350f', shirtColor: '#0ea5e9', glasses: false, beard: false },
+    { id: 'face-03', bgGrad: ['#fb923c', '#db2777'], skinColor: '#fef08a', hairType: 'curly', hairColor: '#1e293b', shirtColor: '#10b981', glasses: false, beard: true },
+    { id: 'face-04', bgGrad: ['#34d399', '#059669'], skinColor: '#fcd34d', hairType: 'spiky', hairColor: '#475569', shirtColor: '#8b5cf6', glasses: true, beard: false },
+    { id: 'face-05', bgGrad: ['#f472b6', '#db2777'], skinColor: '#ffedd5', hairType: 'bun', hairColor: '#b45309', shirtColor: '#f59e0b', glasses: false, beard: false },
+    { id: 'face-06', bgGrad: ['#a78bfa', '#6d28d9'], skinColor: '#fde047', hairType: 'bald', hairColor: '#1e293b', shirtColor: '#ef4444', glasses: false, beard: true },
+    { id: 'face-07', bgGrad: ['#60a5fa', '#2563eb'], skinColor: '#fed7aa', hairType: 'bob', hairColor: '#0f172a', shirtColor: '#ec4899', glasses: false, beard: false },
+    { id: 'face-08', bgGrad: ['#f43f5e', '#be123c'], skinColor: '#fcd34d', hairType: 'short', hairColor: '#7c2d12', shirtColor: '#10b981', glasses: true, beard: false },
+    { id: 'face-09', bgGrad: ['#2dd4bf', '#0d9488'], skinColor: '#fef08a', hairType: 'wavy', hairColor: '#030712', shirtColor: '#f43f5e', glasses: false, beard: false },
+    { id: 'face-10', bgGrad: ['#1e293b', '#0f172a'], skinColor: '#ffedd5', hairType: 'spiky', hairColor: '#f43f5e', shirtColor: '#0ea5e9', glasses: true, beard: true },
+    { id: 'face-11', bgGrad: ['#f59e0b', '#d97706'], skinColor: '#fde047', hairType: 'long', hairColor: '#7c2d12', shirtColor: '#6366f1', glasses: false, beard: false },
+    { id: 'face-12', bgGrad: ['#10b981', '#047857'], skinColor: '#fed7aa', hairType: 'short', hairColor: '#475569', shirtColor: '#f43f5e', glasses: false, beard: false }
 ];
 
 function generateFaceSVG(preset, size = 160) {
-    const w = size, h = size, cx = w / 2, cy = h / 2 + 7;
-    const faceW = w * (preset.faceWidth || 0.58);
-    const faceH = faceW * preset.faceRatio;
-    const faceTop = cy - faceH * 0.52, faceBottom = cy + faceH * 0.50;
-    const faceLeft = cx - faceW * 0.50, faceRight = cx + faceW * 0.50;
-    const skinBase = '#f1d2c5', skinHighlight = '#f8e3da', skinShadow = '#d9b0a0';
-    const hairDark = preset.hairColor, hairShadow = '#111111';
-    const eyeGap = faceW * preset.eyeSpacing;
-    const eyeY = cy - faceH * 0.14;
-    const eyeWhiteW = w * 0.085, eyeWhiteH = w * 0.055;
-    const irisR = w * 0.022, pupilR = w * 0.010;
-    const noseTop = eyeY + eyeWhiteH * 0.40;
-    const noseBottom = cy + faceH * (preset.noseLength || 0.12);
-    const mouthY = cy + faceH * 0.20;
-    const mouthW = faceW * 0.16;
-    const jawWidth = faceW * (preset.jawWidth || 0.23);
-    const cheekWidth = faceW * (preset.cheekWidth || 0.30);
+    const bgId = `bg-${preset.id}`;
+    const skinShadow = adjustColorBrightness(preset.skinColor, -15);
+    const neckColor = adjustColorBrightness(preset.skinColor, -20);
+    const browColor = adjustColorBrightness(preset.hairColor, -10);
 
-    const facePath = `M ${faceLeft + 10} ${faceTop + 14}
-        C ${faceLeft - 8} ${cy - faceH * 0.10}, ${faceLeft - 8} ${faceBottom - 26}, ${cx - jawWidth} ${faceBottom - 4}
-        C ${cx - faceW * 0.16} ${faceBottom + 10}, ${cx + faceW * 0.16} ${faceBottom + 10}, ${cx + jawWidth} ${faceBottom - 4}
-        C ${faceRight + 8} ${faceBottom - 26}, ${faceRight + 8} ${cy - faceH * 0.10}, ${faceRight - 10} ${faceTop + 14}
-        C ${cx + faceW * 0.18} ${faceTop - 10}, ${cx - faceW * 0.18} ${faceTop - 10}, ${faceLeft + 10} ${faceTop + 14} Z`;
-
-    let hairPath = '', hairAccent = '';
-    if (preset.hair !== 'bald') {
-        const hairHeight = preset.hairHeight || 0.34;
-        if (preset.hair === 'receed') {
-            hairPath = `M ${faceLeft - 4} ${faceTop + 10}
-                C ${faceLeft + 6} ${faceTop - 24}, ${cx - faceW * 0.12} ${faceTop - 34}, ${cx} ${faceTop - 20}
-                C ${cx + faceW * 0.12} ${faceTop - 34}, ${faceRight - 6} ${faceTop - 24}, ${faceRight + 4} ${faceTop + 10}
-                C ${faceRight - 16} ${faceTop + 8}, ${faceLeft + 16} ${faceTop + 8}, ${faceLeft - 4} ${faceTop + 10} Z`;
-        } else if (preset.hair === 'side') {
-            const hairPeakLeft = faceTop - Math.round(hairHeight * 140);
-            const hairPeakCenter = faceTop - Math.round(hairHeight * 160);
-            const hairPeakRight = faceTop - Math.round(hairHeight * 100);
-            hairPath = `M ${faceLeft - 2} ${faceTop + 14}
-                C ${faceLeft + 12} ${hairPeakLeft}, ${cx - faceW * 0.10} ${hairPeakCenter}, ${cx + faceW * 0.22} ${hairPeakRight}
-                C ${cx + faceW * 0.30} ${faceTop - 6}, ${cx + faceW * 0.18} ${faceTop + 14}, ${faceRight + 2} ${faceTop + 18}
-                C ${faceRight - 14} ${faceTop + 8}, ${faceLeft + 18} ${faceTop + 8}, ${faceLeft - 2} ${faceTop + 14} Z`;
-            hairAccent = `<path d="M ${cx - faceW * 0.16} ${faceTop - 10} C ${cx - faceW * 0.06} ${faceTop - 22}, ${cx + faceW * 0.10} ${faceTop - 22}, ${cx + faceW * 0.14} ${faceTop - 8}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" stroke-linecap="round"/>`;
-        } else if (preset.hair === 'curly') {
-            hairPath = `M ${faceLeft - 6} ${faceTop + 12}
-                C ${faceLeft + 10} ${faceTop - 40}, ${cx - faceW * 0.10} ${faceTop - 54}, ${cx + faceW * 0.22} ${faceTop - 34}
-                C ${faceRight + 8} ${faceTop - 6}, ${faceRight - 2} ${faceTop + 20}, ${faceRight - 4} ${faceTop + 18}
-                C ${faceRight - 12} ${faceTop + 8}, ${faceLeft + 16} ${faceTop + 8}, ${faceLeft - 6} ${faceTop + 12} Z`;
-        } else {
-            hairPath = `M ${faceLeft - 4} ${faceTop + 12}
-                C ${faceLeft + 4} ${faceTop - 36}, ${cx - faceW * 0.18} ${faceTop - 48}, ${cx} ${faceTop - 30}
-                C ${cx + faceW * 0.16} ${faceTop - 48}, ${faceRight - 4} ${faceTop - 36}, ${faceRight + 4} ${faceTop + 12}
-                C ${faceRight - 18} ${faceTop + 6}, ${faceLeft + 18} ${faceTop + 6}, ${faceLeft - 4} ${faceTop + 12} Z`;
-        }
+    // Dynamic Hair SVGs based on hairType
+    let hairSVG = '';
+    if (preset.hairType === 'short') {
+        hairSVG = `<path d="M 48 56 C 48 38, 112 38, 112 56 C 112 56, 114 44, 98 44 C 80 44, 80 46, 76 46 C 60 46, 52 48, 48 56 Z" fill="${preset.hairColor}" />`;
+    } else if (preset.hairType === 'long') {
+        hairSVG = `
+            <path d="M 46 64 C 44 40, 116 40, 114 64 L 114 125 C 114 135, 106 135, 106 125 L 106 72 C 106 72, 80 62, 54 72 L 54 125 C 54 135, 46 135, 46 125 Z" fill="${preset.hairColor}" />
+            <path d="M 48 56 C 48 38, 112 38, 112 56 Z" fill="${preset.hairColor}" />
+        `;
+    } else if (preset.hairType === 'curly') {
+        hairSVG = `
+            <path d="M 46 54 C 42 46, 52 38, 58 42 C 62 34, 74 34, 78 40 C 84 34, 96 34, 100 40 C 106 38, 116 44, 112 52 C 118 58, 116 70, 110 74 C 114 82, 108 92, 102 90 L 58 90 C 50 92, 46 82, 50 74 C 44 70, 42 58, 46 54 Z" fill="${preset.hairColor}" />
+        `;
+    } else if (preset.hairType === 'spiky') {
+        hairSVG = `
+            <path d="M 48 56 C 48 38, 112 38, 112 56 Z" fill="${preset.hairColor}" />
+            <path d="M 52 46 L 58 34 L 66 42 L 74 30 L 82 40 L 92 28 L 100 42 L 108 34 L 110 48 Z" fill="${preset.hairColor}" />
+        `;
+    } else if (preset.hairType === 'bun') {
+        hairSVG = `
+            <circle cx="80" cy="30" r="16" fill="${preset.hairColor}" />
+            <path d="M 48 56 C 48 38, 112 38, 112 56 Z" fill="${preset.hairColor}" />
+        `;
+    } else if (preset.hairType === 'bob') {
+        hairSVG = `
+            <path d="M 44 56 C 44 34, 116 34, 116 56 L 118 90 C 118 98, 112 98, 110 90 L 108 65 C 108 65, 80 54, 52 65 L 50 90 C 48 98, 42 98, 42 90 Z" fill="${preset.hairColor}" />
+        `;
+    } else if (preset.hairType === 'wavy') {
+        hairSVG = `
+            <path d="M 44 56 C 44 32, 116 32, 116 56 L 118 115 C 118 120, 112 122, 110 115 C 108 100, 104 100, 102 115 C 100 120, 94 122, 92 115 L 92 70 L 68 70 L 68 115 C 66 122, 60 120, 58 115 C 56 100, 52 100, 50 115 C 48 122, 42 120, 42 115 Z" fill="${preset.hairColor}" />
+            <path d="M 48 52 C 48 36, 112 36, 112 52 Z" fill="${preset.hairColor}" />
+        `;
     }
 
-    const earWidth = (preset.earScale || 1) * faceW * 0.06;
-    const earHeight = faceH * 0.16;
-    const earLeft = `<path d="M ${faceLeft - 4} ${cy - earHeight * 0.80}
-        C ${faceLeft - 12} ${cy - faceH * 0.08}, ${faceLeft - 12} ${cy + faceH * 0.08}, ${faceLeft - 4} ${cy + faceH * 0.14}
-        C ${faceLeft + earWidth} ${cy + faceH * 0.11}, ${faceLeft + earWidth} ${cy - faceH * 0.11}, ${faceLeft - 4} ${cy - earHeight * 0.80} Z" fill="url(#earGrad)" opacity="0.95"/>
-        <path d="M ${faceLeft - 6} ${cy - faceH * 0.02} C ${faceLeft - 8} ${cy + faceH * 0.03}, ${faceLeft - 8} ${cy + faceH * 0.06}, ${faceLeft - 3} ${cy + faceH * 0.09}" fill="none" stroke="rgba(134,94,82,0.35)" stroke-width="1.5" stroke-linecap="round"/>`;
-    const earRight = `<path d="M ${faceRight + 4} ${cy - earHeight * 0.80}
-        C ${faceRight + 12} ${cy - faceH * 0.08}, ${faceRight + 12} ${cy + faceH * 0.08}, ${faceRight + 4} ${cy + faceH * 0.14}
-        C ${faceRight - earWidth} ${cy + faceH * 0.11}, ${faceRight - earWidth} ${cy - faceH * 0.11}, ${faceRight + 4} ${cy - earHeight * 0.80} Z" fill="url(#earGrad)" opacity="0.95"/>
-        <path d="M ${faceRight + 6} ${cy - faceH * 0.02} C ${faceRight + 8} ${cy + faceH * 0.03}, ${faceRight + 8} ${cy + faceH * 0.06}, ${faceRight + 3} ${cy + faceH * 0.09}" fill="none" stroke="rgba(134,94,82,0.35)" stroke-width="1.5" stroke-linecap="round"/>`;
-
-    const beardPath = preset.beard ? `
-        <path d="M ${cx - faceW * 0.20} ${cy + faceH * 0.10}
-            C ${cx - faceW * 0.24} ${cy + faceH * 0.24}, ${cx - faceW * 0.14} ${faceBottom + 10}, ${cx} ${faceBottom + 14}
-            C ${cx + faceW * 0.14} ${faceBottom + 10}, ${cx + faceW * 0.24} ${cy + faceH * 0.24}, ${cx + faceW * 0.20} ${cy + faceH * 0.10}
-            C ${cx + faceW * 0.14} ${cy + faceH * 0.04}, ${cx - faceW * 0.14} ${cy + faceH * 0.04}, ${cx - faceW * 0.20} ${cy + faceH * 0.10} Z" fill="#35261f" opacity="0.92"/>
-        <path d="M ${cx - faceW * 0.15} ${cy + faceH * 0.18} C ${cx - faceW * 0.05} ${cy + faceH * 0.25}, ${cx + faceW * 0.05} ${cy + faceH * 0.25}, ${cx + faceW * 0.15} ${cy + faceH * 0.18}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4" stroke-linecap="round"/>
+    // Beard SVG
+    const beardSVG = preset.beard ? `
+        <path d="M 52 82 C 52 112, 108 112, 108 82 C 108 98, 52 98, 52 82 Z" fill="${preset.hairColor}" opacity="0.9" />
     ` : '';
 
-    const eyeMarkup = (side) => {
-        const x = cx + side * eyeGap;
-        const browTilt = side * (preset.hair === 'side' ? -3 : 0);
-        return `
-            <ellipse cx="${x}" cy="${eyeY}" rx="${eyeWhiteW}" ry="${eyeWhiteH}" fill="#f6efe9" />
-            <ellipse cx="${x + side * 1.5}" cy="${eyeY + 1}" rx="${irisR}" ry="${irisR * 1.05}" fill="#3b4b59" />
-            <circle cx="${x + side * 1.9}" cy="${eyeY - 0.2}" r="${pupilR}" fill="#111" />
-            <circle cx="${x + side * 1.1}" cy="${eyeY - 1.6}" r="${pupilR * 0.35}" fill="rgba(255,255,255,0.85)" />
-            <path d="M ${x - eyeWhiteW * 0.95} ${eyeY - eyeWhiteH * 0.92} C ${x - eyeWhiteW * 0.25} ${eyeY - eyeWhiteH * 1.18 + browTilt}, ${x + eyeWhiteW * 0.25} ${eyeY - eyeWhiteH * 1.12 + browTilt}, ${x + eyeWhiteW * 0.98} ${eyeY - eyeWhiteH * 0.88}" fill="none" stroke="#2c1f1a" stroke-width="${preset.browOffset < -0.055 ? 3.8 : 3.1}" stroke-linecap="round"/>
-            <path d="M ${x - eyeWhiteW * 0.92} ${eyeY + eyeWhiteH * 0.76} C ${x - eyeWhiteW * 0.28} ${eyeY + eyeWhiteH * 0.95}, ${x + eyeWhiteW * 0.28} ${eyeY + eyeWhiteH * 0.92}, ${x + eyeWhiteW * 0.92} ${eyeY + eyeWhiteH * 0.68}" fill="none" stroke="rgba(62,38,32,0.28)" stroke-width="1.4" stroke-linecap="round"/>
-        `;
-    };
-
-    const glasses = preset.glasses ? `
-        <g opacity="0.82">
-            <rect x="${cx - eyeGap - eyeWhiteW * 1.18}" y="${eyeY - eyeWhiteH * 1.15}" width="${eyeWhiteW * 2.25}" height="${eyeWhiteH * 2.25}" rx="12" fill="none" stroke="#2a2a2a" stroke-width="2.2"/>
-            <rect x="${cx + eyeGap - eyeWhiteW * 1.10}" y="${eyeY - eyeWhiteH * 1.15}" width="${eyeWhiteW * 2.25}" height="${eyeWhiteH * 2.25}" rx="12" fill="none" stroke="#2a2a2a" stroke-width="2.2"/>
-            <line x1="${cx - eyeWhiteW * 0.05}" y1="${eyeY}" x2="${cx + eyeWhiteW * 0.05}" y2="${eyeY}" stroke="#2a2a2a" stroke-width="2.1"/>
+    // Glasses SVG
+    const glassesSVG = preset.glasses ? `
+        <g opacity="0.9">
+            <circle cx="67" cy="78" r="11" fill="none" stroke="#1e293b" stroke-width="2.5" />
+            <circle cx="93" cy="78" r="11" fill="none" stroke="#1e293b" stroke-width="2.5" />
+            <line x1="78" y1="78" x2="82" y2="78" stroke="#1e293b" stroke-width="2.5" />
+            <path d="M 56 78 L 48 74" stroke="#1e293b" stroke-width="2" stroke-linecap="round" />
+            <path d="M 104 78 L 112 74" stroke="#1e293b" stroke-width="2" stroke-linecap="round" />
         </g>
     ` : '';
-
-    const nose = `
-        <path d="M ${cx - 1} ${noseTop}
-            C ${cx - 5} ${cy + faceH * 0.02}, ${cx - 8} ${cy + faceH * 0.10}, ${cx - 4} ${noseBottom - 4}
-            C ${cx - 1} ${noseBottom + 3}, ${cx + 5} ${noseBottom + 3}, ${cx + 8} ${noseBottom - 2}
-            C ${cx + 10} ${cy + faceH * 0.12}, ${cx + 5} ${cy + faceH * 0.02}, ${cx + 1} ${noseTop}" fill="none" stroke="rgba(116,86,74,0.55)" stroke-width="2" stroke-linecap="round"/>
-        <path d="M ${cx - 6} ${noseBottom - 2} C ${cx - 2} ${noseBottom + 1}, ${cx + 2} ${noseBottom + 1}, ${cx + 6} ${noseBottom - 2}" fill="none" stroke="rgba(116,86,74,0.35)" stroke-width="1.6" stroke-linecap="round"/>
-    `;
-
-    const mouthCurve = preset.mouthCurve;
-    const mouth = `
-        <path d="M ${cx - mouthW} ${mouthY}
-            C ${cx - mouthW * 0.25} ${mouthY + mouthCurve * faceH * 0.18}, ${cx + mouthW * 0.25} ${mouthY + mouthCurve * faceH * 0.18}, ${cx + mouthW} ${mouthY}" fill="none" stroke="#7a4a3a" stroke-width="2.8" stroke-linecap="round"/>
-        <path d="M ${cx - mouthW * 0.56} ${mouthY + 2} C ${cx - mouthW * 0.10} ${mouthY + 6}, ${cx + mouthW * 0.10} ${mouthY + 6}, ${cx + mouthW * 0.56} ${mouthY + 2}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.4" stroke-linecap="round"/>
-    `;
-
-    const cheekGlowLeft = `<ellipse cx="${cx - cheekWidth * 0.36}" cy="${cy + faceH * 0.08}" rx="${faceW * 0.10}" ry="${faceH * 0.08}" fill="rgba(255,182,193,0.14)"/>`;
-    const cheekGlowRight = `<ellipse cx="${cx + cheekWidth * 0.36}" cy="${cy + faceH * 0.08}" rx="${faceW * 0.10}" ry="${faceH * 0.08}" fill="rgba(255,182,193,0.14)"/>`;
-    const chinShadow = `<ellipse cx="${cx}" cy="${faceBottom - 2}" rx="${faceW * 0.20}" ry="${faceH * 0.06}" fill="rgba(104,72,59,0.12)"/>`;
-    const neck = `<path d="M ${cx - faceW * 0.10} ${faceBottom - 4} C ${cx - faceW * 0.10} ${faceBottom + 10}, ${cx - faceW * 0.12} ${faceBottom + 24}, ${cx - faceW * 0.08} ${faceBottom + 34} L ${cx + faceW * 0.08} ${faceBottom + 34} C ${cx + faceW * 0.12} ${faceBottom + 24}, ${cx + faceW * 0.10} ${faceBottom + 10}, ${cx + faceW * 0.10} ${faceBottom - 4} Z" fill="url(#neckGrad)"/>`;
-    const shoulders = `<path d="M ${cx - faceW * (preset.shoulderWidth || 0.54)} ${faceBottom + 28} C ${cx - faceW * 0.36} ${faceBottom + 16}, ${cx - faceW * 0.18} ${faceBottom + 8}, ${cx} ${faceBottom + 8} C ${cx + faceW * 0.18} ${faceBottom + 8}, ${cx + faceW * 0.36} ${faceBottom + 16}, ${cx + faceW * (preset.shoulderWidth || 0.54)} ${faceBottom + 28} L ${cx + faceW * (preset.shoulderWidth || 0.54)} ${h + 8} L ${cx - faceW * (preset.shoulderWidth || 0.54)} ${h + 8} Z" fill="${preset.shirtColor || '#cfd8e3'}" opacity="0.92"/>
-    <path d="M ${cx - faceW * 0.28} ${faceBottom + 12} C ${cx - faceW * 0.12} ${faceBottom + 6}, ${cx + faceW * 0.12} ${faceBottom + 6}, ${cx + faceW * 0.28} ${faceBottom + 12}" fill="none" stroke="rgba(255,255,255,0.24)" stroke-width="2.2" stroke-linecap="round"/>`;
-
-    const skinTone = preset.hair === 'bald' ? '#efcfbf' : skinBase;
 
     const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 160 160">
         <defs>
-            <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#f9fafb"/>
-                <stop offset="100%" stop-color="#eef2f7"/>
+            <linearGradient id="${bgId}" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="${preset.bgGrad[0]}" />
+                <stop offset="100%" stop-color="${preset.bgGrad[1]}" />
             </linearGradient>
-            <radialGradient id="skinGrad" cx="38%" cy="30%" r="72%">
-                <stop offset="0%" stop-color="${skinHighlight}"/>
-                <stop offset="55%" stop-color="${skinTone}"/>
-                <stop offset="100%" stop-color="${skinShadow}"/>
-            </radialGradient>
-            <linearGradient id="hairGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="${hairDark}"/>
-                <stop offset="100%" stop-color="${hairShadow}"/>
-            </linearGradient>
-            <linearGradient id="neckGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="${skinTone}"/>
-                <stop offset="100%" stop-color="${skinShadow}"/>
-            </linearGradient>
-            <linearGradient id="earGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="${skinHighlight}"/>
-                <stop offset="100%" stop-color="${skinShadow}"/>
-            </linearGradient>
-            <filter id="portraitShadow" x="-30%" y="-30%" width="160%" height="160%">
-                <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#1f2937" flood-opacity="0.22"/>
-            </filter>
+            <clipPath id="avatarClip">
+                <circle cx="80" cy="80" r="72" />
+            </clipPath>
         </defs>
-        <rect width="100%" height="100%" rx="18" fill="url(#bgGrad)"/>
-        <ellipse cx="${cx}" cy="${cy + faceH * 0.08}" rx="${faceW * 0.40}" ry="${faceH * 0.44}" fill="rgba(31,41,55,0.05)"/>
-        <g filter="url(#portraitShadow)">
-            ${hairPath ? `<path d="${hairPath}" fill="url(#hairGrad)"/>` : ''}
-            ${hairAccent}
-            ${earLeft}
-            ${earRight}
-            ${shoulders}
-            ${neck}
-            <path d="${facePath}" fill="url(#skinGrad)"/>
-            <path d="${facePath}" fill="none" stroke="rgba(255,255,255,0.30)" stroke-width="1.3"/>
-            ${cheekGlowLeft}
-            ${cheekGlowRight}
-            ${chinShadow}
-            ${beardPath}
-            ${eyeMarkup(-1)}
-            ${eyeMarkup(1)}
-            ${glasses}
-            ${nose}
-            ${mouth}
-            <path d="M ${faceLeft + 24} ${faceTop + 20} C ${cx - 14} ${faceTop + 2}, ${cx + 16} ${faceTop + 4}, ${faceRight - 18} ${faceTop + 22}" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="3.6" stroke-linecap="round"/>
+        
+        <!-- Background Circle -->
+        <circle cx="80" cy="80" r="72" fill="url(#${bgId})" />
+
+        <!-- Clipped Avatar Content -->
+        <g clip-path="url(#avatarClip)">
+            <!-- Neck -->
+            <rect x="74" y="102" width="12" height="22" rx="4" fill="${neckColor}" />
+
+            <!-- Shoulders / Shirt -->
+            <path d="M 38 140 C 48 118, 112 118, 122 140 L 125 160 L 35 160 Z" fill="${preset.shirtColor}" />
+            <path d="M 68 122 C 72 130, 88 130, 92 122" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" stroke-linecap="round" />
+
+            <!-- Head Base -->
+            <rect x="52" y="50" width="56" height="64" rx="28" fill="${preset.skinColor}" />
+            
+            <!-- Cheek Blush -->
+            <circle cx="63" cy="89" r="5" fill="#f43f5e" opacity="0.16" />
+            <circle cx="97" cy="89" r="5" fill="#f43f5e" opacity="0.16" />
+
+            <!-- Hair (Back/Behind) -->
+            ${preset.hairType === 'long' || preset.hairType === 'bob' || preset.hairType === 'wavy' ? hairSVG : ''}
+
+            <!-- Beard -->
+            ${beardSVG}
+
+            <!-- Eyes -->
+            <circle cx="67" cy="78" r="3.5" fill="#0f172a" />
+            <circle cx="93" cy="78" r="3.5" fill="#0f172a" />
+            <circle cx="68.2" cy="76.8" r="1" fill="#ffffff" />
+            <circle cx="94.2" cy="76.8" r="1" fill="#ffffff" />
+
+            <!-- Eyebrows -->
+            <path d="M 61 71 Q 67 68 73 71" fill="none" stroke="${browColor}" stroke-width="2" stroke-linecap="round" />
+            <path d="M 87 71 Q 93 68 99 71" fill="none" stroke="${browColor}" stroke-width="2" stroke-linecap="round" />
+
+            <!-- Nose -->
+            <path d="M 78 81 Q 80 83 79 86" fill="none" stroke="${skinShadow}" stroke-width="2.2" stroke-linecap="round" />
+
+            <!-- Mouth -->
+            <path d="M 73 93 Q 80 99 87 93" fill="none" stroke="#991b1b" stroke-width="2.5" stroke-linecap="round" />
+
+            <!-- Hair (Front/Top) -->
+            ${preset.hairType !== 'long' && preset.hairType !== 'bob' && preset.hairType !== 'wavy' ? hairSVG : ''}
+
+            <!-- Glasses -->
+            ${glassesSVG}
         </g>
+
+        <!-- Premium Inner Circle Border -->
+        <circle cx="80" cy="80" r="71" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
     </svg>`;
 
     return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+// Helper to adjust color brightness programmatically
+function adjustColorBrightness(hex, percent) {
+    let R = parseInt(hex.substring(1, 3), 16);
+    let G = parseInt(hex.substring(3, 5), 16);
+    let B = parseInt(hex.substring(5, 7), 16);
+
+    R = parseInt(R * (100 + percent) / 100);
+    G = parseInt(G * (100 + percent) / 100);
+    B = parseInt(B * (100 + percent) / 100);
+
+    R = (R < 255) ? R : 255;
+    G = (G < 255) ? G : 255;
+    B = (B < 255) ? B : 255;
+
+    R = (R > 0) ? R : 0;
+    G = (G > 0) ? G : 0;
+    B = (B > 0) ? B : 0;
+
+    const rHex = R.toString(16).padStart(2, '0');
+    const gHex = G.toString(16).padStart(2, '0');
+    const bHex = B.toString(16).padStart(2, '0');
+
+    return `#${rHex}${gHex}${bHex}`;
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
