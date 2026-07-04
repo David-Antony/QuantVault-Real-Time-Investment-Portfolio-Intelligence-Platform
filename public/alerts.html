@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantVault — Price Alerts</title>
+    <meta name="description" content="Set smart price alerts for your investments. Get notified when assets hit your target price.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .alerts h2 { margin-bottom: 1.2rem; font-size: 1.2rem; }
+        .alert-form-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; align-items: end; }
+        @media(max-width:700px) { .alert-form-row { grid-template-columns: 1fr; } }
+        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 0.5rem; font-weight: 600; }
+        .form-group input, .form-group select {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+        }
+        .btn-create-alert {
+            padding: 11px 20px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .btn-create-alert:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .alert-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            margin-bottom: 0.8rem;
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            box-shadow: 0 4px 12px rgba(15,23,42,0.03);
+            gap: 1rem;
+        }
+        .alert-item-info { flex: 1; }
+        .alert-asset-name { font-weight: 700; font-size: 1.05rem; color: #0f172a; }
+        .alert-condition {
+            font-size: 0.85rem; opacity: 0.8; margin-top: 0.3rem;
+            color: #475569;
+        }
+        .alert-condition .condition-badge {
+            padding: 3px 10px; border-radius: 20px; font-weight: 600; font-size: 0.78rem; margin-right: 6px;
+        }
+        .condition-badge.above { background: rgba(16, 185, 129, 0.15); color: #059669; }
+        .condition-badge.below { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
+        .alert-status-badge {
+            padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+        }
+        .alert-status-badge.active { background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.25); }
+        .alert-status-badge.triggered { background: rgba(245, 158, 11, 0.12); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.25); }
+        .alert-status-badge.paused { background: rgba(148, 163, 184, 0.12); color: #64748b; border: 1px solid rgba(148, 163, 184, 0.2); }
+        .alert-actions { display: flex; gap: 0.6rem; }
+        .btn-toggle, .btn-delete-alert {
+            padding: 6px 14px; border-radius: 10px; border: 1px solid rgba(148, 163, 184, 0.2);
+            cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-toggle { background: rgba(15, 23, 42, 0.05); color: #334155; }
+        .btn-toggle:hover { background: rgba(15, 23, 42, 0.09); }
+        .btn-delete-alert { background: rgba(239, 68, 68, 0.08); color: #dc2626; border-color: rgba(239, 68, 68, 0.18); }
+        .btn-delete-alert:hover { background: rgba(239, 68, 68, 0.16); }
+        .no-alerts { text-align: center; padding: 3rem; opacity: 0.5; color: #475569; }
+        .triggered-at { font-size: 0.78rem; opacity: 0.6; margin-top: 4px; color: #475569; }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <nav class="navbar">
+            <div class="nav-logo">QuantVault</div>
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <span class="hamburger"></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="portfolio.html">Portfolio Overview</a></li>
+                <li><a href="transactions.html">Transactions</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="alerts.html" class="active">Alerts</a></li>
+                <li><a href="profile.html">Profile</a></li>
+            </ul>
+        </nav>
+
+        <section class="alerts animate-on-scroll in-view">
+            <h1>🔔 Price Alerts</h1>
+            <p class="subtitle">Get notified when an asset crosses your target price threshold.</p>
+
+            <div class="alert-form-card">
+                <h2>Create New Alert</h2>
+                <div class="alert-form-row">
+                    <div class="form-group">
+                        <label for="alertAsset">Asset Name</label>
+                        <input type="text" id="alertAsset" placeholder="e.g., AAPL, Tesla">
+                    </div>
+                    <div class="form-group">
+                        <label for="alertCondition">Condition</label>
+                        <select id="alertCondition">
+                            <option value="above">📈 Rises Above</option>
+                            <option value="below">📉 Falls Below</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="alertPrice">Target Price ($)</label>
+                        <input type="number" id="alertPrice" placeholder="e.g., 150.00" step="0.01" min="0.01">
+                    </div>
+                    <div class="form-group">
+                        <button id="createAlertBtn" class="btn-create-alert" onclick="createAlert()">+ Create Alert</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alerts-list-card">
+                <h2>Your Alerts <span id="alertCount" style="font-size:0.85rem;opacity:0.55;font-weight:400;"></span></h2>
+                <div id="alertsList">
+                    <div class="no-alerts">Loading alerts...</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-copy">
+                <span>© 2026 QuantVault</span>
+                <span>All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+    <script src="js/api/apiClient.js"></script>
+    <script src="js/api/authApi.js"></script>
+    <script src="js/api/portfolioApi.js"></script>
+    <script src="js/data-models.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        let alertsData = [];
+
+        async function loadAlerts() {
+            try {
+                const token = localStorage.getItem('accessToken');
+                const res = await fetch('/api/alerts', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (data.success) {
+                    alertsData = data.data;
+                    renderAlerts();
+                }
+            } catch (err) {
+                document.getElementById('alertsList').innerHTML = '<div class="no-alerts">Failed to load alerts.</div>';
+            }
+        }
+
+        function renderAlerts() {
+            const container = document.getElementById('alertsList');
+            const countEl = document.getElementById('alertCount');
+            countEl.textContent = `(${alertsData.length})`;
+
+            if (alertsData.length === 0) {
+                container.innerHTML = '<div class="no-alerts">No alerts yet. Create one above to get started.</div>';
+                return;
+            }
+
+            container.innerHTML = alertsData.map(alert => {
+                const status = alert.triggeredAt ? 'triggered' : (alert.isActive ? 'active' : 'paused');
+                const statusLabel = alert.triggeredAt ? '✅ Triggered' : (alert.isActive ? '🟢 Active' : '⏸ Paused');
+                const triggeredText = alert.triggeredAt
+                    ? `<div class="triggered-at">Triggered: ${new Date(alert.triggeredAt).toLocaleString()}</div>` : '';
+                return `
+                <div class="alert-item">
+                    <div class="alert-item-info">
+                        <div class="alert-asset-name">${alert.assetName}</div>
+                        <div class="alert-condition">
+                            <span class="condition-badge ${alert.condition}">${alert.condition === 'above' ? '📈 Above' : '📉 Below'}</span>
+                            $${Number(alert.targetPrice).toFixed(2)}
+                        </div>
+                        ${triggeredText}
+                    </div>
+                    <span class="alert-status-badge ${status}">${statusLabel}</span>
+                    <div class="alert-actions">
+                        ${!alert.triggeredAt ? `<button class="btn-toggle" onclick="toggleAlert(${alert.id})">${alert.isActive ? 'Pause' : 'Resume'}</button>` : ''}
+                        <button class="btn-delete-alert" onclick="deleteAlert(${alert.id})">Delete</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function createAlert() {
+            const assetName = document.getElementById('alertAsset').value.trim();
+            const condition = document.getElementById('alertCondition').value;
+            const targetPrice = parseFloat(document.getElementById('alertPrice').value);
+
+            if (!assetName || isNaN(targetPrice) || targetPrice <= 0) {
+                showNotification('Please fill in all fields correctly', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('createAlertBtn');
+            btn.disabled = true; btn.textContent = 'Creating...';
+
+            try {
+                const token = localStorage.getItem('accessToken');
+                const res = await fetch('/api/alerts', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ assetName, condition, targetPrice })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                    document.getElementById('alertAsset').value = '';
+                    document.getElementById('alertPrice').value = '';
+                    loadAlerts();
+                } else {
+                    showNotification(data.message || 'Failed to create alert', 'error');
+                }
+            } catch {
+                showNotification('Network error', 'error');
+            } finally {
+                btn.disabled = false; btn.textContent = '+ Create Alert';
+            }
+        }
+
+        async function toggleAlert(id) {
+            try {
+                const token = localStorage.getItem('accessToken');
+                const res = await fetch(`/api/alerts/${id}/toggle`, {
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (data.success) { loadAlerts(); showNotification(data.message, 'success'); }
+            } catch { showNotification('Failed to update alert', 'error'); }
+        }
+
+        async function deleteAlert(id) {
+            if (!confirm('Delete this alert?')) return;
+            try {
+                const token = localStorage.getItem('accessToken');
+                const res = await fetch(`/api/alerts/${id}`, {
+                    method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                if (data.success) { loadAlerts(); showNotification('Alert deleted', 'success'); }
+            } catch { showNotification('Failed to delete alert', 'error'); }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAlerts);
+    </script>
+</body>
+</html>
