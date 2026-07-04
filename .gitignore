@@ -63,3 +63,11 @@ docker-compose.override.yml
 
 # Test artifacts
 test-results/
+
+# ─── MCP / AI Tool Configs (NEVER commit these — contain API keys) ───────────
+.mcp.json
+.mcp-local.json
+mcp-config.json
+*.mcp.json
+.agents/secrets/
+.cursor/mcp.json
