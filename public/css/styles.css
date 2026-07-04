@@ -2237,7 +2237,8 @@ body:not(.signup-page) .feature-icon {
 body:not(.signup-page) .transactions,
 body:not(.signup-page) .portfolio-overview,
 body:not(.signup-page) .reports,
-body:not(.signup-page) .profile.profile-pro {
+body:not(.signup-page) .profile.profile-pro,
+body:not(.signup-page) .alerts {
     width: min(1200px, calc(100% - 32px));
     margin: 0 auto 28px;
     padding: clamp(22px, 3vw, 36px);
@@ -2266,7 +2267,8 @@ body:not(.signup-page) .transaction-list table {
 body:not(.signup-page) .transactions h1,
 body:not(.signup-page) .portfolio-overview h1,
 body:not(.signup-page) .reports h1,
-body:not(.signup-page) .profile.profile-pro h1 {
+body:not(.signup-page) .profile.profile-pro h1,
+body:not(.signup-page) .alerts h1 {
     color: #0f172a;
     text-shadow: none;
     background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 55%, #14b8a6 100%);
@@ -2278,7 +2280,8 @@ body:not(.signup-page) .profile.profile-pro h1 {
 body:not(.signup-page) .transactions p,
 body:not(.signup-page) .portfolio-overview p,
 body:not(.signup-page) .reports p,
-body:not(.signup-page) .profile.profile-pro p {
+body:not(.signup-page) .profile.profile-pro p,
+body:not(.signup-page) .alerts p {
     color: #475569;
     text-shadow: none;
 }
@@ -2292,7 +2295,9 @@ body:not(.signup-page) .summary-item,
 body:not(.signup-page) .metric,
 body:not(.signup-page) .asset-allocation,
 body:not(.signup-page) .profile-card,
-body:not(.signup-page) .profile-header-card {
+body:not(.signup-page) .profile-header-card,
+body:not(.signup-page) .alert-form-card,
+body:not(.signup-page) .alerts-list-card {
     background: rgba(255, 255, 255, 0.82);
     border: 1px solid rgba(148, 163, 184, 0.16);
     border-radius: 24px;
@@ -3042,40 +3047,42 @@ body:not(.signup-page) .footer-bottom { display: none; }
 
 .avatar-grid {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 12px;
 }
 
 .avatar-option {
-    border: 1px solid rgba(148,163,184,0.42);
-    border-radius: 18px;
-    padding: 8px;
-    background: linear-gradient(180deg, #ffffff 0%, #f3f7fb 100%);
-    box-shadow: 0 10px 26px rgba(15,23,42,0.08);
+    border: 2px solid transparent;
+    border-radius: 50%;
+    padding: 0;
+    background: transparent;
+    box-shadow: 0 4px 10px rgba(15,23,42,0.06);
     cursor: pointer;
     overflow: hidden;
     transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .avatar-option img {
     width: 100%;
+    height: 100%;
     aspect-ratio: 1 / 1;
     display: block;
-    border-radius: 14px;
-    background: linear-gradient(180deg, #f8fafc 0%, #eaf0f7 100%);
+    border-radius: 50%;
     object-fit: cover;
-    object-position: center 28%;
 }
 
 .avatar-option.selected {
-    border-color: #2563eb;
-    box-shadow: 0 14px 30px rgba(37,99,235,0.18), 0 0 0 3px rgba(37,99,235,0.16);
+    border-color: #4F46E5;
+    box-shadow: 0 8px 20px rgba(79,70,229,0.25), 0 0 0 3px rgba(79,70,229,0.18);
 }
 
 .avatar-option:hover {
     transform: translateY(-2px);
-    border-color: rgba(37,99,235,0.45);
-    box-shadow: 0 16px 34px rgba(15,23,42,0.12);
+    border-color: rgba(79,70,229,0.5);
+    box-shadow: 0 10px 22px rgba(15,23,42,0.1);
 }
 
 body:not(.signup-page) #profileAvatarPreview {
