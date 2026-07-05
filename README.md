@@ -1,4 +1,4 @@
-# QuantVault — Real-Time Investment Portfolio Intelligence Platform
+# QuantVault — Real-Time Investment Portfolio Intelligence Platform 🚀
 
 A production-grade full-stack investment portfolio platform with **WebSocket real-time price feeds**, JWT authentication, smart price alert engine, advanced financial analytics, audit logging, PostgreSQL persistence, and Docker support.
 
