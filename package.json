@@ -1,7 +1,7 @@
 {
-  "name": "portfolio-management-system",
-  "version": "2.0.0",
-  "description": "Production-grade portfolio management system with PostgreSQL, JWT auth, and RESTful API",
+  "name": "quantvault",
+  "version": "2.0.1",
+  "description": "QuantVault — Production-grade portfolio management system with PostgreSQL, JWT auth, and RESTful API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
