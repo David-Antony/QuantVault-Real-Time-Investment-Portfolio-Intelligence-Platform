@@ -4,95 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuantVault — Your Profile</title>
+    <meta name="description" content="Manage your QuantVault account, display name, avatar, and view recent activity.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="main-content">
-        <nav class="navbar">
-            <div class="nav-logo">QuantVault</div>
-            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-                <span class="hamburger"></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="portfolio.html">Portfolio Overview</a></li>
-                <li><a href="transactions.html">Transactions</a></li>
-                <li><a href="reports.html">Reports</a></li>
-                <li><a href="alerts.html">Alerts</a></li>
-                <li><a href="profile.html" class="active">Profile</a></li>
-            </ul>
-        </nav>
 
-        <section class="profile profile-pro">
-            <div class="profile-header-card">
-                <div class="profile-avatar-wrap">
-                    <img id="profileAvatarPreview" class="profile-avatar-preview" src="https://api.dicebear.com/9.x/adventurer/svg?seed=Nova" alt="Profile avatar">
-                </div>
-                <div class="profile-header-text">
-                    <h1>Your Profile</h1>
-                    <p class="profile-tagline">Manage your account, identity, and visual preferences.</p>
-                </div>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <div class="app-shell">
+        <!-- ── SIDEBAR ─────────────────────────────────── -->
+        <aside class="sidebar" id="appSidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-mark">QV</div>
+                <span class="sidebar-logo-text">QuantVault</span>
             </div>
 
-            <div class="profile-grid">
-                <section class="profile-card account-card">
-                    <h2>Account Details</h2>
-                    <label for="profileNameInput">Display Name</label>
-                    <input id="profileNameInput" type="text" placeholder="Enter display name">
+            <nav class="sidebar-nav" aria-label="Main navigation">
+                <span class="sidebar-section-label">Platform</span>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">🏠</span> Home
+                </a>
+                <a href="portfolio.html" class="nav-item">
+                    <span class="nav-icon">💼</span> Portfolio
+                </a>
+                <a href="transactions.html" class="nav-item">
+                    <span class="nav-icon">💰</span> Transactions
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <span class="nav-icon">📈</span> Reports
+                </a>
+                <a href="alerts.html" class="nav-item">
+                    <span class="nav-icon">🔔</span> Alerts
+                </a>
 
-                    <div class="profile-data-row">
-                        <span>Email</span>
-                        <strong id="profileEmailValue">-</strong>
+                <div class="sidebar-divider"></div>
+
+                <span class="sidebar-section-label">Account</span>
+                <a href="profile.html" class="nav-item active">
+                    <span class="nav-icon">👤</span> Profile
+                </a>
+                <a href="#" class="nav-item" onclick="logout(); return false;">
+                    <span class="nav-icon">🚪</span> Logout
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Nova" alt="Avatar" class="sidebar-avatar" id="sidebarAvatar">
+                    <div class="sidebar-user-info">
+                        <div class="sidebar-username" id="sidebarUsername">Loading...</div>
+                        <div class="sidebar-user-role">Investor</div>
                     </div>
-                    <div class="profile-data-row">
-                        <span>Member Since</span>
-                        <strong id="profileCreatedValue">-</strong>
-                    </div>
-                    <div class="profile-data-row">
-                        <span>Last Login</span>
-                        <strong id="profileLastLoginValue">-</strong>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ── MAIN AREA ──────────────────────────────── -->
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="topbar-menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+                    <span class="page-title">Profile</span>
+                </div>
+            </header>
+
+            <main class="page-content">
+                <section class="profile profile-pro">
+                    <!-- Profile Header Card -->
+                    <div class="profile-header-card">
+                        <div class="profile-avatar-wrap">
+                            <img id="profileAvatarPreview" class="profile-avatar-preview" src="https://api.dicebear.com/9.x/adventurer/svg?seed=Nova" alt="Profile avatar">
+                        </div>
+                        <div class="profile-header-text">
+                            <h1>Your Profile</h1>
+                            <p class="profile-tagline">Manage your account, identity, and visual preferences.</p>
+                        </div>
                     </div>
 
-                    <div class="profile-actions">
-                        <button id="saveProfileBtn" class="action-btn save-profile-btn" type="button">Save Profile</button>
-                        <button onclick="logout()" class="action-btn clear-btn" type="button">Logout</button>
+                    <!-- Profile Grid -->
+                    <div class="profile-grid">
+                        <!-- Account Details -->
+                        <section class="profile-card account-card">
+                            <h2>Account Details</h2>
+
+                            <div class="form-group" style="margin-bottom: 1.2rem;">
+                                <label for="profileNameInput">Display Name</label>
+                                <input id="profileNameInput" type="text" placeholder="Enter display name">
+                            </div>
+
+                            <div class="profile-data-row">
+                                <span>Email</span>
+                                <strong id="profileEmailValue">—</strong>
+                            </div>
+                            <div class="profile-data-row">
+                                <span>Member Since</span>
+                                <strong id="profileCreatedValue">—</strong>
+                            </div>
+                            <div class="profile-data-row">
+                                <span>Last Login</span>
+                                <strong id="profileLastLoginValue">—</strong>
+                            </div>
+
+                            <div class="profile-actions">
+                                <button id="saveProfileBtn" class="action-btn save-profile-btn" type="button">
+                                    💾 Save Profile
+                                </button>
+                                <button onclick="logout()" class="btn-danger" type="button">
+                                    🚪 Logout
+                                </button>
+                            </div>
+                        </section>
+
+                        <!-- Avatar Picker -->
+                        <section class="profile-card avatar-card">
+                            <h2>Choose Your Avatar</h2>
+                            <p class="avatar-help">Select one from 12 unique avatar styles.</p>
+                            <div id="avatarGrid" class="avatar-grid"></div>
+                        </section>
                     </div>
+
+                    <!-- Activity Log -->
+                    <section class="profile-card" style="margin-top: 0;">
+                        <h2>Recent Activity</h2>
+                        <div id="activityLog" style="font-size:0.85rem;">
+                            <div style="text-align:center;padding:1.5rem;color:var(--text-muted);">Loading activity...</div>
+                        </div>
+                    </section>
                 </section>
-
-                <section class="profile-card avatar-card">
-                    <h2>Choose Your Avatar</h2>
-                    <p class="avatar-help">Select one from 12 neutral face-only avatar styles.</p>
-                    <div id="avatarGrid" class="avatar-grid"></div>
-                </section>
-            </div>
-
-            <!-- Activity Log -->
-            <section class="profile-card" style="margin-top:1.5rem;">
-                <h2>Recent Activity</h2>
-                <div id="activityLog" style="font-size:0.85rem;opacity:0.8;">
-                    <div style="text-align:center;padding:1rem;opacity:0.5;">Loading activity...</div>
-                </div>
-            </section>
-        </section>
-    </div>
-
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-copy">
-                <span>© 2026 QuantVault</span>
-                <span>All rights reserved.</span>
-            </div>
-            <div class="footer-newsletter">
-                <form id="newsletterForm">
-                    <input type="email" placeholder="Your email" aria-label="Email for newsletter">
-                    <button type="submit">Subscribe</button>
-                </form>
-            </div>
+            </main>
         </div>
-    </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
     <script src="js/api/apiClient.js"></script>
@@ -102,6 +146,32 @@
     <script src="js/auth.js"></script>
     <script src="js/script.js"></script>
     <script>
+        // ── Sidebar mobile toggle ─────────────────────────
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('appSidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
+
+        menuBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            backdrop.classList.toggle('visible');
+        });
+        backdrop?.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            backdrop.classList.remove('visible');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const nameEl = document.getElementById('sidebarUsername');
+                    if (nameEl && payload.username) nameEl.textContent = payload.username;
+                } catch(e) {}
+            }
+        });
+
+        // ── Activity Log ──────────────────────────────────
         const ACTION_ICONS = {
             LOGIN: '🔑', LOGOUT: '🚪', REGISTER: '✨',
             TRANSACTION_BUY: '📈', TRANSACTION_SELL: '📉',
@@ -116,7 +186,7 @@
                 const data = await res.json();
                 const container = document.getElementById('activityLog');
                 if (!data.success || data.data.length === 0) {
-                    container.innerHTML = '<div style="text-align:center;padding:1rem;opacity:0.5;">No activity recorded yet.</div>';
+                    container.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--text-muted);">No activity recorded yet.</div>';
                     return;
                 }
                 container.innerHTML = data.data.slice(0, 20).map(log => {
@@ -124,18 +194,18 @@
                     const label = log.action.replace(/_/g, ' ');
                     const when = new Date(log.createdAt).toLocaleString();
                     const meta = log.metadata && Object.keys(log.metadata).length > 0
-                        ? `<span style="opacity:0.55;margin-left:6px;">(${Object.values(log.metadata).filter(v => typeof v === 'string' || typeof v === 'number').slice(0,2).join(', ')})</span>`
+                        ? `<span style="color:var(--text-muted);margin-left:6px;">(${Object.values(log.metadata).filter(v => typeof v === 'string' || typeof v === 'number').slice(0,2).join(', ')})</span>`
                         : '';
-                    return `<div style="display:flex;align-items:center;gap:10px;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-                        <span style="font-size:1.2rem;">${icon}</span>
-                        <div style="flex:1;">
-                            <div style="font-weight:600;">${label}${meta}</div>
-                            <div style="font-size:0.75rem;opacity:0.5;">${when}${log.ip ? ' · ' + log.ip : ''}</div>
+                    return `<div style="display:flex;align-items:center;gap:12px;padding:0.7rem 0;border-bottom:1px solid var(--border-subtle);">
+                        <span style="font-size:1.2rem;flex-shrink:0;">${icon}</span>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-weight:600;color:var(--text-primary);font-size:0.875rem;">${label}${meta}</div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">${when}${log.ip ? ' · ' + log.ip : ''}</div>
                         </div>
                     </div>`;
                 }).join('');
             } catch {
-                document.getElementById('activityLog').innerHTML = '<div style="text-align:center;opacity:0.5;">Could not load activity.</div>';
+                document.getElementById('activityLog').innerHTML = '<div style="text-align:center;color:var(--text-muted);">Could not load activity.</div>';
             }
         }
 
