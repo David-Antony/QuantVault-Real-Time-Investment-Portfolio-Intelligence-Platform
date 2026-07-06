@@ -4,74 +4,146 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuantVault — Real-Time Investment Portfolio Intelligence Platform</title>
+    <meta name="description" content="QuantVault is your real-time investment intelligence platform. Track, analyse, and be alerted the moment markets move.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
-    <div class="main-content">
-        <nav class="navbar">
-            <div class="nav-logo">QuantVault</div>
-            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-                <span class="hamburger"></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="portfolio.html">Portfolio Overview</a></li>
-                <li><a href="transactions.html">Transactions</a></li>
-                <li><a href="reports.html">Reports</a></li>
-                <li><a href="alerts.html">Alerts</a></li>
-                <li><a href="profile.html">Profile</a></li>
-            </ul>
-        </nav>
+<body class="landing-page">
 
-        <section class="hero">
-            <h1>Welcome to QuantVault</h1>
-            <p>Real-time investment intelligence — track, analyse, and be alerted the moment markets move.</p>
-            <button onclick="window.location.href='portfolio.html'">View Portfolio</button>
-            
-            <div class="features">
-                <h2>Key Features</h2>
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">📈</div>
-                        <h3>Live Price Feeds</h3>
-                        <p>WebSocket-powered real-time price ticks update your portfolio value every 8 seconds.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🔔</div>
-                        <h3>Smart Price Alerts</h3>
-                        <p>Set target price triggers — get notified the moment an asset crosses your threshold.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📊</div>
-                        <h3>Advanced Analytics</h3>
-                        <p>Sharpe ratio, volatility, max drawdown, win rate, and diversification score.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🔒</div>
-                        <h3>Secure & Private</h3>
-                        <p>JWT refresh rotation, bcrypt hashing, httpOnly cookies, rate limiting.</p>
-                    </div>
-                </div>
+    <!-- ── NAVBAR ─────────────────────────────────────────── -->
+    <nav class="navbar" id="mainNavbar">
+        <div class="nav-logo">QuantVault</div>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span class="hamburger"></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="transactions.html">Transactions</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="alerts.html">Alerts</a></li>
+        </ul>
+        <div class="nav-cta-group">
+            <a href="login.html" class="btn-secondary" style="border-radius: 10px; padding: 8px 18px; font-size: 0.875rem;">Login</a>
+            <a href="signup.html" class="btn" style="border-radius: 10px; padding: 8px 18px; font-size: 0.875rem;">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- ── HERO ───────────────────────────────────────────── -->
+    <section class="hero">
+        <div class="hero-eyebrow">
+            <span class="live-dot"></span>
+            Real-Time Market Intelligence
+        </div>
+
+        <h1>
+            Your Portfolio,<br>
+            <span class="gradient-text">Intelligently Tracked</span>
+        </h1>
+
+        <p class="hero-desc">
+            WebSocket-powered real-time prices, smart price alerts, and institutional-grade analytics — all in one elegant platform built for serious investors.
+        </p>
+
+        <div class="hero-actions">
+            <a href="portfolio.html" class="btn" style="padding: 14px 32px; font-size: 1rem; border-radius: 14px;">
+                View Portfolio
+            </a>
+            <a href="signup.html" class="btn-secondary" style="padding: 14px 32px; font-size: 1rem; border-radius: 14px;">
+                Create Account
+            </a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <span class="hero-stat-value count-up" data-target="2400000" data-prefix="$" data-suffix="M+">$2.4M+</span>
+                <span class="hero-stat-label">Assets Tracked</span>
             </div>
-        </section>
-    
-    </div> <!-- Close main-content -->
+            <div class="hero-stat-sep"></div>
+            <div class="hero-stat">
+                <span class="hero-stat-value count-up" data-target="8" data-suffix="s">8s</span>
+                <span class="hero-stat-label">Price Refresh Rate</span>
+            </div>
+            <div class="hero-stat-sep"></div>
+            <div class="hero-stat">
+                <span class="hero-stat-value count-up" data-target="99.9" data-suffix="%">99.9%</span>
+                <span class="hero-stat-label">Uptime SLA</span>
+            </div>
+        </div>
+    </section>
 
+    <!-- ── FEATURES SECTION ───────────────────────────────── -->
+    <section class="features">
+        <div class="section-eyebrow">Platform Capabilities</div>
+        <h2 class="section-title">Everything You Need<br>to <span class="gradient-text">Invest Smarter</span></h2>
+        <p class="section-desc">
+            From live WebSocket price feeds to advanced risk analytics — QuantVault gives you the tools that professional traders rely on.
+        </p>
+
+        <div class="feature-grid">
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">📈</div>
+                <h3>Live Price Feeds</h3>
+                <p>WebSocket-powered real-time price ticks update your entire portfolio value every 8 seconds — no manual refresh required.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🔔</div>
+                <h3>Smart Price Alerts</h3>
+                <p>Set target price triggers on any asset. Get instantly notified the moment a stock or crypto crosses your threshold.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">📊</div>
+                <h3>Advanced Analytics</h3>
+                <p>Sharpe ratio, volatility, max drawdown, win rate, diversification score — institutional-grade metrics at your fingertips.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure &amp; Private</h3>
+                <p>JWT refresh rotation, bcrypt hashing, httpOnly cookies, and rate limiting. Your financial data stays yours.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── STATS BAR ──────────────────────────────────────── -->
+    <div class="stats-bar">
+        <div class="stats-bar-inner">
+            <div class="stat-item animate-on-scroll">
+                <span class="stat-value gradient-text">WebSocket</span>
+                <span class="stat-label">Real-Time Engine</span>
+            </div>
+            <div class="stat-item animate-on-scroll">
+                <span class="stat-value">5+</span>
+                <span class="stat-label">Analytics Metrics</span>
+            </div>
+            <div class="stat-item animate-on-scroll">
+                <span class="stat-value gradient-text">End-to-End</span>
+                <span class="stat-label">Encrypted</span>
+            </div>
+            <div class="stat-item animate-on-scroll">
+                <span class="stat-value">24/7</span>
+                <span class="stat-label">Market Monitoring</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── FOOTER ─────────────────────────────────────────── -->
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-copy">
-                <span>© 2026 QuantVault</span>
-                <span>All rights reserved.</span>
+                <span class="footer-brand">QuantVault</span>
+                <span class="footer-copy-text">© 2026 QuantVault · All rights reserved.</span>
             </div>
             <div class="footer-newsletter">
                 <form id="newsletterForm">
-                    <input type="email" placeholder="Your email" aria-label="Email for newsletter">
+                    <input type="email" placeholder="Your email address" aria-label="Email for newsletter">
                     <button type="submit">Subscribe</button>
                 </form>
             </div>
+        </div>
+        <div class="footer-bottom">
+            Built with precision for serious investors. Real-time data, secure infrastructure, elegant design.
         </div>
     </footer>
 
@@ -83,5 +155,33 @@
     <script src="js/data-models.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/script.js"></script>
+    <script>
+        // ── Navbar scroll glass effect ────────────────────
+        const navbar = document.getElementById('mainNavbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 40);
+        }, { passive: true });
+
+        // ── Mobile nav toggle ─────────────────────────────
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        navToggle?.addEventListener('click', () => {
+            const isOpen = navLinks.classList.toggle('open');
+            navToggle.setAttribute('aria-expanded', isOpen);
+        });
+
+        // ── Scroll-triggered animations ───────────────────
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.transitionDelay = (i * 80) + 'ms';
+                    entry.target.classList.add('in-view');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    </script>
 </body>
 </html>
