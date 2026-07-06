@@ -55,19 +55,28 @@ class PageGuard {
   static init() {
     document.addEventListener('DOMContentLoaded', function () {
       const path = window.location.pathname;
-      const currentPage = path.split('/').pop();
+      const currentPage = path.split('/').pop(); // e.g. 'portfolio.html' or ''
 
-      if (currentPage === 'login.html' || currentPage === 'signup.html') {
+      // Pages accessible without authentication
+      const publicPages = ['login.html', 'signup.html'];
+
+      // If on a public (auth) page and already logged in → go to portfolio dashboard
+      if (publicPages.includes(currentPage)) {
         if (AuthApi.isLoggedIn()) {
-          window.location.href = 'index.html';
+          window.location.href = 'portfolio.html';
         }
+        return; // No further checks needed for public pages
+      }
+
+      // Every other page requires authentication.
+      // This covers: index.html, portfolio.html, transactions.html,
+      //              reports.html, alerts.html, profile.html, and '' (root).
+      if (!AuthApi.isLoggedIn()) {
+        window.location.href = 'login.html';
         return;
       }
 
-      if (!AuthApi.isLoggedIn() && currentPage !== 'index.html' && currentPage !== '') {
-        window.location.href = 'login.html';
-      }
-
+      // Logged in — populate any shared UI elements
       if (AuthApi.isLoggedIn()) {
         PageGuard.updateUIForLoggedInUser();
       }
@@ -92,3 +101,8 @@ PageGuard.init();
 
 window.AuthManager = AuthManager;
 window.PageGuard = PageGuard;
+
+// ── Global logout shorthand (used in sidebar onclick="logout()") ──────────
+window.logout = function () {
+  AuthApi.logout(); // clears localStorage + redirects to /login.html
+};

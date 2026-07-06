@@ -69,18 +69,29 @@ app.get('*', (req, res) => {
     return res.status(404).json({ success: false, message: 'API endpoint not found' });
   }
 
-  const validPages = [
-    'index.html', 'login.html', 'signup.html',
-    'portfolio.html', 'transactions.html',
+  // Pages that do NOT require authentication (public)
+  const publicPages = ['login.html', 'signup.html'];
+
+  // All authenticated pages
+  const protectedPages = [
+    'index.html', 'portfolio.html', 'transactions.html',
     'reports.html', 'profile.html', 'alerts.html'
   ];
 
   const requestedPage = req.path.replace(/^\//, '');
-  if (validPages.includes(requestedPage) || requestedPage === '') {
-    return res.sendFile(path.join(__dirname, '..', 'public', requestedPage || 'index.html'));
+
+  // Serve public pages directly
+  if (publicPages.includes(requestedPage)) {
+    return res.sendFile(path.join(__dirname, '..', 'public', requestedPage));
   }
 
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  // Serve protected pages (client-side auth guard in auth.js will redirect if not logged in)
+  if (protectedPages.includes(requestedPage)) {
+    return res.sendFile(path.join(__dirname, '..', 'public', requestedPage));
+  }
+
+  // Root '/' and any unknown path → redirect to login
+  res.redirect('/login.html');
 });
 
 app.use(errorHandler);
