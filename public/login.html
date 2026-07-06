@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Management System - Login</title>
+    <title>QuantVault — Login</title>
+    <meta name="description" content="Log in to QuantVault to access your real-time investment portfolio intelligence dashboard.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="signup-page">
+
+    <!-- Animated Market Orb Background -->
     <div class="market-orb ticker-crystal" aria-hidden="true">
         <div class="market-orb__scene">
             <span class="market-orb__ring market-orb__ring--outer"></span>
@@ -23,45 +26,50 @@
             <div class="market-orb__signal" aria-hidden="true"></div>
         </div>
     </div>
+
     <main class="signup-shell">
+        <!-- Left: Brand Hero Panel -->
         <section class="signup-hero">
             <div class="signup-hero-content">
                 <div class="signup-brand">
-                    <div class="signup-brand-mark">PM</div>
-                    <span>Portfolio Manager</span>
+                    <div class="signup-brand-mark">QV</div>
+                    <span>QuantVault</span>
                 </div>
-                <h1>Welcome back</h1>
+                <h1>Welcome<br>back.</h1>
                 <p>
-                    Log in to continue managing your portfolio, review reports, and keep your account in sync.
+                    Log in to continue managing your portfolio, review real-time analytics, and stay ahead of the markets.
                 </p>
 
                 <div class="signup-benefits">
                     <div class="signup-benefit">
-                        <strong>Fast access</strong>
-                        <span>Jump straight into your dashboards and data.</span>
+                        <strong>⚡ Instant Access</strong>
+                        <span>Jump straight into your live portfolio dashboard.</span>
                     </div>
                     <div class="signup-benefit">
-                        <strong>Account continuity</strong>
-                        <span>Your saved transactions and profile stay linked.</span>
+                        <strong>📊 Real-Time Data</strong>
+                        <span>WebSocket price feeds update every 8 seconds.</span>
                     </div>
                     <div class="signup-benefit">
-                        <strong>Secure session</strong>
-                        <span>Resume where you left off with a valid session.</span>
+                        <strong>🔒 Secure Session</strong>
+                        <span>JWT rotation & httpOnly cookies keep you safe.</span>
                     </div>
                     <div class="signup-benefit">
-                        <strong>Modern UI</strong>
-                        <span>Continue in the same polished interface.</span>
+                        <strong>🔔 Smart Alerts</strong>
+                        <span>Your price alerts are waiting — don't miss a move.</span>
                     </div>
                 </div>
             </div>
             <div class="signup-hero-footer">
-                Built for returning users who need a clean, direct login.
+                QuantVault — Real-Time Investment Intelligence Platform · © 2026
             </div>
         </section>
 
+        <!-- Right: Login Form -->
         <section class="signup-card" aria-labelledby="loginTitle">
-            <h2 id="loginTitle">Login</h2>
-            <p>Enter your credentials to continue.</p>
+            <div>
+                <h2 id="loginTitle">Sign In</h2>
+                <p>Enter your credentials to access your dashboard.</p>
+            </div>
 
             <div id="errorMessage" class="error-message"></div>
             <div id="successMessage" class="success-message"></div>
@@ -69,19 +77,21 @@
             <form id="loginForm" novalidate>
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
                 </div>
 
-                <button type="submit" class="submit-btn primary">Login</button>
+                <button type="submit" class="btn w-full" style="padding: 13px 24px; font-size: 1rem; border-radius: 12px; margin-top: 4px;">
+                    Sign In to QuantVault
+                </button>
             </form>
 
             <div class="login-link">
-                New here? <a href="signup.html" id="signupLink">Create an account</a>
+                New to QuantVault? <a href="signup.html" id="signupLink">Create a free account</a>
             </div>
         </section>
     </main>

@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Management System - Sign Up</title>
+    <title>QuantVault — Create Account</title>
+    <meta name="description" content="Create your QuantVault account and start tracking your investments with real-time intelligence.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="signup-page">
+
+    <!-- Animated Market Orb Background -->
     <div class="market-orb ticker-crystal" aria-hidden="true">
         <div class="market-orb__scene">
             <span class="market-orb__ring market-orb__ring--outer"></span>
@@ -23,46 +26,50 @@
             <div class="market-orb__signal" aria-hidden="true"></div>
         </div>
     </div>
+
     <main class="signup-shell">
+        <!-- Left: Brand Hero Panel -->
         <section class="signup-hero">
             <div class="signup-hero-content">
                 <div class="signup-brand">
-                    <div class="signup-brand-mark">PM</div>
-                    <span>Portfolio Manager</span>
+                    <div class="signup-brand-mark">QV</div>
+                    <span>QuantVault</span>
                 </div>
-                <h1>Create a professional investing workspace</h1>
+                <h1>Start investing<br>intelligently.</h1>
                 <p>
-                    Track transactions, understand portfolio growth, and manage your account with a clean,
-                    modern interface built for clarity.
+                    Create your QuantVault workspace and access real-time analytics, smart alerts, and advanced portfolio tracking from day one.
                 </p>
 
                 <div class="signup-benefits">
                     <div class="signup-benefit">
-                        <strong>Clear analytics</strong>
-                        <span>See your portfolio values and performance at a glance.</span>
+                        <strong>📈 Live Portfolio Tracking</strong>
+                        <span>Watch your total value update in real-time as markets move.</span>
                     </div>
                     <div class="signup-benefit">
-                        <strong>Secure profile</strong>
-                        <span>Keep your account details and avatar linked to your profile.</span>
+                        <strong>🔔 Price Alert Engine</strong>
+                        <span>Set threshold alerts on any asset — never miss a move.</span>
                     </div>
                     <div class="signup-benefit">
-                        <strong>Fast workflows</strong>
-                        <span>Add, review, and organize transactions without clutter.</span>
+                        <strong>📊 Advanced Analytics</strong>
+                        <span>Sharpe ratio, volatility, drawdown, and win rate metrics.</span>
                     </div>
                     <div class="signup-benefit">
-                        <strong>Consistent design</strong>
-                        <span>Enjoy the same polished UI across every page.</span>
+                        <strong>🔒 Secured by Design</strong>
+                        <span>JWT rotation, bcrypt, httpOnly cookies, rate limiting.</span>
                     </div>
                 </div>
             </div>
             <div class="signup-hero-footer">
-                Built for investors who want structure, speed, and visual polish.
+                QuantVault — Real-Time Investment Intelligence Platform · © 2026
             </div>
         </section>
 
+        <!-- Right: Signup Form -->
         <section class="signup-card" aria-labelledby="signupTitle">
-            <h2 id="signupTitle">Create Account</h2>
-            <p>Sign up to start managing your investment portfolio.</p>
+            <div>
+                <h2 id="signupTitle">Create Account</h2>
+                <p>Join QuantVault and take control of your investments.</p>
+            </div>
 
             <div id="errorMessage" class="error-message"></div>
             <div id="successMessage" class="success-message"></div>
@@ -70,29 +77,31 @@
             <form id="signupForm" novalidate>
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                    <input type="text" id="username" name="username" placeholder="Choose a username" required autocomplete="username">
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Create a password" required minlength="6">
+                    <input type="password" id="password" name="password" placeholder="Minimum 6 characters" required minlength="6" autocomplete="new-password">
                 </div>
 
                 <div class="form-group">
                     <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required autocomplete="new-password">
                 </div>
 
-                <button type="submit" class="submit-btn primary">Create Account</button>
+                <button type="submit" class="btn w-full" style="padding: 13px 24px; font-size: 1rem; border-radius: 12px; margin-top: 4px;">
+                    Create My Account
+                </button>
             </form>
 
             <div class="login-link">
-                Already have an account? <a href="login.html" id="loginLink">Login here</a>
+                Already have an account? <a href="login.html" id="loginLink">Sign in here</a>
             </div>
         </section>
     </main>
