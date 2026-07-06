@@ -7,137 +7,129 @@
     <meta name="description" content="Set smart price alerts for your investments. Get notified when assets hit your target price.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .alerts h2 { margin-bottom: 1.2rem; font-size: 1.2rem; }
-        .alert-form-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; align-items: end; }
-        @media(max-width:700px) { .alert-form-row { grid-template-columns: 1fr; } }
-        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 0.5rem; font-weight: 600; }
-        .form-group input, .form-group select {
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-        }
-        .btn-create-alert {
-            padding: 11px 20px;
-            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: opacity 0.2s, transform 0.2s;
-        }
-        .btn-create-alert:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-        .alert-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.2rem;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 16px;
-            margin-bottom: 0.8rem;
-            border: 1px solid rgba(148, 163, 184, 0.12);
-            box-shadow: 0 4px 12px rgba(15,23,42,0.03);
-            gap: 1rem;
-        }
-        .alert-item-info { flex: 1; }
-        .alert-asset-name { font-weight: 700; font-size: 1.05rem; color: #0f172a; }
-        .alert-condition {
-            font-size: 0.85rem; opacity: 0.8; margin-top: 0.3rem;
-            color: #475569;
-        }
-        .alert-condition .condition-badge {
-            padding: 3px 10px; border-radius: 20px; font-weight: 600; font-size: 0.78rem; margin-right: 6px;
-        }
-        .condition-badge.above { background: rgba(16, 185, 129, 0.15); color: #059669; }
-        .condition-badge.below { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
-        .alert-status-badge {
-            padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
-        }
-        .alert-status-badge.active { background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.25); }
-        .alert-status-badge.triggered { background: rgba(245, 158, 11, 0.12); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.25); }
-        .alert-status-badge.paused { background: rgba(148, 163, 184, 0.12); color: #64748b; border: 1px solid rgba(148, 163, 184, 0.2); }
-        .alert-actions { display: flex; gap: 0.6rem; }
-        .btn-toggle, .btn-delete-alert {
-            padding: 6px 14px; border-radius: 10px; border: 1px solid rgba(148, 163, 184, 0.2);
-            cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s;
-        }
-        .btn-toggle { background: rgba(15, 23, 42, 0.05); color: #334155; }
-        .btn-toggle:hover { background: rgba(15, 23, 42, 0.09); }
-        .btn-delete-alert { background: rgba(239, 68, 68, 0.08); color: #dc2626; border-color: rgba(239, 68, 68, 0.18); }
-        .btn-delete-alert:hover { background: rgba(239, 68, 68, 0.16); }
-        .no-alerts { text-align: center; padding: 3rem; opacity: 0.5; color: #475569; }
-        .triggered-at { font-size: 0.78rem; opacity: 0.6; margin-top: 4px; color: #475569; }
-    </style>
 </head>
 <body>
-    <div class="main-content">
-        <nav class="navbar">
-            <div class="nav-logo">QuantVault</div>
-            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-                <span class="hamburger"></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="portfolio.html">Portfolio Overview</a></li>
-                <li><a href="transactions.html">Transactions</a></li>
-                <li><a href="reports.html">Reports</a></li>
-                <li><a href="alerts.html" class="active">Alerts</a></li>
-                <li><a href="profile.html">Profile</a></li>
-            </ul>
-        </nav>
 
-        <section class="alerts animate-on-scroll in-view">
-            <h1>🔔 Price Alerts</h1>
-            <p class="subtitle">Get notified when an asset crosses your target price threshold.</p>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-            <div class="alert-form-card">
-                <h2>Create New Alert</h2>
-                <div class="alert-form-row">
-                    <div class="form-group">
-                        <label for="alertAsset">Asset Name</label>
-                        <input type="text" id="alertAsset" placeholder="e.g., AAPL, Tesla">
-                    </div>
-                    <div class="form-group">
-                        <label for="alertCondition">Condition</label>
-                        <select id="alertCondition">
-                            <option value="above">📈 Rises Above</option>
-                            <option value="below">📉 Falls Below</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="alertPrice">Target Price ($)</label>
-                        <input type="number" id="alertPrice" placeholder="e.g., 150.00" step="0.01" min="0.01">
-                    </div>
-                    <div class="form-group">
-                        <button id="createAlertBtn" class="btn-create-alert" onclick="createAlert()">+ Create Alert</button>
+    <div class="app-shell">
+        <!-- ── SIDEBAR ─────────────────────────────────── -->
+        <aside class="sidebar" id="appSidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-mark">QV</div>
+                <span class="sidebar-logo-text">QuantVault</span>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Main navigation">
+                <span class="sidebar-section-label">Platform</span>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">🏠</span> Home
+                </a>
+                <a href="portfolio.html" class="nav-item">
+                    <span class="nav-icon">💼</span> Portfolio
+                </a>
+                <a href="transactions.html" class="nav-item">
+                    <span class="nav-icon">💰</span> Transactions
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <span class="nav-icon">📈</span> Reports
+                </a>
+                <a href="alerts.html" class="nav-item active">
+                    <span class="nav-icon">🔔</span> Alerts
+                </a>
+
+                <div class="sidebar-divider"></div>
+
+                <span class="sidebar-section-label">Account</span>
+                <a href="profile.html" class="nav-item">
+                    <span class="nav-icon">👤</span> Profile
+                </a>
+                <a href="#" class="nav-item" onclick="logout(); return false;">
+                    <span class="nav-icon">🚪</span> Logout
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Nova" alt="Avatar" class="sidebar-avatar" id="sidebarAvatar">
+                    <div class="sidebar-user-info">
+                        <div class="sidebar-username" id="sidebarUsername">Loading...</div>
+                        <div class="sidebar-user-role">Investor</div>
                     </div>
                 </div>
             </div>
+        </aside>
 
-            <div class="alerts-list-card">
-                <h2>Your Alerts <span id="alertCount" style="font-size:0.85rem;opacity:0.55;font-weight:400;"></span></h2>
-                <div id="alertsList">
-                    <div class="no-alerts">Loading alerts...</div>
+        <!-- ── MAIN AREA ──────────────────────────────── -->
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="topbar-menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+                    <span class="page-title">Price Alerts</span>
                 </div>
-            </div>
-        </section>
-    </div>
+            </header>
 
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-copy">
-                <span>© 2026 QuantVault</span>
-                <span>All rights reserved.</span>
-            </div>
+            <main class="page-content">
+                <section class="alerts alerts-section">
+                    <div class="page-header">
+                        <div class="page-header-text">
+                            <h1>🔔 Price Alerts</h1>
+                            <p>Get notified when an asset crosses your target price threshold.</p>
+                        </div>
+                    </div>
+
+                    <!-- Create Alert Form -->
+                    <div class="alert-form-card panel">
+                        <div class="panel-header">
+                            <span class="panel-title">Create New Alert</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="alert-form-row">
+                                <div class="form-group">
+                                    <label for="alertAsset">Asset Name</label>
+                                    <input type="text" id="alertAsset" placeholder="e.g., AAPL, Tesla, BTC">
+                                </div>
+                                <div class="form-group">
+                                    <label for="alertCondition">Condition</label>
+                                    <select id="alertCondition">
+                                        <option value="above">📈 Rises Above</option>
+                                        <option value="below">📉 Falls Below</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="alertPrice">Target Price ($)</label>
+                                    <input type="number" id="alertPrice" placeholder="e.g., 150.00" step="0.01" min="0.01">
+                                </div>
+                                <div class="form-group" style="justify-content: flex-end;">
+                                    <label style="visibility:hidden;">Create</label>
+                                    <button id="createAlertBtn" class="btn-create-alert" onclick="createAlert()">
+                                        + Create Alert
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alerts List -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-title">
+                                Your Alerts
+                                <span id="alertCount" style="font-size:0.8rem; font-weight:400; color: var(--text-muted);"></span>
+                            </span>
+                        </div>
+                        <div class="panel-body">
+                            <div id="alertsList" class="alert-list">
+                                <div class="no-alerts">Loading alerts...</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
         </div>
-    </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
     <script src="js/api/apiClient.js"></script>
@@ -147,6 +139,31 @@
     <script src="js/auth.js"></script>
     <script src="js/script.js"></script>
     <script>
+        // ── Sidebar mobile toggle ─────────────────────────
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('appSidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
+
+        menuBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            backdrop.classList.toggle('visible');
+        });
+        backdrop?.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            backdrop.classList.remove('visible');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const nameEl = document.getElementById('sidebarUsername');
+                    if (nameEl && payload.username) nameEl.textContent = payload.username;
+                } catch(e) {}
+            }
+        });
+
         let alertsData = [];
 
         async function loadAlerts() {
@@ -169,7 +186,7 @@
             countEl.textContent = `(${alertsData.length})`;
 
             if (alertsData.length === 0) {
-                container.innerHTML = '<div class="no-alerts">No alerts yet. Create one above to get started.</div>';
+                container.innerHTML = '<div class="no-alerts">No alerts yet. Create one above to get started. 🔔</div>';
                 return;
             }
 
