@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
+    <meta name="theme-color" content="#38BDF8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuantVault — Performance Reports &amp; Analytics</title>
     <meta name="description" content="Advanced portfolio analytics including Sharpe ratio, volatility, win rate, and max drawdown.">
+    <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="/js/theme.js" defer></script>
 </head>
 <body>
 
@@ -35,6 +38,9 @@
                 </a>
                 <a href="reports.html" class="nav-item active">
                     <span class="nav-icon">📈</span> Reports
+                </a>
+                <a href="watchlist.html" class="nav-item">
+                    <span class="nav-icon">👁️</span> Watchlist
                 </a>
                 <a href="alerts.html" class="nav-item">
                     <span class="nav-icon">🔔</span> Alerts
@@ -69,7 +75,16 @@
                     <button class="topbar-menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
                     <span class="page-title">Performance Reports</span>
                 </div>
+                <div class="topbar-right">
+                    <button class="btn btn-secondary" onclick="downloadPDF()" id="pdfBtn" title="Download PDF Report">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        Download PDF
+                    </button>
+                    <button class="theme-toggle-btn btn btn-ghost" style="width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center" aria-label="Toggle theme"></button>
+                    <button class="btn btn-ghost" onclick="KeyboardShortcuts.open()" title="Keyboard shortcuts (?)" style="width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center">⌨️</button>
+                </div>
             </header>
+
 
             <main class="page-content">
                 <section class="reports">
@@ -148,6 +163,17 @@
                             <div class="chart-container" style="position:relative; height:320px;">
                                 <canvas id="portfolioChart"></canvas>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Indicators Panel -->
+                    <div class="panel" style="margin-bottom: var(--space-6)">
+                        <div class="panel-header">
+                            <span class="panel-title">📊 Technical Indicators</span>
+                            <span style="font-size:var(--text-xs);color:var(--text-muted)">SMA &amp; RSI computed from portfolio value history</span>
+                        </div>
+                        <div class="panel-body" id="indicatorsPanel">
+                            <div style="text-align:center;padding:var(--space-6);color:var(--text-muted)">Loading indicators...</div>
                         </div>
                     </div>
 
@@ -373,7 +399,102 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await loadAnalytics();
             await loadChart(30);
+            await loadIndicators();
         });
+
+        // ── Download PDF ─────────────────────────────────────────
+        async function downloadPDF() {
+            const btn = document.getElementById('pdfBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 11-18 0"/></svg>Generating...`;
+
+            try {
+                const token = localStorage.getItem('qv_access_token');
+                const response = await fetch('/api/reports/pdf', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (!response.ok) throw new Error('PDF generation failed');
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `QuantVault-Report-${new Date().toISOString().split('T')[0]}.pdf`;
+                a.click();
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                alert('Failed to generate PDF. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Download PDF`;
+            }
+        }
+
+        // ── Technical Indicators ─────────────────────────────────
+        async function loadIndicators() {
+            const panel = document.getElementById('indicatorsPanel');
+            if (!panel) return;
+            try {
+                const token = localStorage.getItem('qv_access_token');
+                const res = await fetch('/api/portfolio/analytics/indicators', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const json = await res.json();
+                const d = json.data;
+
+                if (!d || d.dataPoints < 2) {
+                    panel.innerHTML = `<p style="color:var(--text-muted);text-align:center;padding:var(--space-6)">Not enough data yet — indicators require at least 2 days of portfolio history.</p>`;
+                    return;
+                }
+
+                const rsiColor = d.rsi14 === null ? '#94A3B8' : d.rsi14 >= 70 ? '#EF4444' : d.rsi14 <= 30 ? '#10B981' : '#38BDF8';
+                const rsiLabel = d.rsi14 === null ? 'N/A' : d.rsi14 >= 70 ? 'Overbought' : d.rsi14 <= 30 ? 'Oversold' : 'Neutral';
+
+                panel.innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:var(--space-4);margin-bottom:var(--space-6)">
+                    <div class="kpi-card" style="text-align:center">
+                        <div class="kpi-label">SMA-20</div>
+                        <div class="kpi-value" style="font-size:var(--text-xl)">${d.sma20 !== null ? '$' + d.sma20.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}) : 'N/A'}</div>
+                        <div style="color:var(--text-muted);font-size:var(--text-xs);margin-top:4px">20-Day Moving Avg</div>
+                    </div>
+                    <div class="kpi-card" style="text-align:center">
+                        <div class="kpi-label">SMA-50</div>
+                        <div class="kpi-value" style="font-size:var(--text-xl)">${d.sma50 !== null ? '$' + d.sma50.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}) : 'N/A'}</div>
+                        <div style="color:var(--text-muted);font-size:var(--text-xs);margin-top:4px">50-Day Moving Avg</div>
+                    </div>
+                    <div class="kpi-card" style="text-align:center">
+                        <div class="kpi-label">RSI-14</div>
+                        <div class="kpi-value" style="font-size:var(--text-xl);color:${rsiColor}">${d.rsi14 !== null ? d.rsi14 : 'N/A'}</div>
+                        <div style="color:${rsiColor};font-size:var(--text-xs);margin-top:4px">${rsiLabel}</div>
+                    </div>
+                    <div class="kpi-card" style="text-align:center">
+                        <div class="kpi-label">Data Points</div>
+                        <div class="kpi-value" style="font-size:var(--text-xl)">${d.dataPoints}</div>
+                        <div style="color:var(--text-muted);font-size:var(--text-xs);margin-top:4px">Days of history</div>
+                    </div>
+                </div>
+                ${d.rsi14 !== null ? `
+                <div style="margin-top:var(--space-4)">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                        <span style="font-size:var(--text-sm);color:var(--text-muted)">RSI Gauge</span>
+                        <span style="font-size:var(--text-sm);color:${rsiColor};font-weight:600">${rsiLabel} (${d.rsi14})</span>
+                    </div>
+                    <div style="height:8px;background:linear-gradient(90deg,#10B981 0%,#10B981 30%,#38BDF8 30%,#38BDF8 70%,#EF4444 70%,#EF4444 100%);border-radius:4px;position:relative">
+                        <div style="position:absolute;top:-3px;width:14px;height:14px;border-radius:50%;background:white;border:2px solid ${rsiColor};transform:translateX(-50%);left:${Math.min(100,Math.max(0,d.rsi14))}%"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:var(--text-xs);color:var(--text-muted)">
+                        <span>0 Oversold</span><span>30</span><span>50</span><span>70</span><span>100 Overbought</span>
+                    </div>
+                </div>` : ''}`;
+            } catch (e) {
+                if (panel) panel.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:16px">Could not load technical indicators.</p>';
+            }
+        }
+    </script>
+    <script src="/js/keyboard.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      }
     </script>
 </body>
 </html>
