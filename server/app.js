@@ -11,6 +11,9 @@ const portfolioRoutes = require('./routes/portfolio');
 const profileRoutes = require('./routes/profile');
 const alertRoutes = require('./routes/alerts');
 const auditRoutes = require('./routes/audit');
+const watchlistRoutes = require('./routes/watchlist');
+const twoFactorRoutes = require('./routes/twoFactor');
+const reportsRoutes = require('./routes/reports');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -63,6 +66,9 @@ app.use('/api/portfolio', apiLimiter, portfolioRoutes);
 app.use('/api/profile', apiLimiter, profileRoutes);
 app.use('/api/alerts', apiLimiter, alertRoutes);
 app.use('/api/audit', apiLimiter, auditRoutes);
+app.use('/api/watchlist', apiLimiter, watchlistRoutes);
+app.use('/api/auth/2fa', apiLimiter, twoFactorRoutes);
+app.use('/api/reports', apiLimiter, reportsRoutes);
 
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
@@ -75,7 +81,7 @@ app.get('*', (req, res) => {
   // All authenticated pages
   const protectedPages = [
     'index.html', 'portfolio.html', 'transactions.html',
-    'reports.html', 'profile.html', 'alerts.html'
+    'reports.html', 'profile.html', 'alerts.html', 'watchlist.html'
   ];
 
   const requestedPage = req.path.replace(/^\//, '');
