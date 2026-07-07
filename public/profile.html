@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
+    <meta name="theme-color" content="#38BDF8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuantVault — Your Profile</title>
     <meta name="description" content="Manage your QuantVault account, display name, avatar, and view recent activity.">
+    <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="/js/theme.js" defer></script>
 </head>
 <body>
 
@@ -35,6 +38,9 @@
                 </a>
                 <a href="reports.html" class="nav-item">
                     <span class="nav-icon">📈</span> Reports
+                </a>
+                <a href="watchlist.html" class="nav-item">
+                    <span class="nav-icon">👁️</span> Watchlist
                 </a>
                 <a href="alerts.html" class="nav-item">
                     <span class="nav-icon">🔔</span> Alerts
@@ -133,6 +139,17 @@
                             <div style="text-align:center;padding:1.5rem;color:var(--text-muted);">Loading activity...</div>
                         </div>
                     </section>
+
+                    <!-- 2FA Security Section -->
+                    <section class="profile-card" style="margin-top: 0;">
+                        <h2>🔐 Two-Factor Authentication</h2>
+                        <p style="color:var(--text-muted);font-size:var(--text-sm);margin-bottom:var(--space-5)">
+                            Protect your account with an authenticator app (Google Authenticator, Authy, etc.)
+                        </p>
+                        <div id="twoFaStatus">
+                            <div style="color:var(--text-muted);text-align:center;padding:var(--space-4)">Loading 2FA status...</div>
+                        </div>
+                    </section>
                 </section>
             </main>
         </div>
@@ -209,7 +226,120 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadActivityLog);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadActivityLog();
+            load2FAStatus();
+        });
+
+        // ── 2FA Functions ──────────────────────────────────────────
+        async function load2FAStatus() {
+            const panel = document.getElementById('twoFaStatus');
+            try {
+                const token = localStorage.getItem('qv_access_token');
+                const res = await fetch('/api/auth/2fa/status', { headers: { Authorization: `Bearer ${token}` } });
+                const json = await res.json();
+                const enabled = json.data?.enabled;
+
+                if (enabled) {
+                    panel.innerHTML = `
+                        <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4);background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:12px;margin-bottom:var(--space-4)">
+                            <span style="font-size:1.5rem">✅</span>
+                            <div>
+                                <div style="font-weight:600;color:#34D399">2FA is Enabled</div>
+                                <div style="font-size:var(--text-sm);color:var(--text-muted)">Your account is protected with a TOTP authenticator app</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Enter TOTP code to disable 2FA</label>
+                            <div style="display:flex;gap:var(--space-3)">
+                                <input type="text" id="disableToken" class="form-input" placeholder="6-digit code" maxlength="6" style="font-family:var(--font-mono);letter-spacing:4px;max-width:200px" />
+                                <button class="btn btn-danger" onclick="disable2FA()">Disable 2FA</button>
+                            </div>
+                        </div>`;
+                } else {
+                    panel.innerHTML = `
+                        <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4);background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:12px;margin-bottom:var(--space-4)">
+                            <span style="font-size:1.5rem">⚠️</span>
+                            <div>
+                                <div style="font-weight:600;color:#F87171">2FA is Not Enabled</div>
+                                <div style="font-size:var(--text-sm);color:var(--text-muted)">Enable two-factor authentication to secure your account</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="setup2FA()">🔐 Set Up Two-Factor Authentication</button>
+                        <div id="qrSetup" style="display:none;margin-top:var(--space-5)"></div>`;
+                }
+            } catch(e) {
+                panel.innerHTML = '<p style="color:var(--rose)">Could not load 2FA status.</p>';
+            }
+        }
+
+        async function setup2FA() {
+            const qrDiv = document.getElementById('qrSetup');
+            qrDiv.style.display = 'block';
+            qrDiv.innerHTML = '<div style="color:var(--text-muted)">Generating QR code...</div>';
+            try {
+                const token = localStorage.getItem('qv_access_token');
+                const res = await fetch('/api/auth/2fa/setup', { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+                const json = await res.json();
+                if (!json.success) throw new Error(json.message);
+
+                qrDiv.innerHTML = `
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-4)">
+                        <p style="color:var(--text-muted);font-size:var(--text-sm);text-align:center">Scan this QR code with your authenticator app, then enter the 6-digit code to verify.</p>
+                        <img src="${json.data.qrCode}" alt="2FA QR Code" style="width:200px;height:200px;border-radius:12px;background:white;padding:8px" />
+                        <div style="text-align:center">
+                            <p style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:8px">Can't scan? Enter this key manually:</p>
+                            <code style="font-family:var(--font-mono);font-size:var(--text-sm);color:var(--cyan);background:var(--surface);padding:6px 12px;border-radius:8px">${json.data.secret}</code>
+                        </div>
+                        <div class="form-group" style="width:100%;max-width:280px">
+                            <label class="form-label">Enter verification code</label>
+                            <input type="text" id="verifyToken" class="form-input" placeholder="000000" maxlength="6" style="font-family:var(--font-mono);letter-spacing:4px;text-align:center;font-size:1.25rem" />
+                        </div>
+                        <button class="btn btn-primary" onclick="verify2FA()" style="min-width:180px">Verify &amp; Enable 2FA</button>
+                    </div>`;
+            } catch(e) {
+                qrDiv.innerHTML = `<p style="color:var(--rose)">${e.message}</p>`;
+            }
+        }
+
+        async function verify2FA() {
+            const token = localStorage.getItem('qv_access_token');
+            const code = document.getElementById('verifyToken')?.value?.trim();
+            if (!code || code.length < 6) { alert('Enter the 6-digit code from your authenticator app.'); return; }
+            try {
+                const res = await fetch('/api/auth/2fa/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ token: code })
+                });
+                const json = await res.json();
+                if (json.success) { alert('✅ 2FA enabled successfully!'); await load2FAStatus(); }
+                else alert('❌ ' + json.message);
+            } catch(e) { alert('Verification failed: ' + e.message); }
+        }
+
+        async function disable2FA() {
+            const token = localStorage.getItem('qv_access_token');
+            const code = document.getElementById('disableToken')?.value?.trim();
+            if (!code || code.length < 6) { alert('Enter your 6-digit authenticator code to confirm.'); return; }
+            if (!confirm('Are you sure you want to disable 2FA? This will make your account less secure.')) return;
+            try {
+                const res = await fetch('/api/auth/2fa/disable', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ token: code })
+                });
+                const json = await res.json();
+                if (json.success) { alert('2FA has been disabled.'); await load2FAStatus(); }
+                else alert('❌ ' + json.message);
+            } catch(e) { alert('Failed to disable 2FA: ' + e.message); }
+        }
+    </script>
+    <script src="/js/keyboard.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      }
     </script>
 </body>
 </html>
