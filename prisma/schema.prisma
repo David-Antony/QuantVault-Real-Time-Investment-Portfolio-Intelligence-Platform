@@ -11,18 +11,21 @@ datasource db {
 }
 
 model User {
-  id           Int            @id @default(autoincrement())
-  username     String         @unique @db.VarChar(100)
-  email        String         @unique @db.VarChar(255)
-  passwordHash String         @map("password_hash") @db.VarChar(255)
-  avatarPreset String         @default("default") @map("avatar_preset") @db.VarChar(50)
-  avatarConfig Json           @default("{}") @map("avatar_config") @db.JsonB
-  refreshToken String?        @map("refresh_token") @db.Text
-  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz()
-  lastLogin    DateTime?      @map("last_login") @db.Timestamptz()
-  portfolio    Portfolio?
-  auditLogs    AuditLog[]
-  priceAlerts  PriceAlert[]
+  id                Int               @id @default(autoincrement())
+  username          String            @unique @db.VarChar(100)
+  email             String            @unique @db.VarChar(255)
+  passwordHash      String            @map("password_hash") @db.VarChar(255)
+  avatarPreset      String            @default("default") @map("avatar_preset") @db.VarChar(50)
+  avatarConfig      Json              @default("{}") @map("avatar_config") @db.JsonB
+  refreshToken      String?           @map("refresh_token") @db.Text
+  createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz()
+  lastLogin         DateTime?         @map("last_login") @db.Timestamptz()
+  twoFactorEnabled  Boolean           @default(false) @map("two_factor_enabled")
+  twoFactorSecret   String?           @map("two_factor_secret") @db.VarChar(255)
+  portfolio         Portfolio?
+  auditLogs         AuditLog[]
+  priceAlerts       PriceAlert[]
+  watchlistItems    WatchlistItem[]
 
   @@map("users")
 }
@@ -118,4 +121,20 @@ model PriceAlert {
 
   @@index([userId])
   @@map("price_alerts")
+}
+
+// ─── Watchlist ────────────────────────────────────────────────────────────────
+model WatchlistItem {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  symbol      String   @db.VarChar(30)
+  name        String   @db.VarChar(100)
+  notes       String?  @db.VarChar(255)
+  targetPrice Decimal? @map("target_price") @db.Decimal(15, 2)
+  addedAt     DateTime @default(now()) @map("added_at") @db.Timestamptz()
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, symbol])
+  @@index([userId])
+  @@map("watchlist_items")
 }
