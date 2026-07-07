@@ -147,6 +147,85 @@ body.signup-page {
     background-image: none !important;
 }
 
+/* ─── LIGHT THEME OVERRIDES ──────────────────────────────── */
+[data-theme="light"] {
+    --bg-deep:      hsl(210, 40%, 98%);
+    --bg-base:      hsl(210, 35%, 95%);
+    --bg-elevated:  hsl(210, 30%, 91%);
+    --bg-raised:    hsl(210, 25%, 87%);
+
+    --surface:       rgba(0,0,0,0.04);
+    --surface-hover: rgba(0,0,0,0.07);
+    --surface-active:rgba(56,189,248,0.12);
+
+    --border:         rgba(0,0,0,0.1);
+    --border-subtle:  rgba(0,0,0,0.06);
+    --border-strong:  rgba(0,0,0,0.18);
+    --border-glow:    rgba(56,189,248,0.4);
+    --border-accent:  rgba(56,189,248,0.3);
+
+    --cyan:          hsl(199, 93%, 40%);
+    --cyan-dim:      hsl(199, 93%, 30%);
+    --cyan-glow:     rgba(2,132,199,0.15);
+    --cyan-glow-lg:  rgba(2,132,199,0.25);
+    --purple:        hsl(234, 80%, 55%);
+    --emerald:       hsl(160, 84%, 29%);
+    --emerald-light: hsl(160, 84%, 35%);
+    --rose:          hsl(0, 72%, 42%);
+    --rose-light:    hsl(0, 72%, 50%);
+    --amber:         hsl(38, 92%, 35%);
+    --amber-light:   hsl(38, 92%, 42%);
+
+    --text-primary:   hsl(222, 47%, 10%);
+    --text-secondary: hsl(215, 20%, 35%);
+    --text-muted:     hsl(215, 16%, 50%);
+    --text-accent:    var(--cyan);
+
+    --grad-brand:    linear-gradient(135deg, hsl(199,93%,40%) 0%, hsl(234,80%,55%) 100%);
+    --grad-glass:    linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.4) 100%);
+    --grad-card:     linear-gradient(135deg, rgba(56,189,248,0.06) 0%, rgba(129,140,248,0.04) 100%);
+    --grad-hero-bg:
+        radial-gradient(ellipse at 20% 50%, rgba(56,189,248,0.1), transparent 55%),
+        radial-gradient(ellipse at 80% 20%, rgba(129,140,248,0.1), transparent 55%),
+        hsl(210, 40%, 98%);
+
+    --shadow-sm:    0 1px 3px rgba(0,0,0,0.12);
+    --shadow-md:    0 4px 16px rgba(0,0,0,0.15);
+    --shadow-lg:    0 8px 32px rgba(0,0,0,0.2);
+    --shadow-xl:    0 16px 48px rgba(0,0,0,0.25);
+    --shadow-glow:  0 4px 20px var(--cyan-glow);
+    --shadow-card:  0 2px 16px rgba(0,0,0,0.1), 0 1px 0 rgba(255,255,255,0.8) inset;
+}
+
+[data-theme="light"] body {
+    background: var(--bg-base) !important;
+    background-image: none !important;
+}
+
+[data-theme="light"] .sidebar {
+    background: linear-gradient(180deg, hsl(210,35%,93%) 0%, hsl(210,30%,90%) 100%);
+    border-right-color: rgba(0,0,0,0.08);
+}
+
+[data-theme="light"] .topbar {
+    background: rgba(255,255,255,0.85);
+}
+
+[data-theme="light"] .glass-card,
+[data-theme="light"] .kpi-card,
+[data-theme="light"] .analytics-card {
+    background: rgba(255,255,255,0.75);
+    border-color: rgba(0,0,0,0.08);
+}
+
+[data-theme="light"] .form-input,
+[data-theme="light"] .form-select {
+    background: rgba(255,255,255,0.9);
+    border-color: rgba(0,0,0,0.15);
+    color: var(--text-primary);
+}
+
+
 /* ─── TYPOGRAPHY ─────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
