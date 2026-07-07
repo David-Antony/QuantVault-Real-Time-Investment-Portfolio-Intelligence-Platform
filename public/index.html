@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
+    <meta name="theme-color" content="#38BDF8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuantVault — Real-Time Investment Portfolio Intelligence Platform</title>
     <meta name="description" content="QuantVault is your real-time investment intelligence platform. Track, analyse, and be alerted the moment markets move.">
+    <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="/js/theme.js" defer></script>
 </head>
 <body class="landing-page">
 
@@ -23,7 +26,10 @@
             <li><a href="portfolio.html">Portfolio</a></li>
             <li><a href="transactions.html">Transactions</a></li>
             <li><a href="reports.html">Reports</a></li>
-            <li><a href="alerts.html">Alerts</a></li>
+            <li><a href="watchlist.html" class="nav-item">
+                    <span class="nav-icon">👁️</span> Watchlist
+                </a>
+                <a href="alerts.html">Alerts</a></li>
         </ul>
         <div class="nav-cta-group">
             <a href="login.html" class="btn-secondary" style="border-radius: 10px; padding: 8px 18px; font-size: 0.875rem;">Login</a>
@@ -182,6 +188,12 @@
         }, { threshold: 0.15 });
 
         document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    </script>
+    <script src="/js/keyboard.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      }
     </script>
 </body>
 </html>

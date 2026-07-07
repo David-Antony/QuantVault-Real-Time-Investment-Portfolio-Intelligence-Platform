@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
+    <meta name="theme-color" content="#38BDF8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuantVault — Price Alerts</title>
     <meta name="description" content="Set smart price alerts for your investments. Get notified when assets hit your target price.">
+    <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="/js/theme.js" defer></script>
 </head>
 <body>
 
@@ -35,6 +38,9 @@
                 </a>
                 <a href="reports.html" class="nav-item">
                     <span class="nav-icon">📈</span> Reports
+                </a>
+                <a href="watchlist.html" class="nav-item">
+                    <span class="nav-icon">👁️</span> Watchlist
                 </a>
                 <a href="alerts.html" class="nav-item active">
                     <span class="nav-icon">🔔</span> Alerts
@@ -274,6 +280,12 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadAlerts);
+    </script>
+    <script src="/js/keyboard.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      }
     </script>
 </body>
 </html>

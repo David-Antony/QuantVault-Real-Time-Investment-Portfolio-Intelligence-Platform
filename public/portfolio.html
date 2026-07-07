@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#38BDF8">
     <title>QuantVault — Portfolio Overview</title>
     <meta name="description" content="Real-time portfolio overview with live price feeds, asset allocation, and recent transactions.">
+    <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="/js/theme.js" defer></script>
 </head>
 <body>
 
@@ -36,6 +39,9 @@
                 </a>
                 <a href="reports.html" class="nav-item">
                     <span class="nav-icon">📈</span> Reports
+                </a>
+                <a href="watchlist.html" class="nav-item">
+                    <span class="nav-icon">👁️</span> Watchlist
                 </a>
                 <a href="alerts.html" class="nav-item">
                     <span class="nav-icon">🔔</span> Alerts
@@ -65,7 +71,6 @@
 
         <!-- ── MAIN AREA ──────────────────────────────── -->
         <div class="main-area">
-            <!-- Topbar -->
             <header class="topbar">
                 <div class="topbar-left">
                     <button class="topbar-menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
@@ -75,6 +80,8 @@
                     </span>
                 </div>
                 <div class="topbar-right">
+                    <button class="theme-toggle-btn btn btn-ghost" style="width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center" aria-label="Toggle theme"></button>
+                    <button class="btn btn-ghost" onclick="KeyboardShortcuts.open()" title="Keyboard shortcuts (?)" style="width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center">⌨️</button>
                     <a href="transactions.html" class="btn" style="padding: 8px 16px; font-size: 0.8rem; border-radius: 10px;">
                         + Add Transaction
                     </a>
@@ -235,6 +242,12 @@
                 }
             }
         }
+    </script>
+    <script src="/js/keyboard.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      }
     </script>
 </body>
 </html>
