@@ -35,9 +35,11 @@ const transactionValidation = [
 
 router.get('/', portfolioController.getPortfolio);
 router.get('/analytics', getAnalytics);
+router.get('/analytics/indicators', portfolioController.getTechnicalIndicators);
 router.get('/history', portfolioController.getPortfolioHistory);
 router.get('/transactions', portfolioController.getTransactions);
 router.post('/transactions', validate(transactionValidation), portfolioController.createTransaction);
+router.post('/transactions/import-csv', portfolioController.importTransactionsCSV);
 router.delete('/transactions/:id', portfolioController.deleteTransaction);
 router.get('/export/csv', portfolioController.exportCSV);
 router.get('/export', portfolioController.exportPortfolio);

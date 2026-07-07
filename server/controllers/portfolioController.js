@@ -470,6 +470,119 @@ const getPortfolioHistory = async (req, res, next) => {
   }
 };
 
+// ── GET /api/portfolio/analytics/indicators ───────────────────────────────────
+// Returns SMA-20, SMA-50, and RSI-14 computed from daily portfolio snapshots
+const getTechnicalIndicators = async (req, res, next) => {
+  try {
+    const portfolio = await prisma.portfolio.findUnique({ where: { userId: req.userId } });
+    if (!portfolio) return res.json({ success: true, data: null });
+
+    const snapshots = await prisma.portfolioSnapshot.findMany({
+      where: { portfolioId: portfolio.id },
+      orderBy: { date: 'asc' }
+    });
+
+    if (snapshots.length < 2) {
+      return res.json({ success: true, data: { sma20: null, sma50: null, rsi14: null, prices: [] } });
+    }
+
+    const prices = snapshots.map((s) => Number(s.totalValue));
+
+    const sma = (arr, period) => {
+      if (arr.length < period) return null;
+      const slice = arr.slice(-period);
+      return Math.round((slice.reduce((s, v) => s + v, 0) / period) * 100) / 100;
+    };
+
+    const rsi = (arr, period = 14) => {
+      if (arr.length < period + 1) return null;
+      const slice = arr.slice(-(period + 1));
+      let gains = 0, losses = 0;
+      for (let i = 1; i < slice.length; i++) {
+        const diff = slice[i] - slice[i - 1];
+        if (diff > 0) gains += diff; else losses -= diff;
+      }
+      const avgGain = gains / period;
+      const avgLoss = losses / period;
+      if (avgLoss === 0) return 100;
+      const rs = avgGain / avgLoss;
+      return Math.round((100 - 100 / (1 + rs)) * 100) / 100;
+    };
+
+    res.json({
+      success: true,
+      data: {
+        sma20: sma(prices, 20),
+        sma50: sma(prices, 50),
+        rsi14: rsi(prices, 14),
+        dataPoints: prices.length,
+        latestValue: prices[prices.length - 1],
+        prices: prices.slice(-50),  // last 50 for chart
+        labels: snapshots.slice(-50).map((s) => new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
+      }
+    });
+  } catch (err) { next(err); }
+};
+
+// ── POST /api/portfolio/transactions/import-csv ───────────────────────────────
+// Bulk insert transactions from CSV data (parsed client-side)
+const importTransactionsCSV = async (req, res, next) => {
+  try {
+    const { transactions } = req.body;
+    if (!Array.isArray(transactions) || transactions.length === 0) {
+      return res.status(400).json({ success: false, message: 'No transactions provided' });
+    }
+
+    const portfolio = await prisma.portfolio.findUnique({ where: { userId: req.userId } });
+    if (!portfolio) {
+      return res.status(404).json({ success: false, message: 'Portfolio not found' });
+    }
+
+    const { classifyAsset } = require('../services/assetClassifier');
+    const valid = [];
+    const errors = [];
+
+    transactions.forEach((tx, idx) => {
+      const { assetName, type, amount, price, quantity, date } = tx;
+      if (!assetName || !type || !amount || !date) {
+        errors.push(`Row ${idx + 1}: Missing required fields (assetName, type, amount, date)`);
+        return;
+      }
+      if (!['buy', 'sell', 'dividend', 'interest'].includes(type.toLowerCase())) {
+        errors.push(`Row ${idx + 1}: Invalid type "${type}"`);
+        return;
+      }
+      const parsedDate = new Date(date);
+      if (isNaN(parsedDate)) {
+        errors.push(`Row ${idx + 1}: Invalid date "${date}"`);
+        return;
+      }
+      valid.push({
+        portfolioId: portfolio.id,
+        assetName: assetName.trim(),
+        type: type.toLowerCase(),
+        amount: Math.abs(Number(amount)),
+        price: price ? Math.abs(Number(price)) : null,
+        quantity: quantity ? Math.abs(Number(quantity)) : null,
+        date: parsedDate,
+        status: 'completed'
+      });
+    });
+
+    if (valid.length === 0) {
+      return res.status(400).json({ success: false, message: 'No valid transactions to import', errors });
+    }
+
+    const result = await prisma.transaction.createMany({ data: valid, skipDuplicates: false });
+
+    res.json({
+      success: true,
+      message: `Imported ${result.count} transaction(s)${errors.length > 0 ? ` (${errors.length} skipped)` : ''}`,
+      data: { imported: result.count, skipped: errors.length, errors: errors.slice(0, 10) }
+    });
+  } catch (err) { next(err); }
+};
+
 module.exports = {
   getPortfolio,
   getTransactions,
@@ -478,6 +591,8 @@ module.exports = {
   exportPortfolio,
   exportCSV,
   clearAllTransactions,
-  getPortfolioHistory
+  getPortfolioHistory,
+  getTechnicalIndicators,
+  importTransactionsCSV
 };
 
