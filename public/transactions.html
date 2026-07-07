@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
+    <meta name="theme-color" content="#38BDF8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuantVault — Transactions</title>
     <meta name="description" content="Add, view, and manage all your investment transactions in one place.">
+    <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="/js/theme.js" defer></script>
 </head>
 <body>
 
@@ -35,6 +38,9 @@
                 </a>
                 <a href="reports.html" class="nav-item">
                     <span class="nav-icon">📈</span> Reports
+                </a>
+                <a href="watchlist.html" class="nav-item">
+                    <span class="nav-icon">👁️</span> Watchlist
                 </a>
                 <a href="alerts.html" class="nav-item">
                     <span class="nav-icon">🔔</span> Alerts
@@ -68,6 +74,14 @@
                 <div class="topbar-left">
                     <button class="topbar-menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
                     <span class="page-title">Transactions</span>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn btn-secondary" onclick="document.getElementById('csvModal').style.display='flex'" title="Import transactions from CSV">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Import CSV
+                    </button>
+                    <button class="theme-toggle-btn btn btn-ghost" style="width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center" aria-label="Toggle theme"></button>
+                    <button class="btn btn-ghost" onclick="KeyboardShortcuts.open()" title="Keyboard shortcuts (?)" style="width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center">⌨️</button>
                 </div>
             </header>
 
@@ -191,5 +205,112 @@
             }
         });
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="/js/keyboard.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      }
+
+      // ── CSV Import Modal ────────────────────────────────────────
+      function closeCsvModal() {
+        document.getElementById('csvModal').style.display = 'none';
+        document.getElementById('csvFileInput').value = '';
+        document.getElementById('csvPreview').innerHTML = '';
+        document.getElementById('csvImportBtn').style.display = 'none';
+      }
+
+      let parsedRows = [];
+
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('csvFileInput').addEventListener('change', function() {
+          const file = this.files[0];
+          if (!file) return;
+          Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+              parsedRows = results.data;
+              const preview = document.getElementById('csvPreview');
+              if (parsedRows.length === 0) {
+                preview.innerHTML = '<p style="color:var(--rose)">No rows found in CSV.</p>';
+                return;
+              }
+              const cols = Object.keys(parsedRows[0]);
+              const thead = cols.map(c => `<th>${c}</th>`).join('');
+              const tbody = parsedRows.slice(0,5).map(row =>
+                '<tr>' + cols.map(c => `<td>${row[c]||''}</td>`).join('') + '</tr>'
+              ).join('');
+              preview.innerHTML = `
+                <p style="color:var(--text-muted);font-size:var(--text-sm);margin-bottom:8px">Preview (first 5 rows of ${parsedRows.length}):</p>
+                <div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px">
+                  <table class="data-table" style="font-size:var(--text-xs)">
+                    <thead><tr>${thead}</tr></thead>
+                    <tbody>${tbody}</tbody>
+                  </table>
+                </div>`;
+              document.getElementById('csvImportBtn').style.display = 'block';
+            }
+          });
+        });
+      });
+
+      async function importCSV() {
+        if (parsedRows.length === 0) return;
+        const btn = document.getElementById('csvImportBtn');
+        btn.disabled = true;
+        btn.textContent = 'Importing...';
+        try {
+          const token = localStorage.getItem('qv_access_token');
+          // Map CSV columns to API format (flexible column names)
+          const mapped = parsedRows.map(row => ({
+            assetName: row.assetName || row.asset_name || row.Asset || row.Symbol || row.symbol || '',
+            type: (row.type || row.Type || row.transaction_type || 'buy').toLowerCase(),
+            amount: row.amount || row.Amount || row.total || row.Total || 0,
+            price: row.price || row.Price || null,
+            quantity: row.quantity || row.Quantity || row.qty || null,
+            date: row.date || row.Date || new Date().toISOString().split('T')[0]
+          }));
+          const res = await fetch('/api/portfolio/transactions/import-csv', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ transactions: mapped })
+          });
+          const json = await res.json();
+          if (json.success) {
+            alert(`✅ ${json.message}`);
+            closeCsvModal();
+            window.location.reload();
+          } else {
+            alert('Import failed: ' + (json.message || 'Unknown error'));
+          }
+        } catch(e) {
+          alert('Import error: ' + e.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Import Transactions';
+        }
+      }
+    </script>
+
+    <!-- CSV Import Modal -->
+    <div id="csvModal" style="display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px)">
+      <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:16px;padding:32px;max-width:640px;width:90%;max-height:80vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <h2 style="font-family:var(--font-display);font-size:1.25rem">📥 Import Transactions from CSV</h2>
+          <button onclick="closeCsvModal()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.5rem">&times;</button>
+        </div>
+        <p style="color:var(--text-muted);font-size:var(--text-sm);margin-bottom:12px">CSV must have columns: <code style="color:var(--cyan)">assetName, type, amount, date</code> (optional: price, quantity)</p>
+        <div style="background:var(--surface);border:1px solid var(--border-subtle);border-radius:8px;padding:12px;margin-bottom:16px;font-size:var(--text-xs);color:var(--text-muted)">
+          <strong style="color:var(--text-secondary)">Example CSV format:</strong><br>
+          assetName,type,amount,price,quantity,date<br>
+          AAPL,buy,18250,182.50,100,2024-01-15<br>
+          BTC,buy,5000,42000,0.119,2024-01-20
+        </div>
+        <input type="file" id="csvFileInput" accept=".csv" class="form-input" style="margin-bottom:16px" />
+        <div id="csvPreview" style="margin-bottom:16px"></div>
+        <button id="csvImportBtn" class="btn btn-primary" onclick="importCSV()" style="display:none;width:100%">Import Transactions</button>
+      </div>
+    </div>
 </body>
 </html>
