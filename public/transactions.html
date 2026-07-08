@@ -261,7 +261,7 @@
         btn.disabled = true;
         btn.textContent = 'Importing...';
         try {
-          const token = localStorage.getItem('qv_access_token');
+          const token = localStorage.getItem('accessToken');
           // Map CSV columns to API format (flexible column names)
           const mapped = parsedRows.map(row => ({
             assetName: row.assetName || row.asset_name || row.Asset || row.Symbol || row.symbol || '',
