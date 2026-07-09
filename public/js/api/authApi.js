@@ -10,12 +10,22 @@ class AuthApi {
 
   static async login(email, password) {
     const response = await apiClient.post('/auth/login', { email, password });
-    if (response.data.data.accessToken) {
+    if (response.data.data && response.data.data.accessToken) {
       localStorage.setItem('accessToken', response.data.data.accessToken);
       localStorage.setItem('user', JSON.stringify(response.data.data.user));
     }
     return response.data;
   }
+
+  static async verify2FA(userId, token) {
+    const response = await apiClient.post('/auth/verify-2fa', { userId, token });
+    if (response.data.data && response.data.data.accessToken) {
+      localStorage.setItem('accessToken', response.data.data.accessToken);
+      localStorage.setItem('user', JSON.stringify(response.data.data.user));
+    }
+    return response.data;
+  }
+
 
   static async refreshToken() {
     const response = await apiClient.post('/auth/refresh');

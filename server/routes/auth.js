@@ -34,6 +34,7 @@ const loginValidation = [
 
 router.post('/register', validate(registerValidation), authController.register);
 router.post('/login', validate(loginValidation), authController.login);
+router.post('/verify-2fa', authController.verify2FALogin);
 router.post('/refresh', authController.refresh);
 router.post('/logout', authenticate, authController.logout);
 

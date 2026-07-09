@@ -20,12 +20,26 @@ class AuthManager {
   static async login(email, password) {
     try {
       const response = await AuthApi.login(email, password);
+      if (response.data && response.data.require2FA) {
+        return { success: true, require2FA: true, userId: response.data.userId };
+      }
       return { success: true, user: response.data.user };
     } catch (error) {
       const message = error.response?.data?.message || 'Login failed';
       return { success: false, message };
     }
   }
+
+  static async verify2FA(userId, token) {
+    try {
+      const response = await AuthApi.verify2FA(userId, token);
+      return { success: true, user: response.data.user };
+    } catch (error) {
+      const message = error.response?.data?.message || '2FA Verification failed';
+      return { success: false, message };
+    }
+  }
+
 
   static async logout() {
     await AuthApi.logout();

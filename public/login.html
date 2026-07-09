@@ -72,29 +72,40 @@
             </div>
 
             <div id="errorMessage" class="error-message"></div>
-            <div id="successMessage" class="success-message"></div>
+            <div id="successMessage" class="succes            <form id="loginForm" novalidate>
+                <div id="credentialsFields">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
+                    </div>
 
-            <form id="loginForm" novalidate>
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                    </div>
+
+                    <button type="submit" class="btn w-full" style="padding: 13px 24px; font-size: 1rem; border-radius: 12px; margin-top: 4px;">
+                        Sign In to QuantVault
+                    </button>
                 </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
-                </div>
+                <div id="twoFactorFields" style="display:none;">
+                    <div class="form-group">
+                        <label for="totpToken">Two-Factor Authentication Code</label>
+                        <input type="text" id="totpToken" name="totpToken" placeholder="000000" maxlength="6" style="text-align:center; letter-spacing: 4px; font-size: 1.25rem;">
+                    </div>
 
-                <button type="submit" class="btn w-full" style="padding: 13px 24px; font-size: 1rem; border-radius: 12px; margin-top: 4px;">
-                    Sign In to QuantVault
-                </button>
+                    <button type="button" id="verify2faBtn" class="btn w-full" style="padding: 13px 24px; font-size: 1rem; border-radius: 12px; margin-top: 4px;">
+                        Verify &amp; Sign In
+                    </button>
+                </div>
             </form>
 
             <div class="login-link">
                 New to QuantVault? <a href="signup.html" id="signupLink">Create a free account</a>
             </div>
         </section>
-    </main>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
     <script src="js/api/apiClient.js"></script>
@@ -105,6 +116,10 @@
             var loginForm = document.getElementById('loginForm');
             var errorMessage = document.getElementById('errorMessage');
             var successMessage = document.getElementById('successMessage');
+            var credentialsFields = document.getElementById('credentialsFields');
+            var twoFactorFields = document.getElementById('twoFactorFields');
+            var verify2faBtn = document.getElementById('verify2faBtn');
+            var activeUserId = null;
 
             if (AuthApi.isLoggedIn()) {
                 window.location.href = 'index.html';
@@ -140,15 +155,45 @@
                 try {
                     var result = await AuthManager.login(email, password);
                     if (result.success) {
-                        showSuccess('Login successful! Redirecting...');
-                        setTimeout(function() {
-                            window.location.href = 'index.html';
-                        }, 800);
+                        if (result.require2FA) {
+                            activeUserId = result.userId;
+                            credentialsFields.style.display = 'none';
+                            twoFactorFields.style.display = 'block';
+                            showSuccess('Two-factor authentication required. Please enter the code from your authenticator app.');
+                        } else {
+                            showSuccess('Login successful! Redirecting...');
+                            setTimeout(function() {
+                                window.location.href = 'index.html';
+                            }, 800);
+                        }
                     } else {
                         showError(result.message || 'Login failed');
                     }
                 } catch (err) {
                     showError('Connection error. Please try again.');
+                }
+            });
+
+            verify2faBtn.addEventListener('click', async function() {
+                var token = document.getElementById('totpToken').value.trim();
+                if (!token || token.length !== 6) {
+                    showError('Please enter a valid 6-digit code');
+                    return;
+                }
+
+                errorMessage.style.display = 'none';
+                try {
+                    var result = await AuthManager.verify2FA(activeUserId, token);
+                    if (result.success) {
+                        showSuccess('Verification successful! Redirecting...');
+                        setTimeout(function() {
+                            window.location.href = 'index.html';
+                        }, 800);
+                    } else {
+                        showError(result.message || 'Verification failed');
+                    }
+                } catch (err) {
+                    showError('Verification failed. Please try again.');
                 }
             });
         });

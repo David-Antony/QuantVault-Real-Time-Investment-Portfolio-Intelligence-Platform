@@ -87,6 +87,17 @@ const login = async (req, res, next) => {
       throw ApiError.unauthorized('Invalid email or password');
     }
 
+    if (user.twoFactorEnabled) {
+      return res.json({
+        success: true,
+        data: {
+          require2FA: true,
+          userId: user.id
+        },
+        message: 'Two-factor authentication required'
+      });
+    }
+
     const accessToken = generateAccessToken({ userId: user.id, email: user.email });
     const refreshToken = generateRefreshToken({ userId: user.id });
 
@@ -194,4 +205,66 @@ const logout = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, refresh, logout };
+const verify2FALogin = async (req, res, next) => {
+  try {
+    const { userId, token } = req.body;
+    if (!userId || !token) {
+      throw ApiError.badRequest('User ID and 2FA token are required');
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
+    if (!user || !user.twoFactorEnabled || !user.twoFactorSecret) {
+      throw ApiError.unauthorized('Invalid request or 2FA not enabled');
+    }
+
+    const speakeasy = require('speakeasy');
+    const verified = speakeasy.totp.verify({
+      secret: user.twoFactorSecret,
+      encoding: 'base32',
+      token,
+      window: 2
+    });
+
+    if (!verified) {
+      throw ApiError.unauthorized('Invalid 2FA code');
+    }
+
+    const accessToken = generateAccessToken({ userId: user.id, email: user.email });
+    const refreshToken = generateRefreshToken({ userId: user.id });
+
+    const hashedRefresh = await bcrypt.hash(refreshToken, 10);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken: hashedRefresh, lastLogin: new Date() }
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    await logAudit(user.id, 'LOGIN_2FA', { email: user.email }, req);
+
+    res.json({
+      success: true,
+      message: 'Login successful',
+      data: {
+        accessToken,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          avatarPreset: user.avatarPreset,
+          avatarConfig: user.avatarConfig,
+          createdAt: user.createdAt
+        }
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { register, login, refresh, logout, verify2FALogin };
