@@ -158,6 +158,18 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Market News -->
+                    <div class="panel" style="margin-top: var(--space-6);">
+                        <div class="panel-header">
+                            <span class="panel-title">📰 Market News</span>
+                        </div>
+                        <div class="panel-body">
+                            <div id="marketNewsList" style="display:flex; flex-direction:column; gap:var(--space-4);">
+                                <div class="analytics-loading">Loading news...</div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
             </main>
         </div>
@@ -204,6 +216,11 @@
             const token = localStorage.getItem('accessToken');
             if (!token) return;
             try {
+                // Request Notification permission
+                if ('Notification' in window && Notification.permission === 'default') {
+                    Notification.requestPermission();
+                }
+
                 const socket = io({ auth: { token } });
                 socket.on('price:update', (payload) => {
                     const totalEl = document.getElementById('totalValue');
@@ -215,6 +232,17 @@
                     const liveTag = document.getElementById('live-indicator');
                     if (liveTag) liveTag.style.display = 'inline-flex';
                 });
+
+                socket.on('alert:triggered', (alertData) => {
+                    showNotification(`🔔 ALERT: ${alertData.assetName} met condition (${alertData.condition} $${alertData.targetPrice.toLocaleString()})! Current price: $${alertData.currentPrice.toLocaleString()}`, 'warning');
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        new Notification(`🔔 QuantVault Alert: ${alertData.assetName}`, {
+                            body: `${alertData.assetName} has gone ${alertData.condition} $${alertData.targetPrice.toLocaleString()} (current: $${alertData.currentPrice.toLocaleString()})`,
+                            icon: '/images/futuristic_fintech_bg.png'
+                        });
+                    }
+                });
+
                 socket.on('connect_error', () => {});
             } catch(e) {}
         })();

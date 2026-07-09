@@ -33,10 +33,14 @@ const transactionValidation = [
     .withMessage('Valid date is required')
 ];
 
+const { getMarketNews } = require('../controllers/newsController');
+
 router.get('/', portfolioController.getPortfolio);
+router.get('/news', getMarketNews);
 router.get('/analytics', getAnalytics);
 router.get('/analytics/indicators', portfolioController.getTechnicalIndicators);
 router.get('/history', portfolioController.getPortfolioHistory);
+router.get('/history/benchmark', portfolioController.getBenchmarkHistory);
 router.get('/transactions', portfolioController.getTransactions);
 router.post('/transactions', validate(transactionValidation), portfolioController.createTransaction);
 router.post('/transactions/import-csv', portfolioController.importTransactionsCSV);

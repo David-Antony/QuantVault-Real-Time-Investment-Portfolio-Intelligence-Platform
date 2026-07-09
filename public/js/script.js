@@ -170,6 +170,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         updatePortfolioSummary();
         updateTransactionHistory();
         updateAssetAllocation();
+        loadMarketNews();
     }
 
     if (document.getElementById('transactionList') && document.getElementById('transactionList').closest('.transactions-container')) {
@@ -869,3 +870,36 @@ window.logout = logout;
 window.exportTransactions = exportTransactions;
 window.clearAllTransactions = clearAllTransactions;
 window.initTransactionsPage = initTransactionsPage;
+
+async function loadMarketNews() {
+    const newsContainer = document.getElementById('marketNewsList');
+    if (!newsContainer) return;
+
+    try {
+        const response = await apiClient.get('/portfolio/news');
+        const news = response.data.data || [];
+
+        if (news.length === 0) {
+            newsContainer.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:var(--space-4)">No recent news available.</p>';
+            return;
+        }
+
+        newsContainer.innerHTML = news.map(item => {
+            const dateStr = item.pubDate ? new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+            return `
+                <div class="news-item" style="border-bottom:1px solid var(--border-subtle); padding-bottom:var(--space-3); margin-bottom:var(--space-1);">
+                    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
+                        <a href="${item.link}" target="_blank" rel="noopener noreferrer" style="font-weight:600; color:var(--text-primary); text-decoration:none; font-size:var(--text-sm); line-height:1.4;" class="news-title-link">
+                            ${item.title}
+                        </a>
+                        <span style="font-size:var(--text-xs); color:var(--text-muted); white-space:nowrap; margin-left:var(--space-3);">${dateStr}</span>
+                    </div>
+                    <p style="font-size:var(--text-xs); color:var(--text-muted); margin:0; line-height:1.5;">${item.description}</p>
+                </div>
+            `;
+        }).join('');
+    } catch (err) {
+        newsContainer.innerHTML = '<p style="color:var(--rose);text-align:center;padding:var(--space-4)">Failed to load market news.</p>';
+    }
+}
+window.loadMarketNews = loadMarketNews;
