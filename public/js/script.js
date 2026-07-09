@@ -788,6 +788,23 @@ function initTransactionsPage() {
 }
 
 (function () {
+    document.addEventListener('DOMContentLoaded', () => {
+        const user = window.AuthManager ? window.AuthManager.getCurrentUser() : null;
+        if (user && user.username) {
+            const nameEl = document.getElementById('sidebarUsername');
+            if (nameEl) nameEl.textContent = user.username;
+        } else {
+            // fallback to payload if username is ever added to JWT
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const nameEl = document.getElementById('sidebarUsername');
+                    if (nameEl && payload.username) nameEl.textContent = payload.username;
+                } catch(e) {}
+            }
+        }
+    });
     document.addEventListener('click', function (e) {
         const toggle = e.target.closest('.nav-toggle');
         if (toggle) {
