@@ -177,6 +177,17 @@
                         </div>
                     </div>
 
+                    <!-- AI Portfolio Insights -->
+                    <div class="panel" style="margin-bottom: var(--space-6)">
+                        <div class="panel-header">
+                            <span class="panel-title">🤖 AI Portfolio Insights</span>
+                            <span style="font-size:var(--text-xs);color:var(--text-muted)">Powered by Google Gemini AI</span>
+                        </div>
+                        <div class="panel-body" id="aiInsightsPanel" style="line-height:1.6; font-size:var(--text-sm);">
+                            <div style="text-align:center;padding:var(--space-6);color:var(--text-muted)">Generating AI analysis...</div>
+                        </div>
+                    </div>
+
                     <!-- Recent Transactions Table -->
                     <div class="panel">
                         <div class="panel-header">
@@ -325,11 +336,21 @@
             }
             try {
                 const token = localStorage.getItem('accessToken');
-                const res = await fetch(`/api/portfolio/history?days=${days}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const json = await res.json();
-                const snapshots = json.success ? json.data : [];
+                
+                const [resPortfolio, resBenchmark] = await Promise.all([
+                    fetch(`/api/portfolio/history?days=${days}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }),
+                    fetch(`/api/portfolio/history/benchmark?days=${days}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                ]);
+                
+                const jsonPortfolio = await resPortfolio.json();
+                const jsonBenchmark = await resBenchmark.json();
+                
+                const snapshots = jsonPortfolio.success ? jsonPortfolio.data : [];
+                const benchmarkData = jsonBenchmark.success ? jsonBenchmark.data : [];
 
                 const canvas = document.getElementById('portfolioChart');
                 if (chartInstance) chartInstance.destroy();
@@ -340,24 +361,58 @@
                 }
 
                 const labels = snapshots.map(s => new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-                const values = snapshots.map(s => s.totalValue);
+                const values = snapshots.map(s => Number(s.totalValue));
+
+                const startValue = values[0] || 0;
+                let benchmarkValues = [];
+
+                if (benchmarkData.length > 0 && startValue > 0) {
+                    const startBenchmarkClose = Number(benchmarkData[0].close) || 1;
+                    const factor = startValue / startBenchmarkClose;
+                    
+                    benchmarkValues = snapshots.map(s => {
+                        const dateStr = new Date(s.date).toISOString().split('T')[0];
+                        const match = benchmarkData.find(b => b.date === dateStr) || 
+                                      benchmarkData.reduce((prev, curr) => 
+                                          Math.abs(new Date(curr.date) - new Date(s.date)) < Math.abs(new Date(prev.date) - new Date(s.date)) ? curr : prev
+                                      , benchmarkData[0]);
+                        return match ? Number(match.close) * factor : startValue;
+                    });
+                } else {
+                    benchmarkValues = snapshots.map(() => startValue);
+                }
 
                 chartInstance = new Chart(canvas.getContext('2d'), {
                     type: 'line',
                     data: {
                         labels,
-                        datasets: [{
-                            label: 'Portfolio Value',
-                            data: values,
-                            borderColor: '#38BDF8',
-                            backgroundColor: 'rgba(56,189,248,0.1)',
-                            fill: true,
-                            tension: 0.35,
-                            pointRadius: 3,
-                            pointHoverRadius: 6,
-                            pointBackgroundColor: '#38BDF8',
-                            borderWidth: 2
-                        }]
+                        datasets: [
+                            {
+                                label: 'Your Portfolio',
+                                data: values,
+                                borderColor: '#38BDF8',
+                                backgroundColor: 'rgba(56,189,248,0.05)',
+                                fill: true,
+                                tension: 0.35,
+                                pointRadius: 3,
+                                pointHoverRadius: 6,
+                                pointBackgroundColor: '#38BDF8',
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'S&P 500 (Benchmark)',
+                                data: benchmarkValues,
+                                borderColor: '#818CF8',
+                                backgroundColor: 'transparent',
+                                fill: false,
+                                tension: 0.35,
+                                pointRadius: 1,
+                                pointHoverRadius: 3,
+                                pointBackgroundColor: '#818CF8',
+                                borderWidth: 1.5,
+                                borderDash: [4, 4]
+                            }
+                        ]
                     },
                     options: {
                         responsive: true,
@@ -370,9 +425,16 @@
                                 borderWidth: 1,
                                 titleColor: '#94A3B8',
                                 bodyColor: '#F1F5F9',
-                                callbacks: { label: (ctx) => `$${ctx.parsed.y.toLocaleString('en-US', {minimumFractionDigits:2})}` }
+                                callbacks: { label: (ctx) => `${ctx.dataset.label}: $${ctx.parsed.y.toLocaleString('en-US', {minimumFractionDigits:2})}` }
                             },
-                            legend: { display: false }
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: '#94A3B8',
+                                    boxWidth: 12,
+                                    font: { size: 11, family: 'Space Grotesk' }
+                                }
+                            }
                         },
                         scales: {
                             x: {
@@ -400,7 +462,36 @@
             await loadAnalytics();
             await loadChart(30);
             await loadIndicators();
+            await loadInsights();
         });
+
+        // ── AI Portfolio Insights ────────────────────────────────
+        async function loadInsights() {
+            const panel = document.getElementById('aiInsightsPanel');
+            if (!panel) return;
+            try {
+                const token = localStorage.getItem('accessToken');
+                const res = await fetch('/api/reports/insights', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const json = await res.json();
+                
+                if (json.success && json.data) {
+                    let markdown = json.data;
+                    
+                    // Simple Markdown Parsing
+                    markdown = markdown.replace(/### ([\s\S]*?)\n/g, '<h3 style="font-size:1.05rem; color:var(--text-primary); margin-top:var(--space-4); margin-bottom:var(--space-2); font-weight:600;">$1</h3>');
+                    markdown = markdown.replace(/\*\*([\s\S]*?)\*\*/g, '<strong style="color:var(--text-primary)">$1</strong>');
+                    markdown = markdown.replace(/^- ([\s\S]*?)\n/g, '<li style="margin-left:var(--space-4); margin-bottom:var(--space-2); color:var(--text-secondary)">$1</li>');
+                    
+                    panel.innerHTML = `<div style="color:var(--text-secondary); line-height:1.6;">${markdown}</div>`;
+                } else {
+                    panel.innerHTML = `<p style="color:var(--text-muted);text-align:center;padding:var(--space-6)">Failed to generate insights.</p>`;
+                }
+            } catch(e) {
+                panel.innerHTML = `<p style="color:var(--text-muted);text-align:center;padding:var(--space-6)">Could not generate insights.</p>`;
+            }
+        }
 
         // ── Download PDF ─────────────────────────────────────────
         async function downloadPDF() {
