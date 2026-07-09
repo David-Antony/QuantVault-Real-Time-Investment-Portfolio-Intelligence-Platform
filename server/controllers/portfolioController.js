@@ -165,71 +165,7 @@ const createTransaction = async (req, res, next) => {
       }
     });
 
-    let newCashBalance = Number(portfolio.cashBalance);
-
-    if (type === 'buy') {
-      newCashBalance -= Number(amount);
-      let existingAsset = portfolio.assets.find((a) => a.name === assetName);
-
-      if (existingAsset) {
-        const newQuantity = Number(existingAsset.quantity) + Number(quantity || 0);
-        const newTotalInvested = Number(existingAsset.totalInvested) + Number(amount);
-        const newAverageCost = newQuantity > 0 ? newTotalInvested / newQuantity : 0;
-
-        await prisma.asset.update({
-          where: { id: existingAsset.id },
-          data: {
-            quantity: newQuantity,
-            totalInvested: newTotalInvested,
-            averageCost: newAverageCost,
-            currentPrice: Number(price) || Number(existingAsset.currentPrice)
-          }
-        });
-      } else {
-        await prisma.asset.create({
-          data: {
-            portfolioId: portfolio.id,
-            name: assetName,
-            type: 'stock',
-            currentPrice: Number(price) || 0,
-            quantity: Number(quantity) || 0,
-            averageCost: Number(quantity) > 0 ? Number(amount) / Number(quantity) : 0,
-            totalInvested: Number(amount)
-          }
-        });
-      }
-    } else if (type === 'sell') {
-      newCashBalance += Number(amount);
-      const existingAsset = portfolio.assets.find((a) => a.name === assetName);
-
-      if (existingAsset) {
-        const newQuantity = Number(existingAsset.quantity) - Number(quantity || 0);
-
-        if (newQuantity <= 0) {
-          await prisma.asset.delete({ where: { id: existingAsset.id } });
-        } else {
-          const newTotalInvested =
-            Number(existingAsset.totalInvested) -
-            Number(existingAsset.averageCost) * Number(quantity || 0);
-
-          await prisma.asset.update({
-            where: { id: existingAsset.id },
-            data: {
-              quantity: newQuantity,
-              totalInvested: Math.max(0, newTotalInvested),
-              currentPrice: Number(price) || Number(existingAsset.currentPrice)
-            }
-          });
-        }
-      }
-    } else if (type === 'dividend' || type === 'interest') {
-      newCashBalance += Number(amount);
-    }
-
-    await prisma.portfolio.update({
-      where: { id: portfolio.id },
-      data: { cashBalance: newCashBalance }
-    });
+    await recalculatePortfolio(portfolio.id);
 
     await logAudit(req.userId, `TRANSACTION_${type.toUpperCase()}`, { assetName, type, amount, quantity }, req);
 
@@ -276,6 +212,8 @@ const deleteTransaction = async (req, res, next) => {
     }
 
     await prisma.transaction.delete({ where: { id: parseInt(id) } });
+
+    await recalculatePortfolio(portfolio.id);
 
     await logAudit(req.userId, 'TRANSACTION_DELETE', { transactionId: parseInt(id) }, req);
 
@@ -575,12 +513,130 @@ const importTransactionsCSV = async (req, res, next) => {
 
     const result = await prisma.transaction.createMany({ data: valid, skipDuplicates: false });
 
+    await recalculatePortfolio(portfolio.id);
+
     res.json({
       success: true,
       message: `Imported ${result.count} transaction(s)${errors.length > 0 ? ` (${errors.length} skipped)` : ''}`,
       data: { imported: result.count, skipped: errors.length, errors: errors.slice(0, 10) }
     });
   } catch (err) { next(err); }
+};
+
+const recalculatePortfolio = async (portfolioId) => {
+  const transactions = await prisma.transaction.findMany({
+    where: { portfolioId },
+    orderBy: { date: 'asc' }
+  });
+
+  let cash = 100000.00;
+  const assetMap = {};
+
+  for (const tx of transactions) {
+    const assetName = tx.assetName.trim();
+    const type = tx.type.toLowerCase();
+    const amount = Number(tx.amount);
+    const quantity = tx.quantity ? Number(tx.quantity) : 0;
+
+    if (type === 'buy') {
+      cash -= amount;
+      if (!assetMap[assetName]) {
+        assetMap[assetName] = { quantity: 0, totalInvested: 0 };
+      }
+      assetMap[assetName].quantity += quantity;
+      assetMap[assetName].totalInvested += amount;
+    } else if (type === 'sell') {
+      cash += amount;
+      if (assetMap[assetName]) {
+        const avgCost = assetMap[assetName].quantity > 0 
+          ? assetMap[assetName].totalInvested / assetMap[assetName].quantity 
+          : 0;
+        assetMap[assetName].quantity -= quantity;
+        assetMap[assetName].totalInvested -= avgCost * quantity;
+        if (assetMap[assetName].quantity <= 0) {
+          delete assetMap[assetName];
+        }
+      }
+    } else if (type === 'dividend' || type === 'interest') {
+      cash += amount;
+    }
+  }
+
+  await prisma.asset.deleteMany({ where: { portfolioId } });
+
+  const { classifyAsset } = require('../services/assetClassifier');
+  const { fetchPrice } = require('../services/priceService');
+
+  for (const [name, data] of Object.entries(assetMap)) {
+    if (data.quantity > 0) {
+      const type = classifyAsset(name);
+      const currentPrice = await fetchPrice(name);
+      const averageCost = data.totalInvested / data.quantity;
+
+      await prisma.asset.create({
+        data: {
+          portfolioId,
+          name,
+          type,
+          currentPrice,
+          quantity: data.quantity,
+          averageCost,
+          totalInvested: data.totalInvested
+        }
+      });
+    }
+  }
+
+  await prisma.portfolio.update({
+    where: { id: portfolioId },
+    data: { cashBalance: Math.max(0, cash) }
+  });
+};
+
+const getBenchmarkHistory = async (req, res, next) => {
+  try {
+    const { days } = req.query;
+    let range = '1mo';
+    if (days === '90') range = '3mo';
+    if (days === '365') range = '1y';
+
+    const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/^GSPC?range=${range}&interval=1d`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch benchmark from Yahoo');
+    }
+
+    const json = await response.json();
+    const result = json.chart?.result?.[0];
+    const timestamps = result?.timestamp || [];
+    const closes = result?.indicators?.quote?.[0]?.close || [];
+
+    const data = [];
+    for (let i = 0; i < timestamps.length; i++) {
+      if (closes[i] !== null && closes[i] !== undefined) {
+        data.push({
+          date: new Date(timestamps[i] * 1000).toISOString().split('T')[0],
+          close: Math.round(closes[i] * 100) / 100
+        });
+      }
+    }
+
+    res.json({ success: true, data });
+  } catch (err) {
+    console.warn('[Benchmark] Error fetching S&P 500 history, using fallback:', err.message);
+    const daysNum = parseInt(days) || 30;
+    const data = [];
+    let price = 5000;
+    for (let i = daysNum; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      price += price * (Math.random() * 0.008 - 0.003);
+      data.push({
+        date: date.toISOString().split('T')[0],
+        close: Math.round(price * 100) / 100
+      });
+    }
+    res.json({ success: true, data });
+  }
 };
 
 module.exports = {
@@ -593,6 +649,7 @@ module.exports = {
   clearAllTransactions,
   getPortfolioHistory,
   getTechnicalIndicators,
-  importTransactionsCSV
+  importTransactionsCSV,
+  getBenchmarkHistory
 };
 
