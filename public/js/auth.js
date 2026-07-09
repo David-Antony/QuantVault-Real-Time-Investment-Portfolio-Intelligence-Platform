@@ -71,20 +71,29 @@ class PageGuard {
       const path = window.location.pathname;
       const currentPage = path.split('/').pop(); // e.g. 'portfolio.html' or ''
 
-      // Pages accessible without authentication
-      const publicPages = ['login.html', 'signup.html'];
+      // Pages accessible without authentication, where logged-in users are redirected away
+      const authPages = ['login.html', 'signup.html'];
+      
+      // Landing pages that are completely public, but show different UI if logged in
+      const landingPages = ['index.html', ''];
 
-      // If on a public (auth) page and already logged in → go to portfolio dashboard
-      if (publicPages.includes(currentPage)) {
+      // If on a auth page and already logged in → go to portfolio dashboard
+      if (authPages.includes(currentPage)) {
         if (AuthApi.isLoggedIn()) {
           window.location.href = 'portfolio.html';
         }
-        return; // No further checks needed for public pages
+        return; 
+      }
+
+      // If on a landing page, just update UI if logged in (do not redirect)
+      if (landingPages.includes(currentPage)) {
+        if (AuthApi.isLoggedIn()) {
+          PageGuard.updateUIForLoggedInUser();
+        }
+        return;
       }
 
       // Every other page requires authentication.
-      // This covers: index.html, portfolio.html, transactions.html,
-      //              reports.html, alerts.html, profile.html, and '' (root).
       if (!AuthApi.isLoggedIn()) {
         window.location.href = 'login.html';
         return;
@@ -108,6 +117,15 @@ class PageGuard {
 
     const welcomeMsg = document.querySelector('.hero h1');
     if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${user.username}!`;
+    
+    // Update navbar CTA on landing page to show Dashboard/Logout instead of Login/Signup
+    const navCtaGroup = document.querySelector('.nav-cta-group');
+    if (navCtaGroup) {
+      navCtaGroup.innerHTML = `
+        <a href="portfolio.html" class="btn-secondary" style="border-radius: 10px; padding: 8px 18px; font-size: 0.875rem;">Dashboard</a>
+        <button onclick="logout()" class="btn" style="border-radius: 10px; padding: 8px 18px; font-size: 0.875rem; border: none; cursor: pointer; color: white;">Logout</button>
+      `;
+    }
   }
 }
 
