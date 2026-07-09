@@ -571,7 +571,7 @@ function updateTransactionHistory() {
     if (!container) return;
     const p = PortfolioDataStore.getPortfolio();
     if (!p || p.transactions.length === 0) {
-        container.innerHTML = '<div class="no-transactions"><p>No transactions yet</p><button onclick="window.location.href=\'transactions.html\'" class="add-transaction-btn">Add Transaction</button></div>';
+        container.innerHTML = '<div class="no-transactions"><p>No transactions yet</p><button onclick="window.location.href=\'transactions.html\'" class="btn btn-primary" style="margin-top: 16px;">Add Transaction</button></div>';
         return;
     }
 
