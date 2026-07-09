@@ -9,15 +9,15 @@ const getWatchlist = async (req, res, next) => {
       orderBy: { addedAt: 'desc' }
     });
     const { fetchPrice } = require('../services/priceService');
-    const enriched = items.map((item) => ({
+    const enriched = await Promise.all(items.map(async (item) => ({
       id: item.id,
       symbol: item.symbol,
       name: item.name,
       notes: item.notes,
       targetPrice: item.targetPrice ? Number(item.targetPrice) : null,
-      currentPrice: fetchPrice(item.symbol),
+      currentPrice: await fetchPrice(item.symbol),
       addedAt: item.addedAt
-    }));
+    })));
     res.json({ success: true, data: enriched });
   } catch (err) { next(err); }
 };
