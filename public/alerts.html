@@ -95,7 +95,10 @@
                             <div class="alert-form-row">
                                 <div class="form-group">
                                     <label for="alertAsset">Asset Name</label>
-                                    <input type="text" id="alertAsset" placeholder="e.g., AAPL, Tesla, BTC">
+                                  <div class="autocomplete-container">
+                                    <input type="text" id="alertAsset" placeholder="e.g., AAPL, Tesla, BTC" autocomplete="off">
+                                    <div id="alertAutocomplete" class="autocomplete-results"></div>
+                                  </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="alertCondition">Condition</label>
@@ -160,15 +163,70 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('accessToken');
-            if (token) {
-                try {
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    const nameEl = document.getElementById('sidebarUsername');
-                    if (nameEl && payload.username) nameEl.textContent = payload.username;
-                } catch(e) {}
+            const user = window.AuthManager ? window.AuthManager.getCurrentUser() : null;
+            if (user && user.username) {
+                const nameEl = document.getElementById('sidebarUsername');
+                if (nameEl) nameEl.textContent = user.username;
             }
+            setupAutocomplete('alertAsset', 'alertAutocomplete', (item) => {
+                document.getElementById('alertAsset').value = item.symbol;
+            });
         });
+
+        let searchTimeout;
+        function setupAutocomplete(inputId, resultsId, onSelect) {
+            const input = document.getElementById(inputId);
+            const resultsContainer = document.getElementById(resultsId);
+
+            input.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                const query = e.target.value.trim();
+                
+                if (query.length < 1) {
+                    resultsContainer.innerHTML = '';
+                    resultsContainer.classList.remove('active');
+                    return;
+                }
+
+                searchTimeout = setTimeout(async () => {
+                    try {
+                        const token = localStorage.getItem('accessToken');
+                        const res = await fetch(`/api/market/search?q=${encodeURIComponent(query)}`, { headers: { 'Authorization': `Bearer ${token}` } });
+                        const data = await res.json();
+                        const results = data.data || [];
+                        
+                        if (results.length === 0) {
+                            resultsContainer.innerHTML = '<div class="autocomplete-item"><span class="autocomplete-name">No results found</span></div>';
+                        } else {
+                            resultsContainer.innerHTML = results.map(item => `
+                                <div class="autocomplete-item" data-symbol="${item.symbol}" data-name="${item.name.replace(/"/g, '&quot;')}">
+                                    <span class="autocomplete-symbol">${item.symbol}</span>
+                                    <span class="autocomplete-name">${item.name} &middot; ${item.exchange}</span>
+                                </div>
+                            `).join('');
+                            
+                            resultsContainer.querySelectorAll('.autocomplete-item').forEach(el => {
+                                if (el.hasAttribute('data-symbol')) {
+                                    el.addEventListener('click', () => {
+                                        onSelect({ symbol: el.dataset.symbol, name: el.dataset.name });
+                                        resultsContainer.classList.remove('active');
+                                    });
+                                }
+                            });
+                        }
+                        resultsContainer.classList.add('active');
+                    } catch (err) {
+                        console.error('Search error', err);
+                    }
+                }, 300);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (e.target !== input && !resultsContainer.contains(e.target)) {
+                    resultsContainer.classList.remove('active');
+                }
+            });
+        }
 
         let alertsData = [];
 

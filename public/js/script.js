@@ -606,7 +606,7 @@ function updateAssetAllocation() {
     });
 }
 
-function updatePortfolioChart() {
+async function updatePortfolioChart() {
     const canvas = document.getElementById('portfolioChart');
     if (!canvas) return;
 
@@ -619,16 +619,27 @@ function updatePortfolioChart() {
         // ignore
     }
 
-    const p = PortfolioDataStore.getPortfolio();
-    const historicalData = generateHistoricalData(p);
+    try {
+        const p = PortfolioDataStore.getPortfolio();
+        let chartData = { labels: [], values: [] };
+        
+        // Fetch real historical data from backend
+        const historyResponse = await PortfolioApi.getPortfolioHistory(30);
+        if (historyResponse && historyResponse.success && historyResponse.data && historyResponse.data.length > 0) {
+            chartData.labels = historyResponse.data.map(s => new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            chartData.values = historyResponse.data.map(s => s.totalValue);
+        } else {
+            // Fallback to geometric generation if no history exists (e.g. new user)
+            chartData = generateHistoricalData(p);
+        }
 
-    new Chart(canvas.getContext('2d'), {
+        new Chart(canvas.getContext('2d'), {
         type: 'line',
         data: {
-            labels: historicalData.labels,
+            labels: chartData.labels,
             datasets: [{
                 label: 'Portfolio Value',
-                data: historicalData.values,
+                data: chartData.values,
                 borderColor: 'rgba(75, 192, 192, 1)',
                 backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 fill: true,
@@ -639,13 +650,18 @@ function updatePortfolioChart() {
             responsive: true,
             plugins: {
                 title: { display: true, text: 'Portfolio Growth Over Time' },
+                legend: { display: false },
                 tooltip: { callbacks: { label: (ctx) => `$${ctx.parsed.y.toFixed(2)}` } }
             },
             scales: {
-                y: { beginAtZero: false, ticks: { callback: (val) => '$' + val.toLocaleString() } }
+                y: { beginAtZero: false, ticks: { callback: (val) => '$' + val.toLocaleString() } },
+                x: { display: false }
             }
         }
     });
+    } catch (err) {
+        console.error('Failed to load portfolio chart data', err);
+    }
 }
 
 function generateHistoricalData(p) {

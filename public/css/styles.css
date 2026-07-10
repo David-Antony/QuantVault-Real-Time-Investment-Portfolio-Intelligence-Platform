@@ -2873,3 +2873,65 @@ body.signup-page .market-orb__signal {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ══════════════════════════════════════════════════════════
+   AUTOCOMPLETE SEARCH DROPDOWN
+   ══════════════════════════════════════════════════════════ */
+.autocomplete-container {
+    position: relative;
+    width: 100%;
+}
+
+.autocomplete-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: none;
+    flex-direction: column;
+}
+
+.autocomplete-results.active {
+    display: flex;
+}
+
+.autocomplete-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.selected {
+    background: rgba(255,255,255,0.05);
+}
+
+.autocomplete-symbol {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: var(--text-sm);
+}
+
+.autocomplete-name {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    max-width: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1,0 +1,45 @@
+- main [ref=f1e2]:
+  - generic [ref=f1e3]:
+    - generic [ref=f1e4]:
+      - generic [ref=f1e5]:
+        - generic [ref=f1e6]: QV
+        - generic [ref=f1e7]: QuantVault
+      - heading "Welcome back." [level=1] [ref=f1e8]:
+        - text: Welcome
+        - text: back.
+      - paragraph [ref=f1e9]: Log in to continue managing your portfolio, review real-time analytics, and stay ahead of the markets.
+      - generic [ref=f1e10]:
+        - generic [ref=f1e11]:
+          - strong [ref=f1e12]: ⚡ Instant Access
+          - generic [ref=f1e13]: Jump straight into your live portfolio dashboard.
+        - generic [ref=f1e14]:
+          - strong [ref=f1e15]: 📊 Real-Time Data
+          - generic [ref=f1e16]: WebSocket price feeds update every 8 seconds.
+        - generic [ref=f1e17]:
+          - strong [ref=f1e18]: 🔒 Secure Session
+          - generic [ref=f1e19]: JWT rotation & httpOnly cookies keep you safe.
+        - generic [ref=f1e20]:
+          - strong [ref=f1e21]: 🔔 Smart Alerts
+          - generic [ref=f1e22]: Your price alerts are waiting — don't miss a move.
+    - generic [ref=f1e23]: QuantVault — Real-Time Investment Intelligence Platform · © 2026
+  - region "Sign In" [ref=f1e24]:
+    - generic [ref=f1e25]:
+      - heading "Sign In" [level=2] [ref=f1e26]
+      - paragraph [ref=f1e27]: Enter your credentials to access your dashboard.
+    - generic [ref=f1e29]:
+      - generic [ref=f1e30]:
+        - generic [ref=f1e31]: Email Address
+        - textbox "Email Address" [ref=f1e32]:
+          - /placeholder: you@example.com
+      - generic [ref=f1e33]:
+        - generic [ref=f1e34]: Password
+        - generic [ref=f1e35]:
+          - textbox "Password" [ref=f1e36]:
+            - /placeholder: Enter your password
+          - button "Toggle password visibility" [ref=f1e37] [cursor=pointer]:
+            - img [ref=f1e38]
+      - button "Sign In to QuantVault" [ref=f1e41] [cursor=pointer]
+    - generic [ref=f1e42]:
+      - text: New to QuantVault?
+      - link "Create a free account" [ref=f1e43] [cursor=pointer]:
+        - /url: signup.html

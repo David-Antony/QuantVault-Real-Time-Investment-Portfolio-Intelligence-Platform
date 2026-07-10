@@ -88,7 +88,10 @@
             <div class="form-row" style="grid-template-columns:1fr 1fr 1fr auto;gap:var(--space-4);align-items:end">
               <div class="form-group">
                 <label class="form-label">Symbol <span style="color:var(--rose)">*</span></label>
-                <input type="text" id="wlSymbol" class="form-input" placeholder="e.g. NVDA" maxlength="30" required />
+              <div class="autocomplete-container">
+                <input type="text" id="wlSymbol" class="form-input" placeholder="e.g. NVDA" maxlength="30" required autocomplete="off" />
+                <div id="wlAutocomplete" class="autocomplete-results"></div>
+              </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Name <span style="color:var(--rose)">*</span></label>
@@ -148,7 +151,65 @@
         document.getElementById('sidebarUsername').textContent = user.username;
       }
       loadWatchlist();
+      setupAutocomplete('wlSymbol', 'wlAutocomplete', (item) => {
+        document.getElementById('wlSymbol').value = item.symbol;
+        document.getElementById('wlName').value = item.name;
+      });
     });
+
+    let searchTimeout;
+    function setupAutocomplete(inputId, resultsId, onSelect) {
+      const input = document.getElementById(inputId);
+      const resultsContainer = document.getElementById(resultsId);
+
+      input.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        const query = e.target.value.trim();
+        
+        if (query.length < 1) {
+          resultsContainer.innerHTML = '';
+          resultsContainer.classList.remove('active');
+          return;
+        }
+
+        searchTimeout = setTimeout(async () => {
+          try {
+            const res = await apiClient.get(`/market/search?q=${encodeURIComponent(query)}`);
+            const results = res.data.data || [];
+            
+            if (results.length === 0) {
+              resultsContainer.innerHTML = '<div class="autocomplete-item"><span class="autocomplete-name">No results found</span></div>';
+            } else {
+              resultsContainer.innerHTML = results.map(item => `
+                <div class="autocomplete-item" data-symbol="${item.symbol}" data-name="${item.name.replace(/"/g, '&quot;')}">
+                  <span class="autocomplete-symbol">${item.symbol}</span>
+                  <span class="autocomplete-name">${item.name} &middot; ${item.exchange}</span>
+                </div>
+              `).join('');
+              
+              resultsContainer.querySelectorAll('.autocomplete-item').forEach(el => {
+                if (el.hasAttribute('data-symbol')) {
+                  el.addEventListener('click', () => {
+                    onSelect({ symbol: el.dataset.symbol, name: el.dataset.name });
+                    resultsContainer.classList.remove('active');
+                  });
+                }
+              });
+            }
+            resultsContainer.classList.add('active');
+          } catch (err) {
+            console.error('Search error', err);
+          }
+        }, 300);
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (e.target !== input && !resultsContainer.contains(e.target)) {
+          resultsContainer.classList.remove('active');
+        }
+      });
+    }
 
     async function loadWatchlist() {
       try {

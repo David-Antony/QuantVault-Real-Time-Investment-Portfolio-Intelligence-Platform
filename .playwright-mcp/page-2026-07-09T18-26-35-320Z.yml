@@ -1,0 +1,46 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: QV
+        - generic [ref=e7]: QuantVault
+      - heading "Welcome back." [level=1] [ref=e8]:
+        - text: Welcome
+        - text: back.
+      - paragraph [ref=e9]: Log in to continue managing your portfolio, review real-time analytics, and stay ahead of the markets.
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - strong [ref=e12]: ⚡ Instant Access
+          - generic [ref=e13]: Jump straight into your live portfolio dashboard.
+        - generic [ref=e14]:
+          - strong [ref=e15]: 📊 Real-Time Data
+          - generic [ref=e16]: WebSocket price feeds update every 8 seconds.
+        - generic [ref=e17]:
+          - strong [ref=e18]: 🔒 Secure Session
+          - generic [ref=e19]: JWT rotation & httpOnly cookies keep you safe.
+        - generic [ref=e20]:
+          - strong [ref=e21]: 🔔 Smart Alerts
+          - generic [ref=e22]: Your price alerts are waiting — don't miss a move.
+    - generic [ref=e23]: QuantVault — Real-Time Investment Intelligence Platform · © 2026
+  - region "Sign In" [ref=e24]:
+    - generic [ref=e25]:
+      - heading "Sign In" [level=2] [ref=e26]
+      - paragraph [ref=e27]: Enter your credentials to access your dashboard.
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - generic [ref=e31]: Email Address
+          - textbox "Email Address" [ref=e32]:
+            - /placeholder: you@example.com
+        - generic [ref=e33]:
+          - generic [ref=e34]: Password
+          - generic [ref=e35]:
+            - textbox "Password" [ref=e36]:
+              - /placeholder: Enter your password
+            - button "Toggle password visibility" [ref=e37] [cursor=pointer]:
+              - img [ref=e38]
+        - button "Sign In to QuantVault" [ref=e41] [cursor=pointer]
+      - generic [ref=e42]:
+        - text: New to QuantVault?
+        - link "Create a free account" [ref=e43] [cursor=pointer]:
+          - /url: signup.html

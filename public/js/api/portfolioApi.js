@@ -4,6 +4,11 @@ class PortfolioApi {
     return response.data;
   }
 
+  static async getPortfolioHistory(days = 30) {
+    const response = await apiClient.get(`/portfolio/history?days=${days}`);
+    return response.data;
+  }
+
   static async getTransactions() {
     const response = await apiClient.get('/portfolio/transactions');
     return response.data;

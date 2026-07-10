@@ -14,6 +14,7 @@ const auditRoutes = require('./routes/audit');
 const watchlistRoutes = require('./routes/watchlist');
 const twoFactorRoutes = require('./routes/twoFactor');
 const reportsRoutes = require('./routes/reports');
+const marketRoutes = require('./routes/market');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -69,6 +70,7 @@ app.use('/api/audit', apiLimiter, auditRoutes);
 app.use('/api/watchlist', apiLimiter, watchlistRoutes);
 app.use('/api/auth/2fa', apiLimiter, twoFactorRoutes);
 app.use('/api/reports', apiLimiter, reportsRoutes);
+app.use('/api/market', apiLimiter, marketRoutes);
 
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
