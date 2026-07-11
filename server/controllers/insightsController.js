@@ -121,4 +121,63 @@ Your holdings cover multiple asset classes (**${types.join(', ')}**). This multi
   }
 };
 
-module.exports = { getPortfolioInsights };
+const getMonteCarloForecast = async (req, res, next) => {
+  try {
+    const portfolio = await prisma.portfolio.findUnique({
+      where: { userId: req.userId },
+      include: { assets: true }
+    });
+
+    if (!portfolio) {
+      return res.status(404).json({ success: false, message: 'Portfolio not found' });
+    }
+
+    const cash = Number(portfolio.cashBalance);
+    const totalAssetValue = portfolio.assets.reduce((sum, a) => sum + Number(a.currentPrice) * Number(a.quantity), 0);
+    const initialValue = totalAssetValue + cash;
+
+    // Simulate 1000 paths over 10 years (120 months)
+    const months = 120;
+    const paths = 1000;
+    const expectedMonthlyReturn = 0.006; // ~7.2% annual
+    const monthlyVolatility = 0.04; // ~14% annual
+
+    const finalValues = [];
+
+    for (let i = 0; i < paths; i++) {
+      let value = initialValue;
+      for (let m = 0; m < months; m++) {
+        // Box-Muller transform for normal distribution
+        const u1 = Math.random();
+        const u2 = Math.random();
+        const z = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+        
+        const returnRate = expectedMonthlyReturn + z * monthlyVolatility;
+        value = value * (1 + returnRate);
+      }
+      finalValues.push(value);
+    }
+
+    finalValues.sort((a, b) => a - b);
+    const percentile10 = finalValues[Math.floor(paths * 0.1)];
+    const percentile50 = finalValues[Math.floor(paths * 0.5)];
+    const percentile90 = finalValues[Math.floor(paths * 0.9)];
+
+    res.json({
+      success: true,
+      data: {
+        initialValue: Math.round(initialValue),
+        forecast10Years: {
+          percentile10: Math.round(percentile10),
+          percentile50: Math.round(percentile50),
+          percentile90: Math.round(percentile90)
+        }
+      }
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getPortfolioInsights, getMonteCarloForecast };
