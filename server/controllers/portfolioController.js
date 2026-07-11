@@ -190,6 +190,18 @@ const createTransaction = async (req, res, next) => {
       }
     });
 
+    // Event Sourcing: Insert into Immutable Ledger
+    await prisma.ledgerEntry.create({
+      data: {
+        portfolioId: portfolio.id,
+        eventType: `TRANSACTION_CREATED`,
+        payload: {
+          transactionId: transaction.id,
+          assetName, type, amount, price, quantity, date
+        }
+      }
+    });
+
     await recalculatePortfolio(portfolio.id);
 
     await logAudit(req.userId, `TRANSACTION_${type.toUpperCase()}`, { assetName, type, amount, quantity }, req);
@@ -236,9 +248,23 @@ const deleteTransaction = async (req, res, next) => {
       throw ApiError.notFound('Transaction not found');
     }
 
+    const portfolioId = transaction.portfolioId;
     await prisma.transaction.delete({ where: { id: parseInt(id) } });
 
-    await recalculatePortfolio(portfolio.id);
+    // Event Sourcing: Insert into Immutable Ledger
+    await prisma.ledgerEntry.create({
+      data: {
+        portfolioId: portfolioId,
+        eventType: `TRANSACTION_DELETED`,
+        payload: {
+          transactionId: parseInt(id),
+          assetName: transaction.assetName,
+          type: transaction.type
+        }
+      }
+    });
+
+    await recalculatePortfolio(portfolioId);
 
     await logAudit(req.userId, 'TRANSACTION_DELETE', { transactionId: parseInt(id) }, req);
 
@@ -312,6 +338,17 @@ const clearAllTransactions = async (req, res, next) => {
 
     await prisma.transaction.deleteMany({
       where: { portfolioId: portfolio.id }
+    });
+
+    // Event Sourcing: Insert into Immutable Ledger
+    await prisma.ledgerEntry.create({
+      data: {
+        portfolioId: portfolio.id,
+        eventType: `PORTFOLIO_RESET`,
+        payload: {
+          reason: 'User triggered clear all transactions'
+        }
+      }
     });
 
     await prisma.asset.deleteMany({

@@ -41,6 +41,7 @@ model Portfolio {
   assets       Asset[]
   transactions Transaction[]
   snapshots    PortfolioSnapshot[]
+  ledgerEntries LedgerEntry[]
 
   @@map("portfolios")
 }
@@ -138,3 +139,18 @@ model WatchlistItem {
   @@index([userId])
   @@map("watchlist_items")
 }
+
+
+// --- Immutable Ledger (Event Sourcing) --------------------------------------
+model LedgerEntry {
+  id          Int       @id @default(autoincrement())
+  portfolioId Int       @map("portfolio_id")
+  eventType   String    @map("event_type") @db.VarChar(50) // DEPOSIT, BUY, SELL, WITHDRAW
+  payload     Json      @db.JsonB
+  timestamp   DateTime  @default(now()) @db.Timestamptz()
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@index([portfolioId, timestamp])
+  @@map("ledger_entries")
+}
+
