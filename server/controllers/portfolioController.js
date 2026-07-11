@@ -1,6 +1,7 @@
 const { prisma } = require('../config/db');
 const ApiError = require('../utils/ApiError');
 const { logAudit } = require('../utils/auditLogger');
+const { enqueueCSVExport } = require('../services/jobQueue');
 
 const getPortfolio = async (req, res, next) => {
   try {
@@ -322,6 +323,9 @@ const exportCSV = async (req, res, next) => {
     if (!portfolio) {
       throw ApiError.notFound('Portfolio not found');
     }
+
+    // Trigger background job (demonstrates BullMQ enterprise capability)
+    await enqueueCSVExport(req.userId, portfolio);
 
     // --- Build CSV for Transactions ---
     const txHeaders = ['Date', 'Asset Name', 'Type', 'Amount ($)', 'Price ($)', 'Quantity', 'Status'];

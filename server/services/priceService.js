@@ -6,6 +6,7 @@
 
 const { prisma } = require('../config/db');
 const { logAudit } = require('../utils/auditLogger');
+const CircuitBreaker = require('opossum');
 
 // Price cache mapping: { TICKER: { price, timestamp } }
 const PRICE_CACHE = new Map();
@@ -22,8 +23,28 @@ function _getBasePrice(name) {
 }
 
 /**
- * Fetch price from Yahoo Finance or fallback to simulation
+ * Fetch price from Yahoo Finance wrapped in a Circuit Breaker
  */
+const breakerOptions = {
+  timeout: 3000, // If Yahoo takes longer than 3s, trigger a failure
+  errorThresholdPercentage: 50, // When 50% of requests fail, trip the circuit
+  resetTimeout: 10000 // After 10 seconds, try again
+};
+
+const yahooApiCall = async (querySymbol) => {
+  const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${querySymbol}`);
+  if (!response.ok) {
+    throw new Error('Yahoo API failed');
+  }
+  return response.json();
+};
+
+const breaker = new CircuitBreaker(yahooApiCall, breakerOptions);
+
+breaker.on('open', () => console.warn('[CircuitBreaker] Yahoo Finance API circuit tripped! Using fallbacks.'));
+breaker.on('halfOpen', () => console.warn('[CircuitBreaker] Circuit half-open; testing Yahoo Finance...'));
+breaker.on('close', () => console.log('[CircuitBreaker] Yahoo Finance API circuit closed (recovered).'));
+
 async function fetchPrice(assetName) {
   const key = assetName.trim().toUpperCase();
   const cached = PRICE_CACHE.get(key);
@@ -43,14 +64,11 @@ async function fetchPrice(assetName) {
       querySymbol = `${key}-USD`;
     }
 
-    const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${querySymbol}`);
-    if (response.ok) {
-      const data = await response.json();
-      const regularPrice = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
-      if (regularPrice && typeof regularPrice === 'number') {
-        price = Math.round(regularPrice * 100) / 100;
-        console.log(`[PriceService] Fetched real price for ${key}: $${price}`);
-      }
+    const data = await breaker.fire(querySymbol);
+    const regularPrice = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
+    if (regularPrice && typeof regularPrice === 'number') {
+      price = Math.round(regularPrice * 100) / 100;
+      console.log(`[PriceService] Fetched real price for ${key}: $${price}`);
     }
   } catch (err) {
     console.warn(`[PriceService] Failed to fetch real price for ${key}:`, err.message);
