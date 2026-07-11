@@ -607,17 +607,8 @@ function updateAssetAllocation() {
 }
 
 async function updatePortfolioChart() {
-    const canvas = document.getElementById('portfolioChart');
-    if (!canvas) return;
-
-    try {
-        if (window.Chart && typeof Chart.getChart === 'function') {
-            const existing = Chart.getChart(canvas);
-            if (existing) existing.destroy();
-        }
-    } catch (err) {
-        // ignore
-    }
+    const chartContainer = document.getElementById('portfolioChart');
+    if (!chartContainer) return;
 
     try {
         const p = PortfolioDataStore.getPortfolio();
@@ -633,34 +624,65 @@ async function updatePortfolioChart() {
             chartData = generateHistoricalData(p);
         }
 
-        new Chart(canvas.getContext('2d'), {
-        type: 'line',
-        data: {
-            labels: chartData.labels,
-            datasets: [{
-                label: 'Portfolio Value',
-                data: chartData.values,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                fill: true,
-                tension: 0.1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                title: { display: true, text: 'Portfolio Growth Over Time' },
-                legend: { display: false },
-                tooltip: { callbacks: { label: (ctx) => `$${ctx.parsed.y.toFixed(2)}` } }
-            },
-            scales: {
-                y: { beginAtZero: false, ticks: { callback: (val) => '$' + val.toLocaleString() } },
-                x: { display: false }
+        if (window.echarts) {
+            // Check if chart instance exists, dispose it to prevent memory leaks
+            let myChart = echarts.getInstanceByDom(chartContainer);
+            if (myChart) {
+                myChart.dispose();
             }
+            
+            myChart = echarts.init(chartContainer);
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function (params) {
+                        return `${params[0].name}<br/>Value: $${params[0].value.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                    },
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    borderColor: '#334155',
+                    textStyle: { color: '#f8fafc' }
+                },
+                grid: { left: '3%', right: '4%', bottom: '3%', top: '5%', containLabel: true },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: chartData.labels,
+                    axisLine: { lineStyle: { color: '#334155' } },
+                    axisLabel: { color: '#94a3b8' }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLine: { show: false },
+                    splitLine: { lineStyle: { color: '#1e293b' } },
+                    axisLabel: { color: '#94a3b8', formatter: '${value}' },
+                    scale: true
+                },
+                series: [
+                    {
+                        name: 'Portfolio Value',
+                        type: 'line',
+                        smooth: true,
+                        symbol: 'none',
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: 'rgba(56, 189, 248, 0.4)' },
+                                { offset: 1, color: 'rgba(56, 189, 248, 0.0)' }
+                            ])
+                        },
+                        lineStyle: { width: 3, color: '#38bdf8' },
+                        data: chartData.values
+                    }
+                ]
+            };
+            myChart.setOption(option);
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
         }
-    });
     } catch (err) {
-        console.error('Failed to load portfolio chart data', err);
+        console.error('Failed to load portfolio chart', err);
     }
 }
 
