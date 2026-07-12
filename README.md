@@ -152,3 +152,16 @@ The project is ready for deployment on platforms like Vercel, Render, or AWS.
 *   **Custom Goal Tracking:** Enable users to set target net-worth milestones and receive gamified updates as they approach them.
 *   **Email & SMS Alerts:** Connect the background Job Queue (BullMQ) to Twilio or SendGrid to dispatch triggered price alerts instantly.
 *   **Advanced Tax-Loss Harvesting:** Algorithms to suggest which underperforming assets to sell to offset capital gains tax.
+
+
+---
+
+## 9. Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (\git checkout -b feature/AmazingFeature\)
+3. Commit your Changes (\git commit -m 'Add some AmazingFeature'\)
+4. Push to the Branch (\git push origin feature/AmazingFeature\)
+5. Open a Pull Request
