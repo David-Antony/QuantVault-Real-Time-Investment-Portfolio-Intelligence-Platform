@@ -1,13 +1,27 @@
 const { Queue, Worker } = require('bullmq');
+const IORedis = require('ioredis');
 
-// Create Redis connection options
-const redisOptions = {
-  url: process.env.REDIS_URL || 'redis://localhost:6379',
+// Create Redis connection options with error handling to prevent console spam
+const redisConnection = new IORedis(process.env.REDIS_URL || 'redis://localhost:6379', {
   maxRetriesPerRequest: null,
-};
+  retryStrategy(times) {
+    if (times > 3) {
+      console.warn('[JobQueue] Redis connection failed. Background queue is disabled. Please ensure Redis is running via Docker.');
+      return null; // Stop retrying
+    }
+    return Math.min(times * 500, 2000);
+  }
+});
+
+redisConnection.on('error', (err) => {
+  // Suppress ECONNREFUSED spam
+  if (err.code !== 'ECONNREFUSED') {
+    console.error('[JobQueue] Redis Error:', err.message);
+  }
+});
 
 // Create a queue for heavy reporting tasks
-const reportingQueue = new Queue('reportingQueue', { connection: redisOptions });
+const reportingQueue = new Queue('reportingQueue', { connection: redisConnection });
 
 /**
  * Worker to process CSV generation in the background.
@@ -27,7 +41,7 @@ const reportingWorker = new Worker('reportingQueue', async (job) => {
     console.log(`[JobQueue] Completed async data processing for User ${userId}`);
     return { success: true };
   }
-}, { connection: redisOptions });
+}, { connection: redisConnection });
 
 reportingWorker.on('completed', (job, returnvalue) => {
   console.log(`[JobQueue] Job ${job.id} completed! Result:`, returnvalue);
