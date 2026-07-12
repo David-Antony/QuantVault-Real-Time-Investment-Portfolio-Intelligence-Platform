@@ -1,248 +1,154 @@
-# QuantVault — Real-Time Investment Portfolio Intelligence Platform 🚀
+# 📈 QuantVault - Real-Time Investment Portfolio Intelligence Platform
 
-A production-grade full-stack investment portfolio platform with **WebSocket real-time price feeds**, JWT authentication, smart price alert engine, advanced financial analytics, audit logging, PostgreSQL persistence, and Docker support.
+![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?logo=node.js)
+![Express](https://img.shields.io/badge/Express.js-Framework-black?logo=express)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)
+![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?logo=redis)
+![ECharts](https://img.shields.io/badge/ECharts-Visualization-E43961?logo=apacheecharts)
 
-## Architecture
+An enterprise-grade, data-driven investment portfolio intelligence platform designed to help investors track assets, analyze performance, and simulate future wealth growth through advanced financial algorithms and real-time insights.
 
-```
-Client (Browser)
-  ├── HTML5 / CSS3 (Glassmorphism Theme)
-  ├── Chart.js (Real Portfolio History Visualization)
-  ├── Socket.io Client (Live Price Updates)
-  ├── Axios HTTP Client
-  │     ├── JWT Access Token (Authorization Header)
-  │     └── Automatic Refresh Token Rotation
-  └── Custom SVG Avatar Generator (12 Presets)
+---
 
-Express.js + Socket.io Server (Port 3002)
-  ├── Helmet (Security Headers)
-  ├── CORS (Cookie Credentials)
-  ├── Rate Limiting (Auth: 20/15min, API: 200/15min)
-  ├── Input Validation (express-validator)
-  ├── JWT Middleware (access + refresh token)
-  ├── Audit Log Middleware
-  ├── Global Error Handler
-  └── Static File Server (public/)
+## 2. Overview
 
-Background Services
-  ├── Price Service (Brownian Motion mock engine, 8s tick)
-  ├── Socket.io Broadcaster (per-user private rooms)
-  └── Snapshot Cron (daily portfolio value snapshots @ 00:01)
+**QuantVault** is a full-stack, multi-tenant portfolio management system that transforms raw financial data into actionable insights. It enables users to monitor real-time stock prices, calculate professional-grade investment metrics (like XIRR and Beta), and simulate long-term portfolio growth using Monte Carlo algorithms.
 
-PostgreSQL Database
-  └── Prisma ORM
-        ├── users
-        ├── portfolios
-        ├── assets
-        ├── transactions
-        ├── audit_logs       ← NEW
-        ├── portfolio_snapshots ← NEW
-        └── price_alerts     ← NEW
-```
+Built with **HTML/Vanilla JS** for a lightning-fast frontend and a robust **Node.js + Express.js** backend, the platform leverages **PostgreSQL (via Prisma ORM)** for secure data storage. The application architecture embraces enterprise patterns, utilizing an **Event-Sourced Immutable Ledger** for flawless transaction history, **BullMQ and Redis** for asynchronous background job processing, and **Opossum Circuit Breakers** to ensure resilience against third-party API failures.
 
-## Tech Stack
+Using **ECharts**, the platform generates interactive, dynamic dashboards, historical trend analyses, and asset allocation visualizations. It also features a fully integrated **Progressive Web App (PWA)** architecture, allowing it to be installed natively on devices.
 
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | HTML5, CSS3 (Glassmorphism), Vanilla JS, Chart.js, Axios, Socket.io Client |
-| **Backend** | Node.js, Express.js, Socket.io |
-| **Database** | PostgreSQL |
-| **ORM** | Prisma |
-| **Authentication** | bcrypt (12 rounds), JWT (access + refresh tokens), httpOnly cookies |
-| **Real-Time** | Socket.io WebSocket, Mock Brownian Motion Price Engine |
-| **Background Jobs** | node-cron (daily snapshots) |
-| **Security** | Helmet, CORS, Rate Limiting, Input Validation, Audit Logging |
-| **Export** | CSV (Excel-compatible with BOM), JSON |
-| **DevOps** | Docker, Docker Compose, Adminer |
-| **Dev Tools** | ESLint, Prettier, Nodemon, Jest, Supertest |
+---
 
-## Key Features
+## 3. Features
 
-### 🔴 Core Intelligence
-- **Real-time price feeds** via Socket.io — portfolio value updates every 8 seconds
-- **Smart price alert engine** — set above/below triggers per asset, get notified when triggered
-- **Portfolio snapshot history** — daily cron job records real portfolio value for genuine chart data
+### 📊 Interactive Analytics Dashboard & PWA
+* Responsive, futuristic UI optimized for all devices and installable as a Progressive Web App (PWA).
+* **Asset Allocation:** Real-time breakdown of portfolio holdings.
+* **Performance Tracking:** ECharts-powered interactive line charts tracking portfolio value over time.
+* **Real-time Quotes:** Live market data integrated with Yahoo Finance APIs.
 
-### 🟡 Advanced Analytics
-- **Sharpe Ratio** — risk-adjusted return vs 6% annual risk-free baseline
-- **Volatility (σ)** — standard deviation of monthly returns
-- **Max Drawdown** — largest peak-to-trough portfolio decline
-- **Win Rate** — percentage of assets with positive return
-- **Diversification Score** — Shannon entropy-based spread metric
-- **Passive Income Tracker** — cumulative dividends + interest received
-- **Transaction Breakdown** — buy/sell/dividend/interest counts
+### 🧠 Advanced Financial Analytics Engine
+* **Extended Internal Rate of Return (XIRR):** Accurate annualized return calculations handling irregular cash flows.
+* **Portfolio Beta:** Measures portfolio volatility and systemic risk compared to the broader market.
+* **Monte Carlo Simulations:** 10-year probabilistic wealth forecasting running 1,000 algorithmic paths to predict the 10th, 50th, and 90th percentile outcomes.
 
-### 🟠 Enterprise Quality
-- **Audit Log** — every login, logout, buy, sell, delete recorded with IP + timestamp
-- **JWT refresh token rotation** — each refresh issues a new token, invalidating the old
-- **CSV export** — Excel-compatible with BOM encoding
-- **Docker + Docker Compose** — one-command startup with PostgreSQL + Adminer
+### ⚡ Resilient & Enterprise Architecture
+* **Event-Driven Ledger:** All trades and deposits are immutably recorded in a `LedgerEntry` system, providing a perfect audit trail for all balance recalculations.
+* **Circuit Breakers (Opossum):** External API calls (like Yahoo Finance) are wrapped in circuit breakers that instantly failover to cached data during outages, preventing cascading server failures.
+* **Background Processing (BullMQ + Redis):** Heavy tasks, such as generating and exporting large CSV transaction reports, are offloaded to background worker queues, ensuring the main API thread remains blazing fast.
 
-## API Endpoints
+### 🤖 AI-Powered Insights
+* Integrates Google Gemini AI to analyze your asset distribution, cash drag, and risk concentration, delivering personalized wealth advisory tips. 
+* Seamlessly falls back to local heuristic/rule-based advisory engines if AI keys are absent.
 
-### Health
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Server health + version |
+---
 
-### Authentication
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/api/auth/register` | No | Register + auto-create portfolio |
-| POST | `/api/auth/login` | No | Login → access + refresh tokens |
-| POST | `/api/auth/refresh` | Cookie | Rotate refresh token |
-| POST | `/api/auth/logout` | Bearer | Clear refresh token |
+## 4. Tech Stack
 
-### Portfolio
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/portfolio` | Bearer | Full portfolio with metrics |
-| GET | `/api/portfolio/analytics` | Bearer | Sharpe, volatility, drawdown, win rate |
-| GET | `/api/portfolio/history?days=30` | Bearer | Real snapshot history for chart |
-| GET | `/api/portfolio/transactions` | Bearer | All transactions |
-| POST | `/api/portfolio/transactions` | Bearer | Create transaction |
-| DELETE | `/api/portfolio/transactions/:id` | Bearer | Delete transaction |
-| GET | `/api/portfolio/export` | Bearer | Export JSON |
-| GET | `/api/portfolio/export/csv` | Bearer | Export CSV (Excel-ready) |
-| DELETE | `/api/portfolio/clear` | Bearer | Reset portfolio |
+### 🎨 Frontend
+* **Core:** HTML5, CSS3, Vanilla JavaScript
+* **Visualization:** Apache ECharts
+* **Features:** Progressive Web App (Service Workers, Web Manifest)
 
-### Price Alerts
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/alerts` | Bearer | List all alerts |
-| POST | `/api/alerts` | Bearer | Create alert (above/below) |
-| PATCH | `/api/alerts/:id/toggle` | Bearer | Pause / resume |
-| DELETE | `/api/alerts/:id` | Bearer | Delete alert |
+### ⚙️ Backend
+* **Runtime:** Node.js & Express.js
+* **Database & ORM:** PostgreSQL & Prisma
+* **Caching & Queues:** Redis, BullMQ, ioredis
+* **Resilience:** Opossum (Circuit Breakers)
+* **Security:** JWT Authentication, Bcrypt password hashing
 
-### Audit Log
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/audit` | Bearer | Last 50 activity entries |
+---
 
-### Profile
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | `/api/profile` | Bearer | Get user profile |
-| PUT | `/api/profile` | Bearer | Update username + avatar |
-| PUT | `/api/profile/password` | Bearer | Change password |
-
-## Setup Instructions
+## 5. Installation & Running the Project
 
 ### Prerequisites
-- Node.js 20+
-- PostgreSQL 14+
+*   [Node.js](https://nodejs.org/) (v20+ recommended)
+*   [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Required for running PostgreSQL and Redis containers)
 
-### 1. Install
+### Setup Steps
+
+1.  **Clone the Repository:**
+    ```bash
+    git clone https://github.com/David-Antony/QuantVault-Real-Time-Investment-Portfolio-Intelligence-Platform.git
+    cd QuantVault-Real-Time-Investment-Portfolio-Intelligence-Platform
+    ```
+
+2.  **Environment Variables:**
+    Ensure you have a `.env` file in the root directory configured with your secrets:
+    ```env
+    DATABASE_URL="postgresql://portfolio_user:pass1@localhost:5432/portfolio_management"
+    REDIS_URL="redis://localhost:6379"
+    JWT_ACCESS_SECRET="your_access_secret"
+    JWT_REFRESH_SECRET="your_refresh_secret"
+    CLIENT_URL="http://localhost:3002"
+    GEMINI_API_KEY="your_optional_gemini_key"
+    ```
+
+---
+
+### Option A: Fully Dockerized Start (Production-Like) 🚀
+
+This method spins up the Database, Redis, and the Node.js application in isolated containers.
+
+1.  **Launch via Docker Compose:**
+    ```bash
+    docker-compose up -d --build
+    ```
+2.  **Access the App:**
+    Open [http://localhost:3002](http://localhost:3002) in your browser.
+
+---
+
+### Option B: Local Development (Separate DB/Redis) 💻
+
+If you prefer to run the Node server directly in your terminal for hot-reloading:
+
+#### 1. Start the Infrastructure (Postgres + Redis)
+Spin up just the background database services:
+```bash
+docker-compose up -d db redis
+```
+
+#### 2. Install Dependencies & Setup DB
 ```bash
 npm install
-```
-
-### 2. Configure Environment
-```bash
-cp .env.example .env
-```
-
-Required `.env` variables:
-```
-DATABASE_URL="postgresql://user:password@localhost:5432/portfolio_management"
-JWT_ACCESS_SECRET="your-secure-random-string"
-JWT_REFRESH_SECRET="your-another-secure-random-string"
-CLIENT_URL="http://localhost:3002"
-```
-
-### 3. Create PostgreSQL Database
-```sql
-CREATE DATABASE portfolio_management;
-```
-
-### 4. Run Migrations
-```bash
-npx prisma migrate dev --name init
 npx prisma generate
+npx prisma db push
 ```
 
-### 5. Start Development Server
+#### 3. Start the Backend Server
+Run the development server (runs on Port `3002`):
 ```bash
 npm run dev
 ```
+Open [http://localhost:3002](http://localhost:3002) in your browser.
 
-Open **http://localhost:3002**
+---
 
-### 6. Run with Docker (One Command)
-```bash
-docker-compose up --build
-```
-- App: http://localhost:3002
-- DB Admin (Adminer): http://localhost:8080
+## 6. Screenshots
 
-## Scripts
+| Login & Authentication | Portfolio Dashboard |
+| --- | --- |
+| ![Login Page](https://placehold.co/600x400/0f172a/38bdf8?text=Authentication+Portal) | ![Dashboard](https://placehold.co/600x400/0f172a/38bdf8?text=Interactive+Dashboard) |
 
-| Script | Description |
-|--------|-------------|
-| `npm start` | Start production server |
-| `npm run dev` | Start with nodemon (development) |
-| `npm run prisma:generate` | Generate Prisma client |
-| `npm run prisma:migrate` | Run database migrations |
-| `npm run prisma:studio` | Open Prisma Studio GUI |
-| `npm test` | Run Jest tests |
-| `npm run lint` | Run ESLint |
+| Advanced Analytics & Forecasting | Transactions & Ledger |
+| --- | --- |
+| ![Monte Carlo](https://placehold.co/600x400/0f172a/38bdf8?text=Monte+Carlo+Forecasts) | ![Ledger](https://placehold.co/600x400/0f172a/38bdf8?text=Immutable+Transaction+Ledger) |
 
-## Project Structure
+---
 
-```
-├── server.js                    # Entry point (HTTP + Socket.io)
-├── Dockerfile                   # Multi-stage production Docker build
-├── docker-compose.yml           # App + PostgreSQL + Adminer
-├── .dockerignore
-├── package.json
-├── .env / .env.example
-├── prisma/
-│   └── schema.prisma            # DB schema (6 models)
-├── server/
-│   ├── app.js                   # Express app setup + routes
-│   ├── config/db.js             # Prisma singleton
-│   ├── middleware/
-│   │   ├── auth.js              # JWT middleware
-│   │   ├── validate.js          # Input validation wrapper
-│   │   └── errorHandler.js     # Global error handler
-│   ├── controllers/
-│   │   ├── authController.js    # Register, login, refresh, logout
-│   │   ├── portfolioController.js # CRUD + export + analytics + history
-│   │   ├── analyticsController.js # Sharpe, volatility, drawdown, win rate
-│   │   ├── alertController.js   # Price alert CRUD
-│   │   ├── auditController.js   # Activity log
-│   │   └── profileController.js
-│   ├── routes/
-│   │   ├── auth.js, portfolio.js, profile.js
-│   │   ├── alerts.js            # NEW
-│   │   └── audit.js             # NEW
-│   ├── services/
-│   │   ├── priceService.js      # Brownian motion price engine + broadcaster
-│   │   └── snapshotService.js   # Daily cron snapshot
-│   └── utils/
-│       ├── jwt.js
-│       ├── auditLogger.js       # NEW
-│       └── ApiError.js
-├── public/
-│   ├── index.html               # Landing (QuantVault branding)
-│   ├── login.html / signup.html
-│   ├── portfolio.html           # Live price updates via Socket.io
-│   ├── transactions.html        # Add/view/delete + CSV export
-│   ├── reports.html             # Advanced analytics + real chart
-│   ├── alerts.html              # NEW — price alert management
-│   └── profile.html            # Avatar + activity audit log
-└── tests/                       # Jest + Supertest
-```
+## 7. Live Demo
 
-## Security Architecture
+The project is ready for deployment on platforms like Vercel, Render, or AWS.  
+👉 **[Live Demo URL](https://github.com/David-Antony/QuantVault-Real-Time-Investment-Portfolio-Intelligence-Platform)** *(Insert your deployed application URL)*
 
-- **bcrypt** password hashing (12 salt rounds)
-- **JWT access tokens** (15 min) in memory/localStorage
-- **JWT refresh tokens** (7 day) in httpOnly secure cookies with rotation
-- **Refresh token hashing** in DB — compared with bcrypt on each rotation
-- **Helmet** security headers
-- **CORS** with credentials, restricted origin
-- **Rate limiting** — auth (20/15min), API (200/15min)
-- **Input validation** on all mutating routes
-- **Audit logging** — every login, logout, transaction recorded with IP
-- **User-scoped data** — every query scoped to authenticated userId
+---
+
+## 8. Future Improvements
+
+*   **Plaid / Broker Integration:** Sync live transactions automatically from brokerages via secure APIs instead of manual CSV imports.
+*   **Custom Goal Tracking:** Enable users to set target net-worth milestones and receive gamified updates as they approach them.
+*   **Email & SMS Alerts:** Connect the background Job Queue (BullMQ) to Twilio or SendGrid to dispatch triggered price alerts instantly.
+*   **Advanced Tax-Loss Harvesting:** Algorithms to suggest which underperforming assets to sell to offset capital gains tax.
