@@ -130,7 +130,7 @@
             var activeUserId = null;
 
             if (AuthApi.isLoggedIn()) {
-                window.location.href = 'portfolio.html';
+                window.location.href = 'index.html';
                 return;
             }
 
@@ -171,7 +171,7 @@
                         } else {
                             showSuccess('Login successful! Redirecting...');
                             setTimeout(function() {
-                                window.location.href = 'portfolio.html';
+                                window.location.href = 'index.html';
                             }, 800);
                         }
                     } else {
@@ -195,7 +195,7 @@
                     if (result.success) {
                         showSuccess('Verification successful! Redirecting...');
                         setTimeout(function() {
-                            window.location.href = 'portfolio.html';
+                            window.location.href = 'index.html';
                         }, 800);
                     } else {
                         showError(result.message || 'Verification failed');

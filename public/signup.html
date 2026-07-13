@@ -130,7 +130,7 @@
             var successMessage = document.getElementById('successMessage');
 
             if (AuthApi.isLoggedIn()) {
-                window.location.href = 'portfolio.html';
+                window.location.href = 'index.html';
                 return;
             }
 
@@ -177,7 +177,7 @@
                     if (result.success) {
                         showSuccess('Account created! Redirecting...');
                         setTimeout(function() {
-                            window.location.href = 'portfolio.html';
+                            window.location.href = 'index.html';
                         }, 800);
                     } else {
                         showError(result.message || 'Registration failed');
