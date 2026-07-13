@@ -20,53 +20,53 @@
     <div class="app-shell">
         <!-- ── SIDEBAR ─────────────────────────────────── -->
         <aside class="sidebar" id="appSidebar">
-            <div class="sidebar-logo">
-                <div class="sidebar-logo-mark">QV</div>
-                <span class="sidebar-logo-text">QuantVault</span>
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-mark">QV</div>
+        <span class="sidebar-logo-text">QuantVault</span>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main navigation">
+        <span class="sidebar-section-label">Platform</span>
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">🏠</span> Home
+        </a>
+        <a href="portfolio.html" class="nav-item">
+            <span class="nav-icon">💼</span> Portfolio
+        </a>
+        <a href="transactions.html" class="nav-item">
+            <span class="nav-icon">💰</span> Transactions
+        </a>
+        <a href="reports.html" class="nav-item active">
+            <span class="nav-icon">📈</span> Reports
+        </a>
+        <a href="watchlist.html" class="nav-item">
+            <span class="nav-icon">👁️</span> Watchlist
+        </a>
+        <a href="alerts.html" class="nav-item">
+            <span class="nav-icon">🔔</span> Alerts
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <span class="sidebar-section-label">Account</span>
+        <a href="profile.html" class="nav-item">
+            <span class="nav-icon">👤</span> Profile
+        </a>
+        <a href="#" class="nav-item" onclick="logout(); return false;">
+            <span class="nav-icon">🚪</span> Logout
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="sidebar-user">
+            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Nova" alt="Avatar" class="sidebar-avatar" id="sidebarAvatar">
+            <div class="sidebar-user-info">
+                <div class="sidebar-username" id="sidebarUsername">Loading...</div>
+                <div class="sidebar-user-role">Investor</div>
             </div>
-
-            <nav class="sidebar-nav" aria-label="Main navigation">
-                <span class="sidebar-section-label">Platform</span>
-                <a href="index.html" class="nav-item">
-                    <span class="nav-icon">🏠</span> Home
-                </a>
-                <a href="portfolio.html" class="nav-item">
-                    <span class="nav-icon">💼</span> Portfolio
-                </a>
-                <a href="transactions.html" class="nav-item">
-                    <span class="nav-icon">💰</span> Transactions
-                </a>
-                <a href="reports.html" class="nav-item active">
-                    <span class="nav-icon">📈</span> Reports
-                </a>
-                <a href="watchlist.html" class="nav-item">
-                    <span class="nav-icon">👁️</span> Watchlist
-                </a>
-                <a href="alerts.html" class="nav-item">
-                    <span class="nav-icon">🔔</span> Alerts
-                </a>
-
-                <div class="sidebar-divider"></div>
-
-                <span class="sidebar-section-label">Account</span>
-                <a href="profile.html" class="nav-item">
-                    <span class="nav-icon">👤</span> Profile
-                </a>
-                <a href="#" class="nav-item" onclick="logout(); return false;">
-                    <span class="nav-icon">🚪</span> Logout
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <div class="sidebar-user">
-                    <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Nova" alt="Avatar" class="sidebar-avatar" id="sidebarAvatar">
-                    <div class="sidebar-user-info">
-                        <div class="sidebar-username" id="sidebarUsername">Loading...</div>
-                        <div class="sidebar-user-role">Investor</div>
-                    </div>
-                </div>
-            </div>
-        </aside>
+        </div>
+    </div>
+</aside>
 
         <!-- ── MAIN AREA ──────────────────────────────── -->
         <div class="main-area">
