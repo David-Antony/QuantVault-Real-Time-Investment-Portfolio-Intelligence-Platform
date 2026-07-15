@@ -576,7 +576,7 @@ function updateTransactionHistory() {
     }
 
     const sorted = [...p.transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
-    let html = '<table class="transactions-table"><thead><tr><th>Date</th><th>Asset</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>';
+    let html = '<table class="data-table transactions-table"><thead><tr><th>Date</th><th>Asset</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>';
 
     sorted.forEach((t, i) => {
         const tDate = t.date ? new Date(t.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
