@@ -14,6 +14,7 @@
     <script src="/js/theme.js"></script>
 </head>
 <body>
+    <canvas id="bgCanvas"></canvas>
 
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
@@ -348,6 +349,7 @@
         navigator.serviceWorker.register('/sw.js').catch(() => {});
       }
     </script>
+    <script src="/js/bg-pattern.js"></script>
 </body>
 </html>
 

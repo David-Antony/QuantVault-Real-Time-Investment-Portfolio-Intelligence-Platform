@@ -129,8 +129,7 @@ html {
 }
 
 body {
-    background: linear-gradient(rgba(5, 7, 18, 0.88), rgba(5, 7, 18, 0.88)), url('../images/futuristic_fintech_bg.png') no-repeat center center fixed;
-    background-size: cover;
+    background: transparent;
     color: var(--text-primary);
     font-family: var(--font-sans);
     font-size: var(--text-sm);
@@ -143,8 +142,18 @@ body {
 
 /* Exclude login and signup pages from the custom background image */
 body.signup-page {
-    background: var(--bg-deep) !important;
+    background: transparent !important;
     background-image: none !important;
+}
+
+#bgCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background-color: var(--bg-deep); /* The canvas script will draw over this, or we can just draw the color in canvas */
 }
 
 /* ─── LIGHT THEME OVERRIDES ──────────────────────────────── */
