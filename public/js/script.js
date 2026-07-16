@@ -583,7 +583,7 @@ function updateTransactionHistory() {
         html += `<tr class="transaction-row"><td>${tDate}</td><td><strong>${t.assetName}</strong></td><td><span class="transaction-type ${t.type}">${t.type.charAt(0).toUpperCase() + t.type.slice(1)}</span></td><td class="amount-cell">$${t.amount.toFixed(2)}</td><td><span class="status-badge ${t.status}">${t.status}</span></td></tr>`;
     });
 
-    html += '</tbody></table><div class="view-all-transactions" style="margin-top: 16px; text-align: center;"><a href="transactions.html" class="btn btn-secondary">View All Transactions</a></div>';
+    html += '</tbody></table>';
     container.innerHTML = html;
 }
 
