@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let pulses = []; // {path: [vId1, vId2...], progress: 0, speed: 0.05, color: '#38BDF8', alpha: 1}
     
     // Styling colors
-    let gridColor = 'rgba(255, 255, 255, 0.03)';
+    let gridColor = 'rgba(255, 255, 255, 0.08)';
     let neonColors = ['#38BDF8', '#818CF8', '#10B981']; // Cyan, Purple, Emerald
     
     function resize() {
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Detect theme to adjust grid color
         const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
-        gridColor = isLightMode ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.03)';
+        gridColor = isLightMode ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.08)';
         
         buildGrid();
     }

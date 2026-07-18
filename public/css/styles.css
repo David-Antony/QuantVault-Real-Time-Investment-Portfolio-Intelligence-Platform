@@ -235,6 +235,22 @@ body.signup-page {
     color: var(--text-primary);
 }
 
+[data-theme="light"] .btn:hover,
+[data-theme="light"] .btn-primary:hover,
+[data-theme="light"] .submit-btn:hover {
+    color: #fff;
+    background: var(--cyan);
+    border-color: var(--cyan-dim);
+    text-shadow: none;
+}
+
+[data-theme="light"] .btn-secondary:hover,
+[data-theme="light"] button.secondary:hover {
+    color: #fff;
+    background: var(--cyan);
+    border-color: var(--cyan-dim);
+}
+
 
 /* ─── TYPOGRAPHY ─────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
