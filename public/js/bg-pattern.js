@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Detect theme to adjust grid color
         const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
-        gridColor = isLightMode ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.08)';
+        gridColor = isLightMode ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.08)';
         
         buildGrid();
     }
