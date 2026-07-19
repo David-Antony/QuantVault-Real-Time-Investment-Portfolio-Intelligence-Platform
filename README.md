@@ -145,7 +145,7 @@ Open [http://localhost:3002](http://localhost:3002) in your browser.
 ## 7. Live Demo
 
 The project is ready for deployment on platforms like Vercel, Render, or AWS.  
-👉 **[Live Demo URL](https://github.com/David-Antony/QuantVault-Real-Time-Investment-Portfolio-Intelligence-Platform)** *(Insert your deployed application URL)*
+👉 **[Live Demo URL](https://github.com/David-Antony/QuantVault-Real-Time-Investment-Portfolio-Intelligence-Platform)** (Will be ready once deployed..)
 
 ---
 
