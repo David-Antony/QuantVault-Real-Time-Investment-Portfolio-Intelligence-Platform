@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="theme-color" content="#38BDF8">
+    <meta name="theme-color" content="#00eeff">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuantVault — Real-Time Investment Portfolio Intelligence Platform</title>
     <meta name="description" content="QuantVault is your real-time investment intelligence platform. Track, analyse, and be alerted the moment markets move.">
@@ -12,11 +12,724 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <script src="/js/theme.js"></script>
+    <style>
+        /* ── PAGE-SPECIFIC: NEW HOMEPAGE WIREFRAME ───────────────── */
+
+        /* ── TICKER STRIP ──────────────────────────────────── */
+        .ticker-strip {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 200;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,238,255,0.12);
+            height: 36px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+        .ticker-label {
+            flex-shrink: 0;
+            padding: 0 16px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: var(--cyan);
+            text-transform: uppercase;
+            border-right: 1px solid rgba(0,238,255,0.2);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ticker-dot { 
+            width: 6px; height: 6px; border-radius: 50%; 
+            background: var(--cyan); 
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+        .ticker-track {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+        .ticker-inner {
+            display: flex;
+            gap: 48px;
+            animation: tickerScroll 40s linear infinite;
+            white-space: nowrap;
+            font-family: var(--font-mono);
+            font-size: 11px;
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .tick-item { display: flex; gap: 8px; align-items: center; }
+        .tick-sym { color: var(--text-primary); font-weight: 600; }
+        .tick-price { color: var(--text-secondary); }
+        .tick-chg.pos { color: var(--emerald-light); }
+        .tick-chg.neg { color: var(--rose-light); }
+
+        /* ── NAVBAR ─────────────────────────────────────────── */
+        .navbar {
+            position: fixed;
+            top: 36px;
+            left: 0;
+            right: 0;
+            z-index: 150;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 clamp(24px, 5vw, 64px);
+            height: 64px;
+            background: rgba(7, 11, 22, 0.6);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: all 300ms ease;
+        }
+        .navbar.scrolled { 
+            background: rgba(7, 11, 22, 0.92); 
+            box-shadow: 0 4px 32px rgba(0,0,0,0.6);
+        }
+        .nav-logo {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.03em;
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+            align-items: center;
+        }
+        .nav-links a {
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            transition: color 200ms;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+        .nav-cta-group { display: flex; gap: 10px; align-items: center; }
+        .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+        .hamburger {
+            display: block; width: 22px; height: 2px;
+            background: var(--text-primary); border-radius: 2px;
+            position: relative;
+        }
+        .hamburger::before, .hamburger::after {
+            content: ''; position: absolute; left: 0; width: 100%; height: 2px;
+            background: var(--text-primary); border-radius: 2px; transition: all 250ms ease;
+        }
+        .hamburger::before { top: -6px; }
+        .hamburger::after  { top: 6px; }
+
+        /* ── PAGE SHELL ─────────────────────────────────────── */
+        .lp-shell {
+            padding-top: calc(36px + 64px); /* ticker + navbar */
+        }
+
+        /* ── SECTION 1: SPLIT HERO ─────────────────────────── */
+        .split-hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        .split-hero-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: clamp(40px, 8vw, 120px) clamp(24px, 5vw, 80px);
+            padding-right: 40px;
+        }
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,238,255,0.08);
+            border: 1px solid rgba(0,238,255,0.2);
+            color: var(--cyan);
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            width: fit-content;
+        }
+        .live-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--emerald-light);
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+        .hero-headline {
+            font-family: var(--font-display);
+            font-size: clamp(2.6rem, 5.5vw, 4.5rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.06;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+        }
+        .hero-headline .hl-dim { color: var(--text-secondary); font-weight: 400; }
+        .hero-headline .hl-accent {
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero-sub {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            max-width: 480px;
+            margin-bottom: 40px;
+        }
+        .hero-cta-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 52px;
+        }
+        .hero-trust-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .hero-trust-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .hero-trust-stat .val {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .hero-trust-stat .lbl {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .hero-trust-sep { width: 1px; height: 28px; background: var(--border); }
+
+        /* ── HERO RIGHT: BENTO GRID ─────────────────────────── */
+        .split-hero-right {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(32px, 4vw, 64px);
+            padding-left: 32px;
+        }
+        .hero-bento {
+            width: 100%;
+            max-width: 520px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 14px;
+        }
+        .bento-card {
+            background: var(--grad-glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(20px);
+            transition: transform 250ms var(--ease-out), box-shadow 250ms var(--ease-out);
+            position: relative;
+            overflow: hidden;
+        }
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: var(--grad-card);
+            opacity: 0;
+            transition: opacity 250ms;
+        }
+        .bento-card:hover { 
+            transform: translateY(-3px); 
+            box-shadow: var(--shadow-card), 0 0 30px rgba(0,238,255,0.06);
+            border-color: var(--border-accent);
+        }
+        .bento-card:hover::before { opacity: 1; }
+
+        .bento-card.span-2 { grid-column: span 2; }
+        .bento-card.accent-border { border-color: rgba(0,238,255,0.25); }
+
+        .bento-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .bento-value {
+            font-family: var(--font-mono);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+        .bento-change {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .bento-change.pos { color: var(--emerald-light); }
+        .bento-change.neg { color: var(--rose-light); }
+        .bento-icon {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .bento-mini-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 32px;
+            margin-top: 12px;
+        }
+        .mini-bar {
+            flex: 1;
+            border-radius: 3px 3px 0 0;
+            background: rgba(0,238,255,0.3);
+            transition: background 200ms;
+        }
+        .mini-bar:hover { background: var(--cyan); }
+        .mini-bar.tall { background: rgba(0,238,255,0.6); }
+
+        .bento-sparkline {
+            height: 40px;
+            margin-top: 10px;
+            position: relative;
+        }
+        .sparkline-svg { width: 100%; height: 100%; }
+
+        .ai-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(90deg, rgba(168,128,255,0.15), rgba(0,238,255,0.1));
+            border: 1px solid rgba(168,128,255,0.3);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--purple);
+            margin-top: 8px;
+        }
+        .ai-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--purple); animation: pulse 2s ease infinite; }
+
+        /* ── SECTION 2: MARQUEE FEATURE STRIP ───────────────── */
+        .feature-strip {
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 20px 0;
+            overflow: hidden;
+            background: rgba(0,0,0,0.15);
+        }
+        .feature-strip-inner {
+            display: flex;
+            gap: 56px;
+            animation: marquee 30s linear infinite;
+            white-space: nowrap;
+        }
+        @keyframes marquee { 
+            0% { transform: translateX(0); } 
+            100% { transform: translateX(-50%); }
+        }
+        .strip-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+        }
+        .strip-item .si-icon { font-size: 1rem; }
+        .strip-item .si-accent { color: var(--cyan); }
+
+        /* ── SECTION 3: HOW IT WORKS ─────────────────────────── */
+        .hiw-section {
+            padding: clamp(64px, 10vw, 120px) clamp(24px, 8vw, 80px);
+        }
+        .section-eyebrow {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.9rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        .section-sub {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            max-width: 520px;
+            margin-bottom: 56px;
+        }
+        .hiw-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: var(--border-subtle);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .hiw-step {
+            background: var(--bg-base);
+            padding: 40px 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: background 200ms;
+            position: relative;
+        }
+        .hiw-step::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 300ms var(--ease-out);
+        }
+        .hiw-step:hover { background: var(--bg-elevated); }
+        .hiw-step:hover::before { transform: scaleX(1); }
+        .hiw-step-num {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+        }
+        .hiw-step-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+        .hiw-step h3 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .hiw-step p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ── SECTION 4: FEATURE BENTO GRID ──────────────────── */
+        .feat-bento-section {
+            padding: 0 clamp(24px, 8vw, 80px) clamp(64px, 10vw, 120px);
+        }
+        .feat-bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: auto auto;
+            gap: 16px;
+        }
+        .fb-card {
+            background: var(--grad-glass);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            backdrop-filter: blur(16px);
+            transition: transform 250ms, box-shadow 250ms, border-color 250ms;
+            position: relative;
+            overflow: hidden;
+        }
+        .fb-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: opacity 300ms;
+            opacity: 0.4;
+        }
+        .fb-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .fb-card.c1 { grid-column: span 5; }
+        .fb-card.c2 { grid-column: span 4; }
+        .fb-card.c3 { grid-column: span 3; }
+        .fb-card.c4 { grid-column: span 7; }
+        .fb-card.c5 { grid-column: span 5; }
+
+        .fb-card.c1::after { background: radial-gradient(circle, rgba(0,238,255,0.12), transparent 70%); }
+        .fb-card.c2::after { background: radial-gradient(circle, rgba(168,128,255,0.12), transparent 70%); }
+        .fb-card.c3::after { background: radial-gradient(circle, rgba(16,185,129,0.12), transparent 70%); }
+        .fb-card.c4::after { background: radial-gradient(circle, rgba(168,128,255,0.12), transparent 70%); }
+        .fb-card.c5::after { background: radial-gradient(circle, rgba(0,238,255,0.08), transparent 70%); }
+        .fb-card:hover::after { opacity: 0.8; }
+
+        .fb-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 999px;
+            margin-bottom: 20px;
+        }
+        .fb-tag.cyan { background: rgba(0,238,255,0.1); color: var(--cyan); border: 1px solid rgba(0,238,255,0.2); }
+        .fb-tag.purple { background: rgba(168,128,255,0.1); color: var(--purple); border: 1px solid rgba(168,128,255,0.2); }
+        .fb-tag.green { background: rgba(16,185,129,0.1); color: var(--emerald-light); border: 1px solid rgba(16,185,129,0.2); }
+
+        .fb-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .fb-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+        .fb-metric-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .fb-metric { display: flex; flex-direction: column; gap: 2px; }
+        .fb-metric .m-val {
+            font-family: var(--font-mono);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .fb-metric .m-lbl {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .fb-card.c3 { display: flex; flex-direction: column; justify-content: space-between; }
+        .security-badges {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .sec-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .sec-badge:last-child { border-bottom: none; }
+        .sec-check { color: var(--emerald-light); font-size: 0.9rem; }
+
+        /* ── SECTION 5: DARK CTA BANNER ─────────────────────── */
+        .cta-banner {
+            margin: 0 clamp(24px, 8vw, 80px) clamp(64px, 10vw, 120px);
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(0,238,255,0.08) 0%, rgba(168,128,255,0.1) 50%, rgba(16,185,129,0.06) 100%);
+            border: 1px solid rgba(0,238,255,0.15);
+            padding: clamp(48px, 8vw, 80px) clamp(32px, 6vw, 80px);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 48px;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 280px; height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(168,128,255,0.15), transparent 70%);
+            pointer-events: none;
+        }
+        .cta-banner-text h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+        }
+        .cta-banner-text p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 480px;
+        }
+        .cta-banner-actions { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+
+        /* ── FOOTER ─────────────────────────────────────────── */
+        .site-footer {
+            border-top: 1px solid var(--border-subtle);
+            padding: 40px clamp(24px, 8vw, 80px);
+        }
+        .footer-inner {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            align-items: center;
+        }
+        .footer-brand {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.1rem;
+            background: linear-gradient(90deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .footer-copy-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .footer-newsletter form {
+            display: flex;
+            gap: 8px;
+        }
+        .footer-newsletter input {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: var(--radius-md);
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            min-width: 220px;
+            outline: none;
+            transition: border-color 200ms;
+        }
+        .footer-newsletter input:focus { border-color: var(--border-glow); }
+        .footer-bottom {
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            padding-top: 24px;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 24px;
+        }
+
+        /* ── LIGHT MODE OVERRIDES ────────────────────────────── */
+        [data-theme="light"] .ticker-strip { background: rgba(255,255,255,0.9); border-bottom-color: rgba(2,132,199,0.15); }
+        [data-theme="light"] .navbar { background: rgba(248,250,252,0.85); border-bottom-color: rgba(0,0,0,0.06); }
+        [data-theme="light"] .hiw-step { background: rgba(255,255,255,0.8); }
+        [data-theme="light"] .hiw-step:hover { background: rgba(255,255,255,1); }
+        [data-theme="light"] .fb-card, [data-theme="light"] .bento-card { 
+            background: rgba(255,255,255,0.8); 
+            border-color: rgba(0,0,0,0.08); 
+        }
+        [data-theme="light"] .cta-banner { background: linear-gradient(135deg, rgba(2,132,199,0.06), rgba(99,102,241,0.08), rgba(5,150,105,0.05)); }
+
+        /* ── RESPONSIVE ─────────────────────────────────────── */
+        @media (max-width: 1024px) {
+            .split-hero { grid-template-columns: 1fr; }
+            .split-hero-right { display: none; }
+            .hiw-steps { grid-template-columns: 1fr; }
+            .fb-card.c1, .fb-card.c2, .fb-card.c3, .fb-card.c4, .fb-card.c5 { grid-column: span 12; }
+            .cta-banner { grid-template-columns: 1fr; }
+            .footer-inner { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; position: fixed; inset: 100px 0 0 0; background: rgba(7,11,22,0.97); flex-direction: column; gap: 0; padding: 24px; }
+            .nav-links.open { display: flex; }
+            .nav-links li a { display: block; padding: 16px 0; border-bottom: 1px solid var(--border-subtle); }
+            .nav-toggle { display: block; }
+            .nav-cta-group { display: none; }
+        }
+        @media (max-width: 640px) {
+            .hero-trust-row { gap: 12px; }
+            .feature-strip-inner { gap: 36px; }
+            .hiw-step { padding: 28px 24px; }
+            .fb-metric-row { flex-wrap: wrap; }
+        }
+    </style>
 </head>
 <body class="landing-page">
     <canvas id="bgCanvas"></canvas>
 
-    <!-- ── NAVBAR ─────────────────────────────────────────── -->
+    <!-- ── TICKER STRIP ──────────────────────────────────────────── -->
+    <div class="ticker-strip" aria-label="Live market prices">
+        <div class="ticker-label">
+            <span class="ticker-dot"></span>
+            LIVE
+        </div>
+        <div class="ticker-track">
+            <div class="ticker-inner" id="tickerInner">
+                <!-- First pass -->
+                <span class="tick-item"><span class="tick-sym">AAPL</span><span class="tick-price">$189.43</span><span class="tick-chg pos">▲ 1.24%</span></span>
+                <span class="tick-item"><span class="tick-sym">MSFT</span><span class="tick-price">$412.70</span><span class="tick-chg pos">▲ 0.87%</span></span>
+                <span class="tick-item"><span class="tick-sym">NVDA</span><span class="tick-price">$875.00</span><span class="tick-chg neg">▼ 0.43%</span></span>
+                <span class="tick-item"><span class="tick-sym">GOOGL</span><span class="tick-price">$176.20</span><span class="tick-chg pos">▲ 0.62%</span></span>
+                <span class="tick-item"><span class="tick-sym">TSLA</span><span class="tick-price">$254.90</span><span class="tick-chg neg">▼ 1.10%</span></span>
+                <span class="tick-item"><span class="tick-sym">BTC</span><span class="tick-price">$68,412</span><span class="tick-chg pos">▲ 2.31%</span></span>
+                <span class="tick-item"><span class="tick-sym">ETH</span><span class="tick-price">$3,840</span><span class="tick-chg pos">▲ 1.78%</span></span>
+                <span class="tick-item"><span class="tick-sym">AMZN</span><span class="tick-price">$193.60</span><span class="tick-chg pos">▲ 0.55%</span></span>
+                <span class="tick-item"><span class="tick-sym">META</span><span class="tick-price">$511.20</span><span class="tick-chg neg">▼ 0.28%</span></span>
+                <span class="tick-item"><span class="tick-sym">SPY</span><span class="tick-price">$531.40</span><span class="tick-chg pos">▲ 0.34%</span></span>
+                <!-- Duplicate for seamless loop -->
+                <span class="tick-item"><span class="tick-sym">AAPL</span><span class="tick-price">$189.43</span><span class="tick-chg pos">▲ 1.24%</span></span>
+                <span class="tick-item"><span class="tick-sym">MSFT</span><span class="tick-price">$412.70</span><span class="tick-chg pos">▲ 0.87%</span></span>
+                <span class="tick-item"><span class="tick-sym">NVDA</span><span class="tick-price">$875.00</span><span class="tick-chg neg">▼ 0.43%</span></span>
+                <span class="tick-item"><span class="tick-sym">GOOGL</span><span class="tick-price">$176.20</span><span class="tick-chg pos">▲ 0.62%</span></span>
+                <span class="tick-item"><span class="tick-sym">TSLA</span><span class="tick-price">$254.90</span><span class="tick-chg neg">▼ 1.10%</span></span>
+                <span class="tick-item"><span class="tick-sym">BTC</span><span class="tick-price">$68,412</span><span class="tick-chg pos">▲ 2.31%</span></span>
+                <span class="tick-item"><span class="tick-sym">ETH</span><span class="tick-price">$3,840</span><span class="tick-chg pos">▲ 1.78%</span></span>
+                <span class="tick-item"><span class="tick-sym">AMZN</span><span class="tick-price">$193.60</span><span class="tick-chg pos">▲ 0.55%</span></span>
+                <span class="tick-item"><span class="tick-sym">META</span><span class="tick-price">$511.20</span><span class="tick-chg neg">▼ 0.28%</span></span>
+                <span class="tick-item"><span class="tick-sym">SPY</span><span class="tick-price">$531.40</span><span class="tick-chg pos">▲ 0.34%</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── NAVBAR ─────────────────────────────────────────────────── -->
     <nav class="navbar" id="mainNavbar">
         <div class="nav-logo">QuantVault</div>
         <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
@@ -31,126 +744,274 @@
             <li><a href="alerts.html">Alerts</a></li>
         </ul>
         <div class="nav-cta-group">
-            <a href="login.html" class="btn-secondary" style="border-radius: 10px; padding: 8px 18px; font-size: 0.875rem;">Login</a>
-            <a href="signup.html" class="btn" style="border-radius: 10px; padding: 8px 18px; font-size: 0.875rem;">Get Started</a>
+            <a href="login.html" class="btn-secondary" style="border-radius: 10px; padding: 8px 18px; font-size: 0.8rem;">Log In</a>
+            <a href="signup.html" class="btn" style="border-radius: 10px; padding: 8px 18px; font-size: 0.8rem;">Get Started →</a>
         </div>
     </nav>
 
-    <!-- ── HERO ───────────────────────────────────────────── -->
-    <section class="hero">
-        <div class="hero-eyebrow">
-            <span class="live-dot"></span>
-            Real-Time Market Intelligence
+    <div class="lp-shell">
+
+        <!-- ── SECTION 1: SPLIT HERO ─────────────────────────────── -->
+        <section class="split-hero">
+            <!-- Left: Headline + CTA -->
+            <div class="split-hero-left">
+                <div class="hero-eyebrow">
+                    <span class="live-dot"></span>
+                    Real-Time Market Intelligence
+                </div>
+                <h1 class="hero-headline">
+                    Invest with<br>
+                    <span class="hl-accent">Institutional</span><br>
+                    <span class="hl-dim">Intelligence.</span>
+                </h1>
+                <p class="hero-sub">
+                    WebSocket-powered live prices, advanced financial analytics, and AI-assisted portfolio insights — all designed for the serious modern investor.
+                </p>
+                <div class="hero-cta-row">
+                    <a href="signup.html" class="btn" style="padding: 14px 32px; font-size: 0.95rem; border-radius: 14px;">
+                        Start Free →
+                    </a>
+                    <a href="portfolio.html" class="btn-secondary" style="padding: 14px 28px; font-size: 0.95rem; border-radius: 14px;">
+                        View Dashboard
+                    </a>
+                </div>
+                <div class="hero-trust-row">
+                    <div class="hero-trust-stat">
+                        <span class="val">8s</span>
+                        <span class="lbl">Price Refresh</span>
+                    </div>
+                    <div class="hero-trust-sep"></div>
+                    <div class="hero-trust-stat">
+                        <span class="val">99.9%</span>
+                        <span class="lbl">Uptime SLA</span>
+                    </div>
+                    <div class="hero-trust-sep"></div>
+                    <div class="hero-trust-stat">
+                        <span class="val">1K+</span>
+                        <span class="lbl">Sim Paths</span>
+                    </div>
+                    <div class="hero-trust-sep"></div>
+                    <div class="hero-trust-stat">
+                        <span class="val">E2E</span>
+                        <span class="lbl">Encrypted</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Bento Grid of Live Cards -->
+            <div class="split-hero-right">
+                <div class="hero-bento">
+                    <!-- Portfolio Value card (spans full width) -->
+                    <div class="bento-card span-2 accent-border animate-on-scroll">
+                        <div class="bento-label">Total Portfolio Value</div>
+                        <div class="bento-value">$284,720.88</div>
+                        <div class="bento-change pos">▲ +$6,418 (2.31%) today</div>
+                        <div class="bento-mini-bars">
+                            <div class="mini-bar" style="height:40%"></div>
+                            <div class="mini-bar" style="height:55%"></div>
+                            <div class="mini-bar" style="height:45%"></div>
+                            <div class="mini-bar" style="height:70%"></div>
+                            <div class="mini-bar tall" style="height:60%"></div>
+                            <div class="mini-bar" style="height:80%"></div>
+                            <div class="mini-bar tall" style="height:75%"></div>
+                            <div class="mini-bar" style="height:90%"></div>
+                            <div class="mini-bar tall" style="height:85%"></div>
+                            <div class="mini-bar tall" style="height:100%"></div>
+                        </div>
+                    </div>
+
+                    <!-- XIRR card -->
+                    <div class="bento-card animate-on-scroll">
+                        <span class="bento-icon">📈</span>
+                        <div class="bento-label">XIRR Return</div>
+                        <div class="bento-value" style="font-size:1.3rem">18.4%</div>
+                        <div class="bento-change pos">Annualised</div>
+                    </div>
+
+                    <!-- Beta card -->
+                    <div class="bento-card animate-on-scroll">
+                        <span class="bento-icon">⚡</span>
+                        <div class="bento-label">Portfolio Beta</div>
+                        <div class="bento-value" style="font-size:1.3rem">0.92</div>
+                        <div class="bento-change" style="color:var(--amber-light)">Low Volatility</div>
+                    </div>
+
+                    <!-- AI Insight card (spans full) -->
+                    <div class="bento-card span-2 animate-on-scroll">
+                        <div class="bento-label">AI Advisory</div>
+                        <p style="font-size:0.8rem; color:var(--text-secondary); line-height:1.6; margin-bottom: 0;">
+                            Your tech allocation (47%) is above the recommended threshold. Consider diversifying into 
+                            healthcare or commodities to reduce systemic risk.
+                        </p>
+                        <div class="ai-chip"><span class="ai-chip-dot"></span> Powered by Gemini AI</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── FEATURE MARQUEE STRIP ──────────────────────────────── -->
+        <div class="feature-strip" aria-hidden="true">
+            <div class="feature-strip-inner">
+                <!-- First pass -->
+                <div class="strip-item"><span class="si-icon">🔴</span> <span class="si-accent">Live</span> WebSocket Price Feeds</div>
+                <div class="strip-item"><span class="si-icon">📊</span> Monte Carlo Simulations</div>
+                <div class="strip-item"><span class="si-icon">🔔</span> Smart Price Alerts</div>
+                <div class="strip-item"><span class="si-icon">🤖</span> Gemini AI Advisory</div>
+                <div class="strip-item"><span class="si-icon">🔒</span> JWT + bcrypt Security</div>
+                <div class="strip-item"><span class="si-icon">⚡</span> BullMQ Background Jobs</div>
+                <div class="strip-item"><span class="si-icon">📈</span> XIRR &amp; Beta Metrics</div>
+                <div class="strip-item"><span class="si-icon">📁</span> CSV Export Engine</div>
+                <div class="strip-item"><span class="si-icon">🛡️</span> Circuit Breaker Resilience</div>
+                <div class="strip-item"><span class="si-icon">📱</span> Progressive Web App</div>
+                <!-- Duplicate for loop -->
+                <div class="strip-item"><span class="si-icon">🔴</span> <span class="si-accent">Live</span> WebSocket Price Feeds</div>
+                <div class="strip-item"><span class="si-icon">📊</span> Monte Carlo Simulations</div>
+                <div class="strip-item"><span class="si-icon">🔔</span> Smart Price Alerts</div>
+                <div class="strip-item"><span class="si-icon">🤖</span> Gemini AI Advisory</div>
+                <div class="strip-item"><span class="si-icon">🔒</span> JWT + bcrypt Security</div>
+                <div class="strip-item"><span class="si-icon">⚡</span> BullMQ Background Jobs</div>
+                <div class="strip-item"><span class="si-icon">📈</span> XIRR &amp; Beta Metrics</div>
+                <div class="strip-item"><span class="si-icon">📁</span> CSV Export Engine</div>
+                <div class="strip-item"><span class="si-icon">🛡️</span> Circuit Breaker Resilience</div>
+                <div class="strip-item"><span class="si-icon">📱</span> Progressive Web App</div>
+            </div>
         </div>
 
-        <h1>
-            Your Portfolio,<br>
-            <span class="gradient-text">Intelligently Tracked</span>
-        </h1>
+        <!-- ── SECTION 3: HOW IT WORKS ──────────────────────────── -->
+        <section class="hiw-section animate-on-scroll">
+            <div class="section-eyebrow">How It Works</div>
+            <h2 class="section-title">From signup to<br><span class="gradient-text">institutional-grade insights</span></h2>
+            <p class="section-sub">Get your entire portfolio analyzed in under 2 minutes. No spreadsheets. No manual data entry. Just intelligence.</p>
+            <div class="hiw-steps">
+                <div class="hiw-step">
+                    <div class="hiw-step-num">STEP 01</div>
+                    <div class="hiw-step-icon">🔑</div>
+                    <h3>Create Your Account</h3>
+                    <p>Secure JWT-based signup with email verification. Your data is encrypted end-to-end from the very first second.</p>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-step-num">STEP 02</div>
+                    <div class="hiw-step-icon">📥</div>
+                    <h3>Import Your Holdings</h3>
+                    <p>Add assets manually or bulk-import via CSV. Support for stocks, crypto, ETFs, and mutual funds across any exchange.</p>
+                </div>
+                <div class="hiw-step">
+                    <div class="hiw-step-num">STEP 03</div>
+                    <div class="hiw-step-icon">🧠</div>
+                    <h3>Get Intelligent Analytics</h3>
+                    <p>Live prices update automatically. XIRR, Beta, Monte Carlo forecasts and Gemini AI advisory all activate instantly.</p>
+                </div>
+            </div>
+        </section>
 
-        <p class="hero-desc">
-            WebSocket-powered real-time prices, smart price alerts, and institutional-grade analytics — all in one elegant platform built for serious investors.
-        </p>
+        <!-- ── SECTION 4: FEATURE BENTO ─────────────────────────── -->
+        <section class="feat-bento-section">
+            <div class="section-eyebrow" style="text-align:center; display:block; margin-bottom:16px">Platform Capabilities</div>
+            <h2 class="section-title" style="text-align:center; margin: 0 auto 16px">Everything you need to<br><span class="gradient-text">invest with confidence</span></h2>
+            <p class="section-sub" style="text-align:center; margin: 0 auto 48px">Professional-grade tools that were previously reserved for institutional traders, now in your hands.</p>
+            <div class="feat-bento-grid">
+                <!-- Card 1: Analytics (5 col) -->
+                <div class="fb-card c1 animate-on-scroll">
+                    <div class="fb-tag cyan">📊 Analytics</div>
+                    <h3>Institutional-Grade Metrics</h3>
+                    <p>Sharpe ratio, volatility, max drawdown, win rate, diversification score, XIRR, and Portfolio Beta — the same metrics used by hedge funds.</p>
+                    <div class="fb-metric-row">
+                        <div class="fb-metric">
+                            <span class="m-val">XIRR</span>
+                            <span class="m-lbl">True Return</span>
+                        </div>
+                        <div class="fb-metric">
+                            <span class="m-val">Beta</span>
+                            <span class="m-lbl">Risk Factor</span>
+                        </div>
+                        <div class="fb-metric">
+                            <span class="m-val">5+</span>
+                            <span class="m-lbl">Metrics</span>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="hero-actions">
-            <a href="portfolio.html" class="btn" style="padding: 14px 32px; font-size: 1rem; border-radius: 14px;">
-                View Portfolio
-            </a>
-            <a href="signup.html" class="btn-secondary" style="padding: 14px 32px; font-size: 1rem; border-radius: 14px;">
-                Create Account
-            </a>
+                <!-- Card 2: Monte Carlo (4 col) -->
+                <div class="fb-card c2 animate-on-scroll">
+                    <div class="fb-tag purple">🎲 Forecasting</div>
+                    <h3>Monte Carlo Simulation</h3>
+                    <p>10-year wealth forecasting powered by 1,000 algorithmic paths. See the 10th, 50th, and 90th percentile outcomes for your portfolio.</p>
+                    <div class="fb-metric-row">
+                        <div class="fb-metric"><span class="m-val">1,000</span><span class="m-lbl">Sim Paths</span></div>
+                        <div class="fb-metric"><span class="m-val">10yr</span><span class="m-lbl">Horizon</span></div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Security (3 col) -->
+                <div class="fb-card c3 animate-on-scroll">
+                    <div class="fb-tag green">🔒 Security</div>
+                    <h3>Secured by Design</h3>
+                    <div class="security-badges">
+                        <div class="sec-badge"><span class="sec-check">✓</span> JWT Refresh Rotation</div>
+                        <div class="sec-badge"><span class="sec-check">✓</span> bcrypt Password Hash</div>
+                        <div class="sec-badge"><span class="sec-check">✓</span> httpOnly Cookies</div>
+                        <div class="sec-badge"><span class="sec-check">✓</span> Rate Limiting</div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Alerts (7 col) -->
+                <div class="fb-card c4 animate-on-scroll">
+                    <div class="fb-tag cyan">🔔 Alerts</div>
+                    <h3>Smart Price Alert Engine</h3>
+                    <p>Set threshold-based price triggers on any stock or crypto asset. Our background workers (BullMQ + Redis) fire alerts the instant a price crosses your target — no polling, no delay.</p>
+                    <div class="fb-metric-row" style="margin-top:20px">
+                        <div class="fb-metric"><span class="m-val">Real-Time</span><span class="m-lbl">Trigger Speed</span></div>
+                        <div class="fb-metric"><span class="m-val">BullMQ</span><span class="m-lbl">Queue Engine</span></div>
+                        <div class="fb-metric"><span class="m-val">Redis</span><span class="m-lbl">Cache Layer</span></div>
+                    </div>
+                </div>
+
+                <!-- Card 5: AI (5 col) -->
+                <div class="fb-card c5 animate-on-scroll">
+                    <div class="fb-tag purple">🤖 AI</div>
+                    <h3>Gemini AI Portfolio Advisor</h3>
+                    <p>Integrated Google Gemini AI analyzes your asset distribution, cash drag, sector concentration, and risk profile — then delivers personalized, actionable advice in plain language.</p>
+                    <div class="ai-chip" style="margin-top:16px"><span class="ai-chip-dot"></span> Powered by Google Gemini AI</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── SECTION 5: CTA BANNER ─────────────────────────────── -->
+        <div class="cta-banner animate-on-scroll">
+            <div class="cta-banner-text">
+                <h2>Ready to invest<br><span class="gradient-text">smarter?</span></h2>
+                <p>Join QuantVault today and get access to the full suite of institutional analytics tools — completely free. No credit card required.</p>
+            </div>
+            <div class="cta-banner-actions">
+                <a href="signup.html" class="btn" style="padding: 15px 36px; font-size: 1rem; border-radius: 14px; white-space: nowrap;">
+                    Create Free Account →
+                </a>
+                <a href="portfolio.html" class="btn-secondary" style="padding: 13px 28px; font-size: 0.875rem; border-radius: 12px; white-space: nowrap;">
+                    Explore Dashboard
+                </a>
+            </div>
         </div>
 
-        <div class="hero-stats">
-            <div class="hero-stat">
-                <span class="hero-stat-value count-up" data-target="2400000" data-prefix="$" data-suffix="M+">$2.4M+</span>
-                <span class="hero-stat-label">Assets Tracked</span>
+        <!-- ── FOOTER ─────────────────────────────────────────────── -->
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <div>
+                    <span class="footer-brand">QuantVault</span>
+                    <span class="footer-copy-text">© 2026 QuantVault · Real-Time Investment Intelligence Platform · All rights reserved.</span>
+                </div>
+                <div class="footer-newsletter">
+                    <form id="newsletterForm">
+                        <input type="email" placeholder="Get market updates via email" aria-label="Email for newsletter">
+                        <button type="submit" class="btn" style="padding: 10px 18px; font-size: 0.8rem; border-radius: 10px;">Subscribe</button>
+                    </form>
+                </div>
             </div>
-            <div class="hero-stat-sep"></div>
-            <div class="hero-stat">
-                <span class="hero-stat-value count-up" data-target="8" data-suffix="s">8s</span>
-                <span class="hero-stat-label">Price Refresh Rate</span>
+            <div class="footer-bottom">
+                Built with precision for serious investors · Real-time data · Secure infrastructure · Elegant design
             </div>
-            <div class="hero-stat-sep"></div>
-            <div class="hero-stat">
-                <span class="hero-stat-value count-up" data-target="99.9" data-suffix="%">99.9%</span>
-                <span class="hero-stat-label">Uptime SLA</span>
-            </div>
-        </div>
-    </section>
+        </footer>
 
-    <!-- ── FEATURES SECTION ───────────────────────────────── -->
-    <section class="features">
-        <div class="section-eyebrow">Platform Capabilities</div>
-        <h2 class="section-title">Everything You Need<br>to <span class="gradient-text">Invest Smarter</span></h2>
-        <p class="section-desc">
-            From live WebSocket price feeds to advanced risk analytics — QuantVault gives you the tools that professional traders rely on.
-        </p>
-
-        <div class="feature-grid">
-            <div class="feature-card animate-on-scroll">
-                <div class="feature-icon">📈</div>
-                <h3>Live Price Feeds</h3>
-                <p>WebSocket-powered real-time price ticks update your entire portfolio value every 8 seconds — no manual refresh required.</p>
-            </div>
-            <div class="feature-card animate-on-scroll">
-                <div class="feature-icon">🔔</div>
-                <h3>Smart Price Alerts</h3>
-                <p>Set target price triggers on any asset. Get instantly notified the moment a stock or crypto crosses your threshold.</p>
-            </div>
-            <div class="feature-card animate-on-scroll">
-                <div class="feature-icon">📊</div>
-                <h3>Advanced Analytics</h3>
-                <p>Sharpe ratio, volatility, max drawdown, win rate, diversification score — institutional-grade metrics at your fingertips.</p>
-            </div>
-            <div class="feature-card animate-on-scroll">
-                <div class="feature-icon">🔒</div>
-                <h3>Secure &amp; Private</h3>
-                <p>JWT refresh rotation, bcrypt hashing, httpOnly cookies, and rate limiting. Your financial data stays yours.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ── STATS BAR ──────────────────────────────────────── -->
-    <div class="stats-bar">
-        <div class="stats-bar-inner">
-            <div class="stat-item animate-on-scroll">
-                <span class="stat-value gradient-text">WebSocket</span>
-                <span class="stat-label">Real-Time Engine</span>
-            </div>
-            <div class="stat-item animate-on-scroll">
-                <span class="stat-value">5+</span>
-                <span class="stat-label">Analytics Metrics</span>
-            </div>
-            <div class="stat-item animate-on-scroll">
-                <span class="stat-value gradient-text">End-to-End</span>
-                <span class="stat-label">Encrypted</span>
-            </div>
-            <div class="stat-item animate-on-scroll">
-                <span class="stat-value">24/7</span>
-                <span class="stat-label">Market Monitoring</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── FOOTER ─────────────────────────────────────────── -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-copy">
-                <span class="footer-brand">QuantVault</span>
-                <span class="footer-copy-text">© 2026 QuantVault · All rights reserved.</span>
-            </div>
-            <div class="footer-newsletter">
-                <form id="newsletterForm">
-                    <input type="email" placeholder="Your email address" aria-label="Email for newsletter">
-                    <button type="submit">Subscribe</button>
-                </form>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            Built with precision for serious investors. Real-time data, secure infrastructure, elegant design.
-        </div>
-    </footer>
+    </div><!-- /.lp-shell -->
 
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
@@ -162,13 +1023,13 @@
     <script src="/js/script.js"></script>
     <script src="/js/bg-pattern.js"></script>
     <script>
-        // ── Navbar scroll glass effect ────────────────────
+        // ── Navbar scroll glass effect
         const navbar = document.getElementById('mainNavbar');
         window.addEventListener('scroll', () => {
             navbar.classList.toggle('scrolled', window.scrollY > 40);
         }, { passive: true });
 
-        // ── Mobile nav toggle ─────────────────────────────
+        // ── Mobile nav toggle
         const navToggle = document.getElementById('navToggle');
         const navLinks = document.getElementById('navLinks');
         navToggle?.addEventListener('click', () => {
@@ -176,17 +1037,16 @@
             navToggle.setAttribute('aria-expanded', isOpen);
         });
 
-        // ── Scroll-triggered animations ───────────────────
+        // ── Scroll-triggered animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry, i) => {
                 if (entry.isIntersecting) {
-                    entry.target.style.transitionDelay = (i * 80) + 'ms';
+                    entry.target.style.transitionDelay = (i * 60) + 'ms';
                     entry.target.classList.add('in-view');
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.15 });
-
+        }, { threshold: 0.1 });
         document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
     </script>
     <script src="/js/keyboard.js"></script>
@@ -197,4 +1057,3 @@
     </script>
 </body>
 </html>
-
