@@ -1,0 +1,238 @@
+- generic [active] [ref=f3e1]:
+  - navigation [ref=f3e3]:
+    - link "QV QuantVault" [ref=f3e4] [cursor=pointer]:
+      - /url: index.html
+      - generic [ref=f3e5]: QV
+      - generic [ref=f3e6]: QuantVault
+    - list [ref=f3e7]:
+      - listitem [ref=f3e8]:
+        - link "Home" [ref=f3e9] [cursor=pointer]:
+          - /url: index.html
+      - listitem [ref=f3e10]:
+        - link "Portfolio" [ref=f3e11] [cursor=pointer]:
+          - /url: portfolio.html
+      - listitem [ref=f3e12]:
+        - link "Transactions" [ref=f3e13] [cursor=pointer]:
+          - /url: transactions.html
+      - listitem [ref=f3e14]:
+        - link "Reports" [ref=f3e15] [cursor=pointer]:
+          - /url: reports.html
+      - listitem [ref=f3e16]:
+        - link "Watchlist" [ref=f3e17] [cursor=pointer]:
+          - /url: watchlist.html
+      - listitem [ref=f3e18]:
+        - link "Alerts" [ref=f3e19] [cursor=pointer]:
+          - /url: alerts.html
+    - generic [ref=f3e20]:
+      - generic [ref=f3e21]: MARKETS OPEN
+      - link "Log in" [ref=f3e23] [cursor=pointer]:
+        - /url: login.html
+      - link "Start Free" [ref=f3e24] [cursor=pointer]:
+        - /url: signup.html
+  - generic [ref=f3e25]:
+    - generic [ref=f3e27]:
+      - generic [ref=f3e28]: Professional Portfolio Intelligence
+      - heading "Your Wealth. Fully Tracked." [level=1] [ref=f3e31]:
+        - text: Your Wealth.
+        - generic [ref=f3e32]: Fully Tracked.
+      - paragraph [ref=f3e33]: Real-time market data, institutional-grade analytics, AI-powered insights, and smart price alerts — all built into one elegant platform for the modern investor.
+      - generic [ref=f3e34]:
+        - link "Start for Free →" [ref=f3e35] [cursor=pointer]:
+          - /url: signup.html
+        - link "Explore Dashboard" [ref=f3e36] [cursor=pointer]:
+          - /url: portfolio.html
+    - generic [ref=f3e37]:
+      - generic [ref=f3e38]:
+        - generic [ref=f3e39]: 8s
+        - generic [ref=f3e40]: Price Refresh Rate
+        - generic [ref=f3e41]: WebSocket Powered
+      - generic [ref=f3e42]:
+        - generic [ref=f3e43]: 1,000
+        - generic [ref=f3e44]: Simulation Paths
+        - generic [ref=f3e45]: Monte Carlo Engine
+      - generic [ref=f3e46]:
+        - generic [ref=f3e47]: 99.9%
+        - generic [ref=f3e48]: Platform Uptime
+        - generic [ref=f3e49]: Circuit-Breaker Resilient
+      - generic [ref=f3e50]:
+        - generic [ref=f3e51]: E2E
+        - generic [ref=f3e52]: Encrypted by Default
+        - generic [ref=f3e53]: JWT + bcrypt
+  - generic [ref=f3e54]:
+    - generic [ref=f3e55]:
+      - generic [ref=f3e56]:
+        - generic [ref=f3e57]: // Platform Capabilities
+        - heading "Built for investors who demand more." [level=2] [ref=f3e58]: Built for investorswho demand more.
+      - paragraph [ref=f3e59]: From a live WebSocket price engine to Monte Carlo wealth forecasting — every tool in QuantVault is purpose-built for serious investment intelligence.
+    - generic [ref=f3e60]:
+      - generic [ref=f3e61]:
+        - generic [ref=f3e62]: 01 / Analytics Engine
+        - generic [ref=f3e63]: 📊
+        - heading "Institutional-Grade Metrics" [level=3] [ref=f3e64]
+        - paragraph [ref=f3e65]: XIRR, Sharpe ratio, Portfolio Beta, max drawdown, win rate, and diversification score — the same metrics used by professional fund managers, now available to every investor.
+        - generic [ref=f3e66]:
+          - generic [ref=f3e67]: XIRR
+          - generic [ref=f3e68]: Beta
+          - generic [ref=f3e69]: Sharpe
+          - generic [ref=f3e70]: Drawdown
+      - generic [ref=f3e71]:
+        - generic [ref=f3e72]: 02 / Forecasting
+        - generic [ref=f3e73]: 🎲
+        - heading "Monte Carlo Wealth Simulation" [level=3] [ref=f3e74]
+        - paragraph [ref=f3e75]: Run 1,000 probabilistic paths over a 10-year horizon. See pessimistic (10th), median (50th), and optimistic (90th) percentile outcomes for your exact portfolio composition.
+        - generic [ref=f3e76]:
+          - generic [ref=f3e77]: 1,000 Paths
+          - generic [ref=f3e78]: 10-Year
+          - generic [ref=f3e79]: P10/P50/P90
+    - generic [ref=f3e80]:
+      - generic [ref=f3e81]:
+        - generic [ref=f3e82]: 03 / Real-Time Engine
+        - generic [ref=f3e83]: ⚡
+        - heading "Live Price Feeds via Yahoo Finance" [level=3] [ref=f3e84]
+        - paragraph [ref=f3e85]: WebSocket-connected price ticks update your entire portfolio value every 8 seconds. Circuit breakers (Opossum) instantly failover to Redis cache during API outages — zero data loss, zero downtime. Heavy tasks like CSV report generation are offloaded to BullMQ background queues, keeping every API response blazing fast.
+        - generic [ref=f3e86]:
+          - generic [ref=f3e87]: WebSocket
+          - generic [ref=f3e88]: Yahoo Finance API
+          - generic [ref=f3e89]: Redis
+          - generic [ref=f3e90]: BullMQ
+          - generic [ref=f3e91]: Opossum
+      - generic [ref=f3e92]:
+        - generic [ref=f3e93]: 04 / AI Advisor
+        - generic [ref=f3e94]: 🤖
+        - heading "Gemini AI Portfolio Advisor" [level=3] [ref=f3e95]
+        - paragraph [ref=f3e96]: Google Gemini AI analyzes your sector concentration, cash drag, and risk exposure — then delivers personalized, plain-language advice. Falls back to local heuristics automatically.
+        - generic [ref=f3e97]:
+          - generic [ref=f3e98]: Gemini AI
+          - generic [ref=f3e99]: Heuristic Fallback
+    - generic [ref=f3e100]:
+      - generic [ref=f3e101]:
+        - generic [ref=f3e102]: 05 / Security
+        - generic [ref=f3e103]: 🔒
+        - heading "Secured by Design" [level=3] [ref=f3e104]
+        - paragraph [ref=f3e105]: JWT refresh rotation, bcrypt hashing, httpOnly cookies, CORS protection, and rate limiting. Your financial data is yours alone.
+        - generic [ref=f3e106]:
+          - generic [ref=f3e107]: JWT Rotation
+          - generic [ref=f3e108]: bcrypt
+          - generic [ref=f3e109]: httpOnly
+      - generic [ref=f3e110]:
+        - generic [ref=f3e111]: 06 / Alerts + Ledger
+        - generic [ref=f3e112]: 🔔
+        - heading "Smart Alerts & Immutable Ledger" [level=3] [ref=f3e113]
+        - paragraph [ref=f3e114]: Set price threshold triggers on any asset — our BullMQ workers fire alerts the instant a price crosses your target. Every transaction is recorded in an immutable Event-Sourced Ledger, providing a flawless audit trail and eliminating balance inconsistencies. Export full transaction history to CSV on demand, processed in the background.
+        - generic [ref=f3e115]:
+          - generic [ref=f3e116]: Price Alerts
+          - generic [ref=f3e117]: Immutable Ledger
+          - generic [ref=f3e118]: CSV Export
+          - generic [ref=f3e119]: Background Queue
+  - generic [ref=f3e121]:
+    - generic [ref=f3e122]:
+      - generic [ref=f3e123]: 8s
+      - generic [ref=f3e124]: Live Price Refresh
+      - generic [ref=f3e125]: WebSocket-powered — every portfolio position updates automatically without any manual refresh required.
+    - generic [ref=f3e126]:
+      - generic [ref=f3e127]: 1,000×
+      - generic [ref=f3e128]: Monte Carlo Paths
+      - generic [ref=f3e129]: Each simulation runs 1,000 algorithm paths over your exact portfolio composition to model real-world wealth outcomes.
+    - generic [ref=f3e130]:
+      - generic [ref=f3e131]: 5+
+      - generic [ref=f3e132]: Risk Metrics
+      - generic [ref=f3e133]: XIRR, Beta, Sharpe ratio, max drawdown, win rate — institutional analytics available to every QuantVault user.
+  - generic [ref=f3e134]:
+    - generic [ref=f3e135]:
+      - generic [ref=f3e136]: // Technology Stack
+      - heading "Enterprise architecture. Production-grade from day one." [level=2] [ref=f3e137]: Enterprise architecture.Production-grade from day one.
+    - generic [ref=f3e138]:
+      - generic [ref=f3e139]:
+        - generic [ref=f3e140]: 🌐
+        - generic [ref=f3e141]: HTML5 + Vanilla JS
+        - paragraph [ref=f3e142]: Zero-dependency frontend. Pure HTML5, CSS3, and ES6+ JavaScript for maximum speed and control.
+        - generic [ref=f3e143]: Frontend
+      - generic [ref=f3e144]:
+        - generic [ref=f3e145]: 📊
+        - generic [ref=f3e146]: Apache ECharts
+        - paragraph [ref=f3e147]: High-performance interactive charts for portfolio history, allocations, and Monte Carlo visualizations.
+        - generic [ref=f3e148]: Frontend
+      - generic [ref=f3e149]:
+        - generic [ref=f3e150]: ⚙️
+        - generic [ref=f3e151]: Node.js + Express
+        - paragraph [ref=f3e152]: Fast, scalable REST API server with structured routing, middleware stack, and async/await throughout.
+        - generic [ref=f3e153]: Backend
+      - generic [ref=f3e154]:
+        - generic [ref=f3e155]: 🤖
+        - generic [ref=f3e156]: Google Gemini AI
+        - paragraph [ref=f3e157]: AI-powered portfolio advisory integrated via the Gemini API, with local heuristic fallback for offline resilience.
+        - generic [ref=f3e158]: Backend
+      - generic [ref=f3e159]:
+        - generic [ref=f3e160]: 🗄️
+        - generic [ref=f3e161]: PostgreSQL + Prisma
+        - paragraph [ref=f3e162]: Relational database with typed ORM, migration management, and an immutable Event-Sourced Ledger schema.
+        - generic [ref=f3e163]: Database
+      - generic [ref=f3e164]:
+        - generic [ref=f3e165]: ⚡
+        - generic [ref=f3e166]: Redis + BullMQ
+        - paragraph [ref=f3e167]: In-memory caching for price data and API responses. BullMQ manages background job queues for CSV exports and alerts.
+        - generic [ref=f3e168]: Infrastructure
+      - generic [ref=f3e169]:
+        - generic [ref=f3e170]: 🛡️
+        - generic [ref=f3e171]: Opossum Circuit Breakers
+        - paragraph [ref=f3e172]: Wraps every external API call in a circuit breaker. Instantly failovers to cached data during outages — zero cascading failures.
+        - generic [ref=f3e173]: Infrastructure
+      - generic [ref=f3e174]:
+        - generic [ref=f3e175]: 📱
+        - generic [ref=f3e176]: Progressive Web App
+        - paragraph [ref=f3e177]: Full PWA with Service Worker, Web App Manifest, and offline capabilities. Installable natively on any device.
+        - generic [ref=f3e178]: Frontend
+  - generic [ref=f3e179]:
+    - generic [ref=f3e180]: Get Started Today
+    - heading "Start investing with intelligence." [level=2] [ref=f3e181]
+    - paragraph [ref=f3e182]: Create your free account in under 60 seconds. No credit card. No hidden fees. Full access to every analytics tool from day one.
+    - generic [ref=f3e183]:
+      - link "Create Free Account →" [ref=f3e184] [cursor=pointer]:
+        - /url: signup.html
+      - link "Explore the Dashboard" [ref=f3e185] [cursor=pointer]:
+        - /url: portfolio.html
+  - contentinfo [ref=f3e186]:
+    - generic [ref=f3e187]:
+      - generic [ref=f3e188]:
+        - generic [ref=f3e189]: QuantVault
+        - paragraph [ref=f3e190]: Real-time investment portfolio intelligence platform for the modern investor.
+      - generic [ref=f3e191]:
+        - heading "Platform" [level=4] [ref=f3e192]
+        - list [ref=f3e193]:
+          - listitem [ref=f3e194]:
+            - link "Portfolio Dashboard" [ref=f3e195] [cursor=pointer]:
+              - /url: portfolio.html
+          - listitem [ref=f3e196]:
+            - link "Transactions" [ref=f3e197] [cursor=pointer]:
+              - /url: transactions.html
+          - listitem [ref=f3e198]:
+            - link "Analytics Reports" [ref=f3e199] [cursor=pointer]:
+              - /url: reports.html
+          - listitem [ref=f3e200]:
+            - link "Watchlist" [ref=f3e201] [cursor=pointer]:
+              - /url: watchlist.html
+          - listitem [ref=f3e202]:
+            - link "Price Alerts" [ref=f3e203] [cursor=pointer]:
+              - /url: alerts.html
+      - generic [ref=f3e204]:
+        - heading "Account" [level=4] [ref=f3e205]
+        - list [ref=f3e206]:
+          - listitem [ref=f3e207]:
+            - link "Create Account" [ref=f3e208] [cursor=pointer]:
+              - /url: signup.html
+          - listitem [ref=f3e209]:
+            - link "Log In" [ref=f3e210] [cursor=pointer]:
+              - /url: login.html
+          - listitem [ref=f3e211]:
+            - link "Profile Settings" [ref=f3e212] [cursor=pointer]:
+              - /url: profile.html
+      - generic [ref=f3e213]:
+        - heading "Stay Updated" [level=4] [ref=f3e214]
+        - generic [ref=f3e216]:
+          - textbox "Email" [ref=f3e217]:
+            - /placeholder: your@email.com
+          - button "→" [ref=f3e218] [cursor=pointer]
+        - paragraph [ref=f3e219]: Market updates & platform news.
+    - generic [ref=f3e220]:
+      - generic [ref=f3e221]: © 2026 QuantVault · All rights reserved · Built with precision for serious investors.
+      - generic [ref=f3e222]: WebSocket · PostgreSQL · Redis · Gemini AI · PWA

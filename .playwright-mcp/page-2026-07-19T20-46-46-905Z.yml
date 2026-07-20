@@ -1,0 +1,247 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - link "Skip to content" [ref=e3] [cursor=pointer]:
+      - /url: main-content
+    - generic [ref=e4]:
+      - navigation "Nav bar" [ref=e5]:
+        - link "Fonts" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - img [ref=e9]: font_download
+        - link "Noto" [ref=e11] [cursor=pointer]:
+          - /url: /noto
+          - img [ref=e14]: language
+        - link "Icons" [ref=e16] [cursor=pointer]:
+          - /url: /icons
+          - img [ref=e19]: interests
+        - link "Knowledge" [ref=e21] [cursor=pointer]:
+          - /url: /knowledge
+          - img [ref=e24]: school
+        - link "FAQ" [ref=e26] [cursor=pointer]:
+          - /url: /faq
+          - img [ref=e29]: help
+        - button "Switch to dark theme" [ref=e33] [cursor=pointer]:
+          - img [ref=e35]: dark_mode
+      - generic [ref=e41]:
+        - banner [ref=e44]:
+          - generic [ref=e45]:
+            - link "Google Fonts" [ref=e47] [cursor=pointer]:
+              - /url: https://fonts.google.com/
+            - generic [ref=e59]:
+              - generic [ref=e65]:
+                - img [ref=e68]: search
+                - combobox "Search fonts" [ref=e70]
+              - generic [ref=e72]:
+                - button "View selected families" [ref=e74] [cursor=pointer]:
+                  - img [ref=e76]: shopping_bag
+                - generic:
+                  - dialog "View selected families.":
+                    - generic [ref=e79]: View selected families. Dismiss
+          - generic [ref=e81]:
+            - button "Open Filters panel" [ref=e82]:
+              - generic [ref=e83]:
+                - img [ref=e85]: tune
+                - text: Filters
+            - radiogroup [ref=e90]:
+              - radio "Row layout" [checked] [ref=e91] [cursor=pointer]:
+                - generic [ref=e92]:
+                  - img [ref=e94]: view_list
+                  - text: Row
+              - radio "Grid layout" [ref=e95] [cursor=pointer]:
+                - generic [ref=e96]:
+                  - img [ref=e98]: view_module
+                  - text: Grid
+              - radio "Sample layout" [ref=e99] [cursor=pointer]:
+                - generic [ref=e100]:
+                  - img [ref=e102]: image
+                  - text: Sample
+        - generic [ref=e103]:
+          - main [ref=e104]:
+            - generic [ref=e107]:
+              - generic [ref=e110]:
+                - generic [ref=e111]:
+                  - link "Readability How type influences readability" [ref=e113] [cursor=pointer]:
+                    - /url: https://fonts.google.com/knowledge/readability_and_accessibility/how_type_influences_readability
+                    - generic [ref=e114]:
+                      - generic [ref=e115]:
+                        - generic [ref=e116]: Readability
+                        - generic [ref=e117]: How type influences readability
+                      - img [ref=e124]: accessibility_new
+                  - link "Material design guidelines Styling text" [ref=e126] [cursor=pointer]:
+                    - /url: https://m3.material.io/styles/typography/applying-type
+                    - generic [ref=e127]:
+                      - generic [ref=e128]:
+                        - generic [ref=e129]: Material design guidelines
+                        - generic [ref=e130]: Styling text
+                      - img [ref=e137]: material_design
+                  - link "Optimize font loading Achieve faster page load times" [ref=e139] [cursor=pointer]:
+                    - /url: https://fonts.google.com/knowledge/using_type/using_web_fonts#optimizing-font-loading
+                    - generic [ref=e140]:
+                      - generic [ref=e141]:
+                        - generic [ref=e142]: Optimize font loading
+                        - generic [ref=e143]: Achieve faster page load times
+                      - img [ref=e150]: arrow_outward
+                  - link "Google Fonts API Get started with web fonts" [ref=e152] [cursor=pointer]:
+                    - /url: https://developers.google.com/fonts/docs/getting_started
+                    - generic [ref=e153]:
+                      - generic [ref=e154]:
+                        - generic [ref=e155]: Google Fonts API
+                        - generic [ref=e156]: Get started with web fonts
+                      - img [ref=e163]: code
+                  - link "Self-hosting web fonts Get the most out of self-hosting" [ref=e165] [cursor=pointer]:
+                    - /url: https://fonts.google.com/knowledge/using_type/self_hosting_web_fonts
+                    - generic [ref=e166]:
+                      - generic [ref=e167]:
+                        - generic [ref=e168]: Self-hosting web fonts
+                        - generic [ref=e169]: Get the most out of self-hosting
+                      - img [ref=e176]: arrow_outward
+                  - link "Internationalization Consider your language needs" [ref=e178] [cursor=pointer]:
+                    - /url: https://fonts.google.com/knowledge/choosing_type/choosing_reliable_typefaces
+                    - generic [ref=e179]:
+                      - generic [ref=e180]:
+                        - generic [ref=e181]: Internationalization
+                        - generic [ref=e182]: Consider your language needs
+                      - img [ref=e189]: language
+                - button [ref=e190] [cursor=pointer]:
+                  - img [ref=e193]: arrow_forward_ios
+              - generic [ref=e196]:
+                - heading "Find the fonts for your project" [level=1] [ref=e197]
+                - region [ref=e198]:
+                  - generic [ref=e200]:
+                    - paragraph [ref=e201]: 1,942 of 1,942 families
+                    - button "About these results" [ref=e205]:
+                      - generic [ref=e207]:
+                        - text: About these results
+                        - img [ref=e209]: info
+                  - generic "List of font families" [ref=e213]:
+                    - generic [ref=e214]:
+                      - generic [ref=e215]:
+                        - link "Roboto. Variable (3 axes). Christian Robertson, ParaType, Font Bureau" [ref=e216] [cursor=pointer]:
+                          - /url: https://fonts.google.com/specimen/Roboto
+                          - generic [ref=e217]: Roboto
+                        - generic [ref=e218]: Variable (3 axes)
+                        - generic [ref=e219]: "| Christian Robertson, ParaType, Font Bureau"
+                      - generic [ref=e220]: Everyone has the right to freedom of thought, conscience and religion; this right includes freedom to change his religion or belief, and freedom, either alone or in community with others and in public or private, to manifest his religion or belief in teaching, practice, worship and observance. Everyone has the right to freedom of opinion and expression; this right includes freedom to hold opinions without interference and to seek, receive and impart information and ideas through any media and regardless of frontiers. Everyone has the right to rest and leisure, including reasonable limitation of working hours and periodic holidays with pay.
+                    - generic [ref=e222]:
+                      - generic [ref=e223]:
+                        - link "Geomini. Variable (1 axis). FontBob" [ref=e224] [cursor=pointer]:
+                          - /url: https://fonts.google.com/specimen/Geomini
+                          - generic [ref=e225]: Geomini
+                        - generic [ref=e226]: Variable (1 axis)
+                        - generic [ref=e227]: "| FontBob"
+                      - generic [ref=e228]: Everyone has the right to freedom of thought, conscience and religion; this right includes freedom to change his religion or belief, and freedom, either alone or in community with others and in public or private, to manifest his religion or belief in teaching, practice, worship and observance. Everyone has the right to freedom of opinion and expression; this right includes freedom to hold opinions without interference and to seek, receive and impart information and ideas through any media and regardless of frontiers. Everyone has the right to rest and leisure, including reasonable limitation of working hours and periodic holidays with pay.
+                    - generic [ref=e230]:
+                      - generic [ref=e231]:
+                        - link "Hibur Mono. 1 style. TypeHabesha, Behailu Berento" [ref=e232] [cursor=pointer]:
+                          - /url: https://fonts.google.com/specimen/Hibur+Mono
+                          - generic [ref=e233]: Hibur Mono
+                        - generic [ref=e234]: 1 style
+                        - generic [ref=e235]: "| TypeHabesha, Behailu Berento"
+                      - generic [ref=e236]: እያንዳንዱ፡ሰው፡በዚህ፡ውሳን፡ውስጥ፡የተዘረዘሩት፡መብቶችና፡ነጻነቶች፡በሙሉ፡በተግባር፡እንዲውሉ፡ለሚደረግባቸው፡የኀብረሰብና፡የኢንተርናሽናል፡ሥርዓት፡የመጠቀም፡መብት፡አለው። በዚህ፡ውሳኔ፡ከላይ፡የተዘረዘረው፡ሁሉ፡በዚሁ፡ውስጥ፡የተጠቀሱትን፡ማናቸውም፡መብቶች፡ወይም፡ነጻነቶች፡ለማበላሸት፡በታሰበ፡ማንኛውም፡ዓይነት፡ተግባር፡ለማዋል፡ወይም፡ድርጊትን፡ለመፈጸም፡ለማንኛውም፡መንግሥት፡ወይም፡ድርጅት፡ወይም፡ሰው፡የተባሉ፡አይተረጎሙም። የሰው፡ልጅ፡ሁሉ፡ሲወለድ፡ነጻና፡በክብርና፡በመብትም፡እኩልነት፡ያለው፡ነው።፡የተፈጥሮ፡ማስተዋልና፡ሕሊና፡ስላለው፡አንዱ፡ሌላውን፡በወንድማማችነት፡መንፈስ፡መመልከት፡ይገባዋል። እያንዳንዱ፡ሰው፡የዘር፡የቀለም፡የጾታ፡የቋንቋ፡የሃይማኖት፡የፖለቲካ፡ወይም፡የሌላ፡ዓይነት፡አስተሳሰብ፡የብሔራዊ፡ወይም፡የኀብረተሰብ፡ታሪክ፡የሀብት፡የትውልድ፡ወይም፡የሌላ፡ደረጃ፡ልዩነት፡ሳይኖሩ፡በዚሁ፡ውሳኔ፡የተዘረዘሩት፡መብቶችንና፡ነጻነቶች፡ሁሉ፡እንዲከበሩለት፡ይገባል። ከዚህም፡በተቀረ፡አንድ፡ሰው፡ከሚኖርበት፡አገር፡ወይም፡ግዛት፡የፖለቲካ፡የአገዛዝ፡ወይም፡የኢንተርናሽናል፡አቋም፡የተነሳ፡አገሩ፡ነጻም፡ሆነ፡በሞግዚትነት፡አስተዳደር፡ወይም፡እራሱን፡ችሎ፡የማይተዳደር፡አገር፡ተወላጅ፡ቢሆንም፡በማንኛውም፡ዓይነት፡ገደብ፡ያለው፡አገዛዝ፡ሥር፡ቢሆንም፡ልዩነት፡አይፈጸምበትም።
+                    - generic [ref=e238]:
+                      - generic [ref=e239]:
+                        - link "Open Sans. Variable (3 axes). Steve Matteson" [ref=e240] [cursor=pointer]:
+                          - /url: https://fonts.google.com/specimen/Open+Sans
+                          - generic [ref=e241]: Open Sans
+                        - generic [ref=e242]: Variable (3 axes)
+                        - generic [ref=e243]: "| Steve Matteson"
+                      - generic [ref=e244]: Everyone has the right to freedom of thought, conscience and religion; this right includes freedom to change his religion or belief, and freedom, either alone or in community with others and in public or private, to manifest his religion or belief in teaching, practice, worship and observance. Everyone has the right to freedom of opinion and expression; this right includes freedom to hold opinions without interference and to seek, receive and impart information and ideas through any media and regardless of frontiers. Everyone has the right to rest and leisure, including reasonable limitation of working hours and periodic holidays with pay.
+                    - generic [ref=e246]:
+                      - generic [ref=e247]:
+                        - link "Noto Sans Mende Kikakui. 1 style. Google" [ref=e248] [cursor=pointer]:
+                          - /url: https://fonts.google.com/specimen/Noto+Sans+Mende+Kikakui
+                          - generic [ref=e249]: Noto Sans Mende Kikakui
+                        - generic [ref=e250]: 1 style
+                        - generic [ref=e251]: "| Google"
+                      - generic [ref=e252]: 𞡥𞠖𞢻𞠢𞠮𞠣 𞢣𞠽 𞡅 𞡄 𞠺 𞡈 𞡗 𞢰𞠎 𞡔 𞡪, 𞡅𞠧 𞡄 𞡥𞢻𞠤 𞡖𞠢 𞠄𞠦 𞡄 𞠼𞣀 𞠕𞠣 𞡬𞠊𞢂. 𞠀𞠢𞡔 𞠄𞠦 𞡨𞢯𞠸𞠣𞡪 𞡽𞠨𞠷 𞠣 𞡗𞠼 𞡄 𞡪𞡣. 𞡛𞡇 𞠕𞡰𞡽 𞡄 𞡄 𞣄𞣄𞡪 𞡭𞠢 𞠀𞠣 𞢱𞠥𞢄𞠣. 𞡥𞠖𞢻𞠢𞠮𞠣 𞢣𞠽 𞡅 𞡄 𞠺 𞡈 𞡗 𞢰𞠎 𞡔 𞡪, 𞡅𞠧 𞡄 𞡥𞢻𞠤 𞡖𞠢 𞠄𞠦 𞡄 𞠼𞣀 𞠕𞠣 𞡬𞠊𞢂. 𞠀𞠢𞡔 𞠄𞠦 𞡨𞢯𞠸𞠣𞡪 𞡽𞠨𞠷 𞠣 𞡗𞠼 𞡄 𞡪𞡣. 𞡛𞡇 𞠕𞡰𞡽 𞡄 𞡄 𞣄𞣄𞡪 𞡭𞠢 𞠀𞠣 𞢱𞠥𞢄𞠣. 𞡥𞠖𞢻𞠢𞠮𞠣 𞢣𞠽 𞡅 𞡄 𞠺 𞡈 𞡗 𞢰𞠎 𞡔 𞡪, 𞡅𞠧 𞡄 𞡥𞢻𞠤 𞡖𞠢 𞠄𞠦 𞡄 𞠼𞣀 𞠕𞠣 𞡬𞠊𞢂. 𞠀𞠢𞡔 𞠄𞠦 𞡨𞢯𞠸𞠣𞡪 𞡽𞠨𞠷 𞠣 𞡗𞠼 𞡄 𞡪𞡣. 𞡛𞡇 𞠕𞡰𞡽 𞡄 𞡄 𞣄𞣄𞡪 𞡭𞠢 𞠀𞠣 𞢱𞠥𞢄𞠣. 𞡥𞠖𞢻𞠢𞠮𞠣 𞢣𞠽 𞡅 𞡄 𞠺 𞡈 𞡗 𞢰𞠎 𞡔 𞡪, 𞡅𞠧 𞡄 𞡥𞢻𞠤 𞡖𞠢 𞠄𞠦 𞡄 𞠼𞣀 𞠕𞠣 𞡬𞠊𞢂. 𞠀𞠢𞡔 𞠄𞠦 𞡨𞢯𞠸𞠣𞡪 𞡽𞠨𞠷 𞠣 𞡗𞠼 𞡄 𞡪𞡣. 𞡛𞡇 𞠕𞡰𞡽 𞡄 𞡄 𞣄𞣄𞡪 𞡭𞠢 𞠀𞠣 𞢱𞠥𞢄𞠣. 𞡥𞠖𞢻𞠢𞠮𞠣 𞢣𞠽 𞡅 𞡄 𞠺 𞡈 𞡗 𞢰𞠎 𞡔 𞡪, 𞡅𞠧 𞡄 𞡥𞢻𞠤 𞡖𞠢 𞠄𞠦 𞡄 𞠼𞣀 𞠕𞠣 𞡬𞠊𞢂. 𞠀𞠢𞡔 𞠄𞠦 𞡨𞢯𞠸𞠣𞡪 𞡽𞠨𞠷 𞠣 𞡗𞠼 𞡄 𞡪𞡣. 𞡛𞡇 𞠕𞡰𞡽 𞡄 𞡄 𞣄𞣄𞡪 𞡭𞠢 𞠀𞠣 𞢱𞠥𞢄𞠣. 𞡥𞠖𞢻𞠢𞠮𞠣 𞢣𞠽 𞡅 𞡄 𞠺 𞡈 𞡗 𞢰𞠎 𞡔 𞡪, 𞡅𞠧 𞡄 𞡥𞢻𞠤 𞡖𞠢 𞠄𞠦 𞡄 𞠼𞣀 𞠕𞠣 𞡬𞠊𞢂. 𞠀𞠢𞡔 𞠄𞠦 𞡨𞢯𞠸𞠣𞡪 𞡽𞠨𞠷 𞠣 𞡗𞠼 𞡄 𞡪𞡣. 𞡛𞡇 𞠕𞡰𞡽 𞡄 𞡄 𞣄𞣄𞡪 𞡭𞠢 𞠀𞠣 𞢱𞠥𞢄𞠣.
+                    - generic [ref=e254]:
+                      - generic [ref=e255]:
+                        - link "Google Sans. Variable (4 axes). Google" [ref=e256] [cursor=pointer]:
+                          - /url: https://fonts.google.com/specimen/Google+Sans
+                          - generic [ref=e257]: Google Sans
+                        - generic [ref=e258]: Variable (4 axes)
+                        - generic [ref=e259]: "| Google"
+                      - generic [ref=e260]: Everyone has the right to freedom of thought, conscience and religion; this right includes freedom to change his religion or belief, and freedom, either alone or in community with others and in public or private, to manifest his religion or belief in teaching, practice, worship and observance. Everyone has the right to freedom of opinion and expression; this right includes freedom to hold opinions without interference and to seek, receive and impart information and ideas through any media and regardless of frontiers. Everyone has the right to rest and leisure, including reasonable limitation of working hours and periodic holidays with pay.
+                    - generic [ref=e262]:
+                      - generic [ref=e263]:
+                        - link "Inter. Variable (3 axes). Rasmus Andersson" [ref=e264] [cursor=pointer]:
+                          - /url: https://fonts.google.com/specimen/Inter
+                          - generic [ref=e265]: Inter
+                        - generic [ref=e266]: Variable (3 axes)
+                        - generic [ref=e267]: "| Rasmus Andersson"
+                      - generic [ref=e268]: Everyone has the right to freedom of thought, conscience and religion; this right includes freedom to change his religion or belief, and freedom, either alone or in community with others and in public or private, to manifest his religion or belief in teaching, practice, worship and observance. Everyone has the right to freedom of opinion and expression; this right includes freedom to hold opinions without interference and to seek, receive and impart information and ideas through any media and regardless of frontiers. Everyone has the right to rest and leisure, including reasonable limitation of working hours and periodic holidays with pay.
+                    - generic [ref=e270]:
+                      - generic [ref=e271]:
+                        - link "Montserrat. Variable (2 axes). Julieta Ulanovsky, Sol Matas, Juan Pablo del Peral, Jacques Le Bailly" [ref=e272] [cursor=pointer]:
+                          - /url: https://fonts.google.com/specimen/Montserrat
+                          - generic [ref=e273]: Montserrat
+                        - generic [ref=e274]: Variable (2 axes)
+                        - generic [ref=e275]: "| Julieta Ulanovsky, Sol Matas, Juan Pablo del Peral, Jacques Le Bailly"
+                      - generic [ref=e276]: Everyone has the right to freedom of thought, conscience and religion; this right includes freedom to change his religion or belief, and freedom, either alone or in community with others and in public or private, to manifest his religion or belief in teaching, practice, worship and observance. Everyone has the right to freedom of opinion and expression; this right includes freedom to hold opinions without interference and to seek, receive and impart information and ideas through any media and regardless of frontiers. Everyone has the right to rest and leisure, including reasonable limitation of working hours and periodic holidays with pay.
+                    - generic [ref=e278]:
+                      - generic [ref=e279]:
+                        - link "Kameron. Variable (1 axis). Vernon Adams" [ref=e280] [cursor=pointer]:
+                          - /url: https://fonts.google.com/specimen/Kameron
+                          - generic [ref=e281]: Kameron
+                        - generic [ref=e282]: Variable (1 axis)
+                        - generic [ref=e283]: "| Vernon Adams"
+                      - generic [ref=e284]: Everyone has the right to freedom of thought, conscience and religion; this right includes freedom to change his religion or belief, and freedom, either alone or in community with others and in public or private, to manifest his religion or belief in teaching, practice, worship and observance. Everyone has the right to freedom of opinion and expression; this right includes freedom to hold opinions without interference and to seek, receive and impart information and ideas through any media and regardless of frontiers. Everyone has the right to rest and leisure, including reasonable limitation of working hours and periodic holidays with pay.
+                    - generic [ref=e286]:
+                      - generic [ref=e287]:
+                        - link "Poppins. 18 styles. Indian Type Foundry, Jonny Pinhorn, Ninad Kale" [ref=e288] [cursor=pointer]:
+                          - /url: https://fonts.google.com/specimen/Poppins
+                          - generic [ref=e289]: Poppins
+                        - generic [ref=e290]: 18 styles
+                        - generic [ref=e291]: "| Indian Type Foundry, Jonny Pinhorn, Ninad Kale"
+                      - generic [ref=e292]: प्रत्येक व्यक्ति को विचार और उसकी अभिव्यक्ति की स्वतन्त्रता का अधिकार है । इसके अन्तर्गत बिना हस्तक्षेप के कोई राय रखना और किसी भी माध्यम के ज़रिए से तथा सीमाओं की परवाह न कर के किसी की मूचना और धारणा का अन्वेषण, प्रहण तथा प्रदान सम्मिलित है । समाज के एक सदस्य के रूप में प्रत्येक व्यक्ति को सामाजिक सुरक्षा का अधिकार है और प्रत्येक व्यक्ति को अपने व्यक्तित्व के उस स्वतन्त्र विकास तथा गोरव के लिए—जो राष्ट्रीय प्रयत्न या अन्तर्राष्ट्रीय सहयोग तथा प्रत्येक राज्य के संगठन एवं साधनों के अनुकूल हो—अनिकार्यतः आवश्यक आर्थिक, सामाजिक, और सांस्कृतिक अधिकारों की प्राप्ति का हक़ है । प्रत्येक व्यक्ति को विश्राम और अवकाश का अधिकार है । इसके अन्तर्गत काम के घंटों की उचित हदबन्दी और समयसमय पर मज़दूरी सहित छुट्टियां सम्मिलित है । प्रत्येक व्यक्ति को ऐसी सामाजिक और अन्तर्राष्ट्रीय व्यवस्था की प्राप्ति का अधिकार है जिसमें इस घोषणा में उल्लिखित अधिकारों और स्वतन्त्रताओं को पूर्णतः प्राप्त किया जा सके ।
+          - contentinfo [ref=e295]:
+            - generic [ref=e296]:
+              - generic [ref=e297]:
+                - generic "Google Fonts" [ref=e298]
+                - generic [ref=e302]: Google Fonts makes it easy to bring personality and performance to your websites and products. Our robust catalog of open-source fonts and icons makes it easy to integrate expressive type and icons seamlessly — no matter where you are in the world.
+              - generic [ref=e305]:
+                - list [ref=e306]:
+                  - listitem [ref=e307]:
+                    - link [ref=e309] [cursor=pointer]:
+                      - /url: /about
+                      - generic [ref=e325]:
+                        - paragraph [ref=e326]: About us
+                        - paragraph [ref=e327]: Making the web more beautiful, fast, and open through great typography & icons
+                  - listitem [ref=e328]:
+                    - link [ref=e330] [cursor=pointer]:
+                      - /url: https://github.com/google/fonts
+                      - generic [ref=e338]:
+                        - paragraph [ref=e339]: Fonts GitHub
+                        - paragraph [ref=e340]: This repository contains the binary font files served by Google Fonts
+                  - listitem [ref=e341]:
+                    - link [ref=e343] [cursor=pointer]:
+                      - /url: https://github.com/google/material-design-icons
+                      - generic [ref=e351]:
+                        - paragraph [ref=e352]: Icons GitHub
+                        - paragraph [ref=e353]: This repository contains the binary font files served by Google Icons
+                - list [ref=e354]:
+                  - listitem [ref=e355]:
+                    - link [ref=e357] [cursor=pointer]:
+                      - /url: https://fonts.googleblog.com/
+                      - generic [ref=e363]:
+                        - paragraph [ref=e364]: Fonts blog
+                        - paragraph [ref=e365]: This blog has stories about how different fonts were designed for various languages and scripts
+                  - listitem [ref=e366]:
+                    - link [ref=e368] [cursor=pointer]:
+                      - /url: https://m3.material.io/styles/typography/overview
+                      - generic [ref=e376]:
+                        - paragraph [ref=e377]: Material Design
+                        - paragraph [ref=e378]: A cross-platform design system for creating high-quality digital experiences
+                  - listitem [ref=e379]:
+                    - link [ref=e381] [cursor=pointer]:
+                      - /url: https://design.google/tags/typography
+                      - generic [ref=e387]:
+                        - paragraph [ref=e388]: Google Design
+                        - paragraph [ref=e389]: Google Design highlights the breadth and craft of design and fonts from speculation, to work-in-progress, to finished product
+            - generic [ref=e402]:
+              - link "Privacy" [ref=e403] [cursor=pointer]:
+                - /url: https://policies.google.com/privacy?hl=en
+              - link "Terms of service" [ref=e404] [cursor=pointer]:
+                - /url: https://policies.google.com/terms?hl=en
+          - button "Leave feedback" [ref=e405] [cursor=pointer]:
+            - img [ref=e407]: feedback
+  - generic [ref=e410]: Browse Fonts - Google Fonts
