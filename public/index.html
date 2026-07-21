@@ -2,8 +2,8 @@
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="theme-color" content="#00eeff">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#38BDF8">
     <title>QuantVault — Real-Time Investment Portfolio Intelligence Platform</title>
     <meta name="description" content="QuantVault is your real-time investment intelligence platform. Track, analyse, and be alerted the moment markets move.">
     <link rel="manifest" href="/manifest.json">
@@ -12,970 +12,159 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <script src="/js/theme.js"></script>
-    <style>
-        /* ══════════════════════════════════════════════════════
-           QUANTVAULT — HOMEPAGE v3  "Command Center" wireframe
-           Full-bleed vertical sections · Dark editorial
-        ══════════════════════════════════════════════════════ */
-
-        /* ── TOP NAV ── */
-        .cmd-nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 300;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 clamp(20px, 5vw, 60px);
-            height: 60px;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            background: rgba(4, 8, 20, 0.75);
-            backdrop-filter: blur(28px);
-            transition: background 300ms;
-        }
-        .cmd-nav.solid { background: rgba(4, 8, 20, 0.97); }
-        .cmd-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-        .cmd-brand-mark {
-            width: 32px; height: 32px;
-            background: linear-gradient(135deg, var(--cyan), var(--purple));
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: 0.75rem;
-            color: #000;
-            letter-spacing: -0.05em;
-            flex-shrink: 0;
-        }
-        .cmd-brand-name {
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 1rem;
-            letter-spacing: -0.03em;
-            color: var(--text-primary);
-        }
-        .cmd-nav-links {
-            display: flex;
-            list-style: none;
-            gap: 0;
-        }
-        .cmd-nav-links a {
-            display: block;
-            padding: 8px 18px;
-            font-size: 0.78rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            letter-spacing: 0.01em;
-            border-radius: 8px;
-            transition: color 200ms, background 200ms;
-        }
-        .cmd-nav-links a:hover { color: var(--text-primary); background: var(--surface); }
-        .cmd-nav-links a.active { color: var(--cyan); }
-        .cmd-nav-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .cmd-status-pill {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 10px;
-            border-radius: 999px;
-            background: rgba(16,185,129,0.1);
-            border: 1px solid rgba(16,185,129,0.25);
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            color: var(--emerald-light);
-        }
-        .cmd-status-dot {
-            width: 5px; height: 5px;
-            border-radius: 50%;
-            background: var(--emerald-light);
-            animation: blink 1.2s ease infinite;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
-        .nav-ham { display: none; background: none; border: none; cursor: pointer; padding: 6px; }
-        .nav-ham-icon { display: flex; flex-direction: column; gap: 4px; }
-        .nav-ham-icon span { display: block; width: 20px; height: 2px; background: var(--text-primary); border-radius: 2px; }
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            top: 60px; left: 0; right: 0; bottom: 0;
-            background: rgba(4,8,20,0.98);
-            z-index: 250;
-            flex-direction: column;
-            gap: 0;
-            padding: 20px;
-            list-style: none;
-        }
-        .mobile-nav.open { display: flex; }
-        .mobile-nav li a { display: block; padding: 16px 0; border-bottom: 1px solid var(--border-subtle); font-size: 1.1rem; font-weight: 600; }
-
-        /* ── HERO: FULLSCREEN VIDEO-STYLE ── */
-        .fs-hero {
-            position: relative;
-            min-height: 100vh;
-            display: grid;
-            grid-template-rows: 1fr auto;
-            padding-top: 60px;
-            overflow: hidden;
-        }
-        .fs-hero-bg {
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-        }
-        .fs-hero-bg::before {
-            content: '';
-            position: absolute;
-            top: 10%; left: 50%;
-            transform: translateX(-50%);
-            width: 900px; height: 900px;
-            border-radius: 50%;
-            background: radial-gradient(circle,
-                rgba(0,238,255,0.07) 0%,
-                rgba(168,128,255,0.05) 40%,
-                transparent 70%
-            );
-            filter: blur(40px);
-            pointer-events: none;
-        }
-        .fs-hero-content {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: clamp(32px, 6vw, 80px) clamp(20px, 5vw, 60px);
-            min-height: calc(100vh - 60px - 120px);
-        }
-        .hero-kicker {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--font-mono);
-            font-size: 0.7rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--cyan);
-            margin-bottom: 32px;
-        }
-        .hero-kicker-bar { width: 32px; height: 1px; background: var(--cyan); }
-        .fs-hero h1 {
-            font-family: var(--font-display);
-            font-size: clamp(3rem, 8vw, 7rem);
-            font-weight: 800;
-            letter-spacing: -0.05em;
-            line-height: 0.95;
-            color: var(--text-primary);
-            margin-bottom: 32px;
-            max-width: 900px;
-        }
-        .fs-hero h1 .word-accent {
-            display: block;
-            background: linear-gradient(90deg, var(--cyan) 0%, var(--purple) 60%, #ec4899 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .fs-hero-sub {
-            font-size: clamp(1rem, 2vw, 1.2rem);
-            color: var(--text-secondary);
-            line-height: 1.7;
-            max-width: 560px;
-            margin-bottom: 48px;
-        }
-        .hero-btn-group {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        /* ── BOTTOM STATS STRIP (inside hero) ── */
-        .hero-stats-strip {
-            position: relative;
-            z-index: 1;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-        }
-        .hss-item {
-            padding: 28px 32px;
-            border-right: 1px solid rgba(255,255,255,0.06);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .hss-item:last-child { border-right: none; }
-        .hss-val {
-            font-family: var(--font-mono);
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-        .hss-lbl {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-        }
-        .hss-sub {
-            font-size: 0.75rem;
-            color: var(--emerald-light);
-            font-family: var(--font-mono);
-            margin-top: 2px;
-        }
-
-        /* ── DIAGONAL SECTION DIVIDER ── */
-        .diag-divider {
-            width: 100%;
-            height: 60px;
-            overflow: hidden;
-            display: block;
-            margin-top: -1px;
-        }
-
-        /* ── SECTION: PLATFORM OVERVIEW (alternating columns) ── */
-        .overview-section {
-            padding: clamp(80px, 12vw, 160px) clamp(20px, 6vw, 80px);
-        }
-        .ov-header {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 48px;
-            align-items: end;
-            margin-bottom: 72px;
-        }
-        .ov-tag {
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--cyan);
-            display: block;
-            margin-bottom: 12px;
-        }
-        .ov-title {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 4vw, 3.2rem);
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-        }
-        .ov-desc {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            line-height: 1.75;
-            max-width: 400px;
-            align-self: end;
-        }
-        /* Feature rows: alternating layout */
-        .feat-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2px;
-            background: var(--border-subtle);
-            border-radius: 28px;
-            overflow: hidden;
-            margin-bottom: 2px;
-        }
-        .feat-panel {
-            background: var(--bg-base);
-            padding: clamp(32px, 4vw, 56px);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            position: relative;
-            overflow: hidden;
-            transition: background 200ms;
-        }
-        .feat-panel:hover { background: var(--bg-elevated); }
-        .feat-panel-wide { grid-column: span 2; }
-        .feat-panel-num {
-            font-family: var(--font-mono);
-            font-size: 0.6rem;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
-        .feat-panel-icon {
-            width: 48px; height: 48px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(0,238,255,0.1), rgba(168,128,255,0.1));
-            border: 1px solid rgba(0,238,255,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        .feat-panel h3 {
-            font-family: var(--font-display);
-            font-size: clamp(1.1rem, 2.2vw, 1.5rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-        .feat-panel p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.75;
-        }
-        .feat-panel-glow {
-            position: absolute;
-            bottom: -40px; right: -40px;
-            width: 160px; height: 160px;
-            border-radius: 50%;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 300ms;
-        }
-        .feat-panel:hover .feat-panel-glow { opacity: 1; }
-        .feat-panel.cyan-glow .feat-panel-glow { background: radial-gradient(circle, rgba(0,238,255,0.1), transparent 70%); }
-        .feat-panel.purple-glow .feat-panel-glow { background: radial-gradient(circle, rgba(168,128,255,0.1), transparent 70%); }
-        .feat-panel.green-glow .feat-panel-glow { background: radial-gradient(circle, rgba(16,185,129,0.1), transparent 70%); }
-        .feat-chips {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .feat-chip {
-            padding: 3px 10px;
-            border-radius: 999px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            font-family: var(--font-mono);
-        }
-
-        /* ── SECTION: NUMBERS WALL ── */
-        .numbers-wall {
-            padding: clamp(60px, 8vw, 100px) clamp(20px, 6vw, 80px);
-            background: linear-gradient(180deg, rgba(0,238,255,0.03) 0%, transparent 100%);
-            border-top: 1px solid var(--border-subtle);
-            border-bottom: 1px solid var(--border-subtle);
-        }
-        .numbers-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 48px;
-        }
-        .num-item {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding-left: 20px;
-            border-left: 2px solid transparent;
-            transition: border-color 300ms;
-        }
-        .num-item:hover { border-left-color: var(--cyan); }
-        .num-item .n-val {
-            font-family: var(--font-display);
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 800;
-            letter-spacing: -0.04em;
-            background: linear-gradient(90deg, var(--text-primary), var(--text-secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .num-item .n-lbl {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-        .num-item .n-sub {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        /* ── SECTION: TECHNOLOGY STACK ── */
-        .tech-section {
-            padding: clamp(80px, 12vw, 160px) clamp(20px, 6vw, 80px);
-        }
-        .tech-header {
-            text-align: center;
-            margin-bottom: 64px;
-        }
-        .tech-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1px;
-            background: var(--border-subtle);
-            border-radius: 24px;
-            overflow: hidden;
-        }
-        .tech-cell {
-            background: var(--bg-base);
-            padding: 32px 28px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            transition: background 200ms;
-        }
-        .tech-cell:hover { background: var(--bg-elevated); }
-        .tech-cell-icon {
-            font-size: 1.8rem;
-            line-height: 1;
-        }
-        .tech-cell-name {
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-        .tech-cell-desc {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-        .tech-cell-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.6rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            margin-top: auto;
-            width: fit-content;
-        }
-        .badge-frontend { background: rgba(0,238,255,0.1); color: var(--cyan); }
-        .badge-backend { background: rgba(168,128,255,0.1); color: var(--purple); }
-        .badge-db { background: rgba(16,185,129,0.1); color: var(--emerald-light); }
-        .badge-infra { background: rgba(251,146,60,0.1); color: var(--amber-light); }
-
-        /* ── SECTION: FULL-BLEED CTA ── */
-        .fullbleed-cta {
-            min-height: 70vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: clamp(60px, 10vw, 120px) clamp(20px, 6vw, 80px);
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(160deg,
-                hsl(222, 60%, 4%) 0%,
-                hsl(250, 60%, 6%) 40%,
-                hsl(192, 60%, 4%) 100%
-            );
-        }
-        .fullbleed-cta::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 700px; height: 700px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(168,128,255,0.12), rgba(0,238,255,0.06) 40%, transparent 70%);
-            pointer-events: none;
-        }
-        .cta-eyebrow {
-            font-family: var(--font-mono);
-            font-size: 0.65rem;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: var(--cyan);
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .cta-eyebrow::before, .cta-eyebrow::after {
-            content: '';
-            width: 40px; height: 1px;
-            background: var(--cyan);
-            opacity: 0.4;
-        }
-        .fullbleed-cta h2 {
-            font-family: var(--font-display);
-            font-size: clamp(2.5rem, 6vw, 5rem);
-            font-weight: 800;
-            letter-spacing: -0.04em;
-            line-height: 1.05;
-            color: var(--text-primary);
-            margin-bottom: 24px;
-            position: relative;
-            z-index: 1;
-        }
-        .fullbleed-cta p {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            max-width: 500px;
-            line-height: 1.7;
-            margin-bottom: 48px;
-            position: relative;
-            z-index: 1;
-        }
-        .fullbleed-cta .cta-btns {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-            justify-content: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ── FOOTER ── */
-        .cmd-footer {
-            background: hsl(222, 47%, 3%);
-            border-top: 1px solid var(--border-subtle);
-        }
-        .footer-top {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 48px;
-            padding: 64px clamp(20px, 6vw, 80px) 48px;
-        }
-        .footer-brand-col .fb-logo {
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: -0.03em;
-            background: linear-gradient(90deg, var(--cyan), var(--purple));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: block;
-            margin-bottom: 12px;
-        }
-        .footer-brand-col p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            line-height: 1.7;
-            max-width: 200px;
-        }
-        .footer-col h4 {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-        }
-        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-        .footer-col ul li a { font-size: 0.82rem; color: var(--text-muted); transition: color 200ms; }
-        .footer-col ul li a:hover { color: var(--text-primary); }
-        .footer-bottom-bar {
-            border-top: 1px solid var(--border-subtle);
-            padding: 20px clamp(20px, 6vw, 80px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
-        .footer-copy { font-size: 0.75rem; color: var(--text-muted); }
-        .footer-email-form { display: flex; gap: 8px; }
-        .footer-email-form input {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            border-radius: 10px;
-            padding: 9px 14px;
-            font-size: 0.78rem;
-            min-width: 200px;
-            outline: none;
-            transition: border-color 200ms;
-        }
-        .footer-email-form input:focus { border-color: var(--border-glow); }
-
-        /* ── LIGHT MODE FIXES ── */
-        [data-theme="light"] .cmd-nav { background: rgba(248,250,252,0.88); border-bottom-color: rgba(0,0,0,0.06); }
-        [data-theme="light"] .cmd-nav.solid { background: rgba(248,250,252,0.99); }
-        [data-theme="light"] .feat-panel { background: rgba(255,255,255,0.85); }
-        [data-theme="light"] .feat-panel:hover { background: #fff; }
-        [data-theme="light"] .tech-cell { background: rgba(255,255,255,0.85); }
-        [data-theme="light"] .tech-cell:hover { background: #fff; }
-        [data-theme="light"] .fullbleed-cta { background: linear-gradient(160deg, hsl(210,40%,94%), hsl(230,50%,92%), hsl(192,50%,94%)); }
-        [data-theme="light"] .fullbleed-cta h2 { color: hsl(222, 47%, 10%); }
-        [data-theme="light"] .cmd-footer { background: hsl(210,30%,94%); }
-        [data-theme="light"] .hss-item, [data-theme="light"] .numbers-wall { background: transparent; }
-
-        /* ── ANIMATIONS ── */
-        .anim { opacity: 0; transform: translateY(28px); transition: opacity 600ms, transform 600ms var(--ease-out); }
-        .anim.visible { opacity: 1; transform: translateY(0); }
-        .anim-l { opacity: 0; transform: translateX(-24px); transition: opacity 600ms, transform 600ms var(--ease-out); }
-        .anim-l.visible { opacity: 1; transform: translateX(0); }
-        .anim-r { opacity: 0; transform: translateX(24px); transition: opacity 600ms, transform 600ms var(--ease-out); }
-        .anim-r.visible { opacity: 1; transform: translateX(0); }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 1024px) {
-            .ov-header { grid-template-columns: 1fr; }
-            .feat-row { grid-template-columns: 1fr; }
-            .feat-panel-wide { grid-column: span 1; }
-            .numbers-grid { grid-template-columns: 1fr 1fr; }
-            .tech-grid { grid-template-columns: repeat(2, 1fr); }
-            .footer-top { grid-template-columns: 1fr 1fr; }
-            .hero-stats-strip { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 768px) {
-            .cmd-nav-links { display: none; }
-            .nav-ham { display: block; }
-            .numbers-grid { grid-template-columns: 1fr; }
-            .tech-grid { grid-template-columns: repeat(2, 1fr); }
-            .footer-top { grid-template-columns: 1fr; gap: 32px; }
-            .footer-bottom-bar { flex-direction: column; align-items: flex-start; }
-            .hero-stats-strip { grid-template-columns: 1fr 1fr; }
-            .hss-item { padding: 20px; }
-        }
-        @media (max-width: 480px) {
-            .hero-stats-strip { grid-template-columns: 1fr 1fr; }
-            .tech-grid { grid-template-columns: 1fr 1fr; }
-        }
-    </style>
 </head>
-<body class="landing-page">
+<body>
     <canvas id="bgCanvas"></canvas>
 
-    <!-- ── TOP NAV ───────────────────────────────────────────── -->
-    <nav class="cmd-nav" id="cmdNav">
-        <a href="index.html" class="cmd-brand">
-            <div class="cmd-brand-mark">QV</div>
-            <span class="cmd-brand-name">QuantVault</span>
+    <!-- Sidebar backdrop (mobile) -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <div class="app-shell">
+        <!-- ── SIDEBAR ─────────────────────────────────── -->
+        <aside class="sidebar" id="appSidebar">
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-mark">QV</div>
+        <span class="sidebar-logo-text">QuantVault</span>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main navigation">
+        <span class="sidebar-section-label">Platform</span>
+        <a href="index.html" class="nav-item active">
+            <span class="nav-icon">🏠</span> Home
+        </a>
+        <a href="portfolio.html" class="nav-item">
+            <span class="nav-icon">💼</span> Portfolio
+        </a>
+        <a href="transactions.html" class="nav-item">
+            <span class="nav-icon">💰</span> Transactions
+        </a>
+        <a href="reports.html" class="nav-item">
+            <span class="nav-icon">📈</span> Reports
+        </a>
+        <a href="watchlist.html" class="nav-item">
+            <span class="nav-icon">👁️</span> Watchlist
+        </a>
+        <a href="alerts.html" class="nav-item">
+            <span class="nav-icon">🔔</span> Alerts
         </a>
 
-        <ul class="cmd-nav-links">
-            <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="portfolio.html">Portfolio</a></li>
-            <li><a href="transactions.html">Transactions</a></li>
-            <li><a href="reports.html">Reports</a></li>
-            <li><a href="watchlist.html">Watchlist</a></li>
-            <li><a href="alerts.html">Alerts</a></li>
-        </ul>
+        <div class="sidebar-divider"></div>
 
-        <div class="cmd-nav-right">
-            <div class="cmd-status-pill">
-                <span class="cmd-status-dot"></span>
-                MARKETS OPEN
-            </div>
-            <a href="login.html" class="btn-secondary" style="padding: 7px 16px; font-size: 0.78rem; border-radius: 8px;">Log in</a>
-            <a href="signup.html" class="btn" style="padding: 7px 16px; font-size: 0.78rem; border-radius: 8px;">Start Free</a>
-            <button class="nav-ham" id="navHam" aria-label="Open menu">
-                <div class="nav-ham-icon"><span></span><span></span><span></span></div>
-            </button>
-        </div>
+        <span class="sidebar-section-label">Account</span>
+        <a href="profile.html" class="nav-item">
+            <span class="nav-icon">👤</span> Profile
+        </a>
+        <a href="#" class="nav-item" onclick="logout(); return false;">
+            <span class="nav-icon">🚪</span> Logout
+        </a>
     </nav>
 
-    <ul class="mobile-nav" id="mobileNav">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="portfolio.html">Portfolio</a></li>
-        <li><a href="transactions.html">Transactions</a></li>
-        <li><a href="reports.html">Reports</a></li>
-        <li><a href="watchlist.html">Watchlist</a></li>
-        <li><a href="alerts.html">Alerts</a></li>
-        <li style="margin-top:16px; border-bottom:none">
-            <a href="signup.html" class="btn" style="display:inline-block; padding:12px 28px;">Get Started Free</a>
-        </li>
-    </ul>
-
-    <!-- ── HERO: FULLSCREEN CENTRED ──────────────────────────── -->
-    <section class="fs-hero">
-        <div class="fs-hero-bg"></div>
-        <div class="fs-hero-content">
-            <div class="hero-kicker anim">
-                <span class="hero-kicker-bar"></span>
-                Professional Portfolio Intelligence
-                <span class="hero-kicker-bar"></span>
-            </div>
-            <h1 class="anim" style="transition-delay:80ms">
-                Your Wealth.<br>
-                <span class="word-accent">Fully Tracked.</span>
-            </h1>
-            <p class="fs-hero-sub anim" style="transition-delay:160ms">
-                Real-time market data, institutional-grade analytics, AI-powered insights, and smart price alerts — all built into one elegant platform for the modern investor.
-            </p>
-            <div class="hero-btn-group anim" style="transition-delay:240ms">
-                <a href="signup.html" class="btn" style="padding: 15px 40px; font-size: 1rem; border-radius: 14px;">
-                    Start for Free →
-                </a>
-                <a href="portfolio.html" class="btn-secondary" style="padding: 15px 32px; font-size: 1rem; border-radius: 14px;">
-                    Explore Dashboard
-                </a>
-            </div>
-        </div>
-
-        <!-- Stats ribbon at bottom of hero -->
-        <div class="hero-stats-strip">
-            <div class="hss-item">
-                <span class="hss-val">8s</span>
-                <span class="hss-lbl">Price Refresh Rate</span>
-                <span class="hss-sub">WebSocket Powered</span>
-            </div>
-            <div class="hss-item">
-                <span class="hss-val">1,000</span>
-                <span class="hss-lbl">Simulation Paths</span>
-                <span class="hss-sub">Monte Carlo Engine</span>
-            </div>
-            <div class="hss-item">
-                <span class="hss-val">99.9%</span>
-                <span class="hss-lbl">Platform Uptime</span>
-                <span class="hss-sub">Circuit-Breaker Resilient</span>
-            </div>
-            <div class="hss-item">
-                <span class="hss-val">E2E</span>
-                <span class="hss-lbl">Encrypted by Default</span>
-                <span class="hss-sub">JWT + bcrypt</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- ── OVERVIEW: FEATURE PANELS ──────────────────────────── -->
-    <section class="overview-section">
-        <div class="ov-header">
-            <div class="anim-l">
-                <span class="ov-tag">// Platform Capabilities</span>
-                <h2 class="ov-title">Built for investors<br>who demand more.</h2>
-            </div>
-            <p class="ov-desc anim-r">
-                From a live WebSocket price engine to Monte Carlo wealth forecasting — every tool in QuantVault is purpose-built for serious investment intelligence.
-            </p>
-        </div>
-
-        <!-- Row 1: 2 equal panels -->
-        <div class="feat-row anim">
-            <div class="feat-panel cyan-glow">
-                <div class="feat-panel-glow"></div>
-                <div class="feat-panel-num">01 / Analytics Engine</div>
-                <div class="feat-panel-icon">📊</div>
-                <h3>Institutional-Grade Metrics</h3>
-                <p>XIRR, Sharpe ratio, Portfolio Beta, max drawdown, win rate, and diversification score — the same metrics used by professional fund managers, now available to every investor.</p>
-                <div class="feat-chips">
-                    <span class="feat-chip">XIRR</span>
-                    <span class="feat-chip">Beta</span>
-                    <span class="feat-chip">Sharpe</span>
-                    <span class="feat-chip">Drawdown</span>
-                </div>
-            </div>
-            <div class="feat-panel purple-glow">
-                <div class="feat-panel-glow"></div>
-                <div class="feat-panel-num">02 / Forecasting</div>
-                <div class="feat-panel-icon">🎲</div>
-                <h3>Monte Carlo Wealth Simulation</h3>
-                <p>Run 1,000 probabilistic paths over a 10-year horizon. See pessimistic (10th), median (50th), and optimistic (90th) percentile outcomes for your exact portfolio composition.</p>
-                <div class="feat-chips">
-                    <span class="feat-chip">1,000 Paths</span>
-                    <span class="feat-chip">10-Year</span>
-                    <span class="feat-chip">P10/P50/P90</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Row 2: wide + narrow -->
-        <div class="feat-row anim" style="margin-top: 2px; grid-template-columns: 7fr 5fr">
-            <div class="feat-panel green-glow">
-                <div class="feat-panel-glow"></div>
-                <div class="feat-panel-num">03 / Real-Time Engine</div>
-                <div class="feat-panel-icon">⚡</div>
-                <h3>Live Price Feeds via Yahoo Finance</h3>
-                <p>WebSocket-connected price ticks update your entire portfolio value every 8 seconds. Circuit breakers (Opossum) instantly failover to Redis cache during API outages — zero data loss, zero downtime. Heavy tasks like CSV report generation are offloaded to BullMQ background queues, keeping every API response blazing fast.</p>
-                <div class="feat-chips">
-                    <span class="feat-chip">WebSocket</span>
-                    <span class="feat-chip">Yahoo Finance API</span>
-                    <span class="feat-chip">Redis</span>
-                    <span class="feat-chip">BullMQ</span>
-                    <span class="feat-chip">Opossum</span>
-                </div>
-            </div>
-            <div class="feat-panel cyan-glow">
-                <div class="feat-panel-glow"></div>
-                <div class="feat-panel-num">04 / AI Advisor</div>
-                <div class="feat-panel-icon">🤖</div>
-                <h3>Gemini AI Portfolio Advisor</h3>
-                <p>Google Gemini AI analyzes your sector concentration, cash drag, and risk exposure — then delivers personalized, plain-language advice. Falls back to local heuristics automatically.</p>
-                <div class="feat-chips">
-                    <span class="feat-chip">Gemini AI</span>
-                    <span class="feat-chip">Heuristic Fallback</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Row 3: narrow + wide -->
-        <div class="feat-row anim" style="margin-top: 2px; grid-template-columns: 4fr 8fr">
-            <div class="feat-panel purple-glow">
-                <div class="feat-panel-glow"></div>
-                <div class="feat-panel-num">05 / Security</div>
-                <div class="feat-panel-icon">🔒</div>
-                <h3>Secured by Design</h3>
-                <p>JWT refresh rotation, bcrypt hashing, httpOnly cookies, CORS protection, and rate limiting. Your financial data is yours alone.</p>
-                <div class="feat-chips">
-                    <span class="feat-chip">JWT Rotation</span>
-                    <span class="feat-chip">bcrypt</span>
-                    <span class="feat-chip">httpOnly</span>
-                </div>
-            </div>
-            <div class="feat-panel green-glow">
-                <div class="feat-panel-glow"></div>
-                <div class="feat-panel-num">06 / Alerts + Ledger</div>
-                <div class="feat-panel-icon">🔔</div>
-                <h3>Smart Alerts &amp; Immutable Ledger</h3>
-                <p>Set price threshold triggers on any asset — our BullMQ workers fire alerts the instant a price crosses your target. Every transaction is recorded in an immutable Event-Sourced Ledger, providing a flawless audit trail and eliminating balance inconsistencies. Export full transaction history to CSV on demand, processed in the background.</p>
-                <div class="feat-chips">
-                    <span class="feat-chip">Price Alerts</span>
-                    <span class="feat-chip">Immutable Ledger</span>
-                    <span class="feat-chip">CSV Export</span>
-                    <span class="feat-chip">Background Queue</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ── NUMBERS WALL ───────────────────────────────────────── -->
-    <div class="numbers-wall">
-        <div class="numbers-grid">
-            <div class="num-item anim-l">
-                <span class="n-val">8s</span>
-                <span class="n-lbl">Live Price Refresh</span>
-                <span class="n-sub">WebSocket-powered — every portfolio position updates automatically without any manual refresh required.</span>
-            </div>
-            <div class="num-item anim">
-                <span class="n-val">1,000×</span>
-                <span class="n-lbl">Monte Carlo Paths</span>
-                <span class="n-sub">Each simulation runs 1,000 algorithm paths over your exact portfolio composition to model real-world wealth outcomes.</span>
-            </div>
-            <div class="num-item anim-r">
-                <span class="n-val">5+</span>
-                <span class="n-lbl">Risk Metrics</span>
-                <span class="n-sub">XIRR, Beta, Sharpe ratio, max drawdown, win rate — institutional analytics available to every QuantVault user.</span>
+    <div class="sidebar-footer">
+        <div class="sidebar-user">
+            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Nova" alt="Avatar" class="sidebar-avatar" id="sidebarAvatar">
+            <div class="sidebar-user-info">
+                <div class="sidebar-username" id="sidebarUsername">Loading...</div>
+                <div class="sidebar-user-role">Investor</div>
             </div>
         </div>
     </div>
+</aside>
 
-    <!-- ── TECHNOLOGY STACK ──────────────────────────────────── -->
-    <section class="tech-section">
-        <div class="tech-header anim">
-            <span class="ov-tag" style="display:block; margin-bottom:10px">// Technology Stack</span>
-            <h2 class="ov-title" style="font-size: clamp(1.8rem, 3.5vw, 2.8rem); text-align:center; max-width:600px; margin: 0 auto 12px">Enterprise architecture.<br><span class="gradient-text">Production-grade from day one.</span></h2>
-        </div>
-        <div class="tech-grid anim">
-            <div class="tech-cell">
-                <div class="tech-cell-icon">🌐</div>
-                <span class="tech-cell-name">HTML5 + Vanilla JS</span>
-                <p class="tech-cell-desc">Zero-dependency frontend. Pure HTML5, CSS3, and ES6+ JavaScript for maximum speed and control.</p>
-                <span class="tech-cell-badge badge-frontend">Frontend</span>
-            </div>
-            <div class="tech-cell">
-                <div class="tech-cell-icon">📊</div>
-                <span class="tech-cell-name">Apache ECharts</span>
-                <p class="tech-cell-desc">High-performance interactive charts for portfolio history, allocations, and Monte Carlo visualizations.</p>
-                <span class="tech-cell-badge badge-frontend">Frontend</span>
-            </div>
-            <div class="tech-cell">
-                <div class="tech-cell-icon">⚙️</div>
-                <span class="tech-cell-name">Node.js + Express</span>
-                <p class="tech-cell-desc">Fast, scalable REST API server with structured routing, middleware stack, and async/await throughout.</p>
-                <span class="tech-cell-badge badge-backend">Backend</span>
-            </div>
-            <div class="tech-cell">
-                <div class="tech-cell-icon">🤖</div>
-                <span class="tech-cell-name">Google Gemini AI</span>
-                <p class="tech-cell-desc">AI-powered portfolio advisory integrated via the Gemini API, with local heuristic fallback for offline resilience.</p>
-                <span class="tech-cell-badge badge-backend">Backend</span>
-            </div>
-            <div class="tech-cell">
-                <div class="tech-cell-icon">🗄️</div>
-                <span class="tech-cell-name">PostgreSQL + Prisma</span>
-                <p class="tech-cell-desc">Relational database with typed ORM, migration management, and an immutable Event-Sourced Ledger schema.</p>
-                <span class="tech-cell-badge badge-db">Database</span>
-            </div>
-            <div class="tech-cell">
-                <div class="tech-cell-icon">⚡</div>
-                <span class="tech-cell-name">Redis + BullMQ</span>
-                <p class="tech-cell-desc">In-memory caching for price data and API responses. BullMQ manages background job queues for CSV exports and alerts.</p>
-                <span class="tech-cell-badge badge-infra">Infrastructure</span>
-            </div>
-            <div class="tech-cell">
-                <div class="tech-cell-icon">🛡️</div>
-                <span class="tech-cell-name">Opossum Circuit Breakers</span>
-                <p class="tech-cell-desc">Wraps every external API call in a circuit breaker. Instantly failovers to cached data during outages — zero cascading failures.</p>
-                <span class="tech-cell-badge badge-infra">Infrastructure</span>
-            </div>
-            <div class="tech-cell">
-                <div class="tech-cell-icon">📱</div>
-                <span class="tech-cell-name">Progressive Web App</span>
-                <p class="tech-cell-desc">Full PWA with Service Worker, Web App Manifest, and offline capabilities. Installable natively on any device.</p>
-                <span class="tech-cell-badge badge-frontend">Frontend</span>
-            </div>
-        </div>
-    </section>
+        <!-- ── MAIN AREA ──────────────────────────────── -->
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="topbar-menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+                    <span class="page-title">Welcome to QuantVault</span>
+                </div>
+                <div class="topbar-right">
+                    <button class="theme-toggle-btn btn btn-ghost" aria-label="Toggle theme"></button>
+                    <a href="login.html" class="btn-secondary">Log In</a>
+                    <a href="signup.html" class="btn">Get Started</a>
+                </div>
+            </header>
 
-    <!-- ── FULL-BLEED CTA ─────────────────────────────────────── -->
-    <section class="fullbleed-cta">
-        <div class="cta-eyebrow anim">Get Started Today</div>
-        <h2 class="anim" style="transition-delay:80ms">
-            Start investing<br>
-            <span class="gradient-text">with intelligence.</span>
-        </h2>
-        <p class="anim" style="transition-delay:160ms">
-            Create your free account in under 60 seconds. No credit card. No hidden fees. Full access to every analytics tool from day one.
-        </p>
-        <div class="cta-btns anim" style="transition-delay:240ms">
-            <a href="signup.html" class="btn" style="padding: 16px 44px; font-size: 1rem; border-radius: 14px;">
-                Create Free Account →
-            </a>
-            <a href="portfolio.html" class="btn-secondary" style="padding: 16px 36px; font-size: 1rem; border-radius: 14px;">
-                Explore the Dashboard
-            </a>
-        </div>
-    </section>
-
-    <!-- ── FOOTER ─────────────────────────────────────────────── -->
-    <footer class="cmd-footer">
-        <div class="footer-top">
-            <div class="footer-brand-col">
-                <span class="fb-logo">QuantVault</span>
-                <p>Real-time investment portfolio intelligence platform for the modern investor.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Platform</h4>
-                <ul>
-                    <li><a href="portfolio.html">Portfolio Dashboard</a></li>
-                    <li><a href="transactions.html">Transactions</a></li>
-                    <li><a href="reports.html">Analytics Reports</a></li>
-                    <li><a href="watchlist.html">Watchlist</a></li>
-                    <li><a href="alerts.html">Price Alerts</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Account</h4>
-                <ul>
-                    <li><a href="signup.html">Create Account</a></li>
-                    <li><a href="login.html">Log In</a></li>
-                    <li><a href="profile.html">Profile Settings</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Stay Updated</h4>
-                <form id="newsletterForm">
-                    <div class="footer-email-form">
-                        <input type="email" placeholder="your@email.com" aria-label="Email">
-                        <button type="submit" class="btn" style="padding: 9px 14px; font-size: 0.78rem; border-radius: 8px;">→</button>
+            <main class="page-content">
+                <section class="portfolio-overview">
+                    
+                    <!-- Hero Section -->
+                    <div class="panel" style="text-align: center; padding: 4rem 2rem; background: var(--grad-hero-bg);">
+                        <h1 style="font-family: var(--font-display); font-size: var(--text-5xl); font-weight: 800; margin-bottom: 1rem;">
+                            Your Portfolio,<br><span class="gradient-text">Intelligently Tracked</span>
+                        </h1>
+                        <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem; font-size: var(--text-lg);">
+                            WebSocket-powered real-time prices, smart price alerts, and institutional-grade analytics — all in one elegant platform built for serious investors.
+                        </p>
+                        <div style="display: flex; gap: 1rem; justify-content: center;">
+                            <a href="signup.html" class="btn">Start for Free</a>
+                            <a href="portfolio.html" class="btn-secondary">Explore Dashboard</a>
+                        </div>
                     </div>
-                </form>
-                <p style="font-size:0.72rem; color: var(--text-muted); margin-top: 10px;">Market updates &amp; platform news.</p>
-            </div>
+
+                    <!-- KPI Grid -->
+                    <div class="portfolio-summary kpi-grid" style="margin-top: 2rem;">
+                        <div class="kpi-card">
+                            <div class="kpi-icon">⚡</div>
+                            <div class="kpi-label">Price Refresh Rate</div>
+                            <div class="kpi-value">8s</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon">📈</div>
+                            <div class="kpi-label">Simulation Paths</div>
+                            <div class="kpi-value">1,000</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon">⚠️</div>
+                            <div class="kpi-label">Platform Uptime</div>
+                            <div class="kpi-value">99.9%</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon">🔒</div>
+                            <div class="kpi-label">Security Standard</div>
+                            <div class="kpi-value">E2E</div>
+                        </div>
+                    </div>
+
+                    <!-- Feature Panels -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+                        <div class="panel">
+                            <div class="panel-header">
+                                <span class="panel-title">📊 Analytics Engine</span>
+                            </div>
+                            <div class="panel-body">
+                                <p style="color: var(--text-secondary); margin-bottom: 1rem;">XIRR, Sharpe ratio, Portfolio Beta, max drawdown, win rate, and diversification score — the same metrics used by professional fund managers, now available to every investor.</p>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-header">
+                                <span class="panel-title">🎲 Forecasting</span>
+                            </div>
+                            <div class="panel-body">
+                                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Run 1,000 probabilistic paths over a 10-year horizon. See pessimistic (10th), median (50th), and optimistic (90th) percentile outcomes for your exact portfolio composition.</p>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-header">
+                                <span class="panel-title">⚡ Real-Time Engine</span>
+                            </div>
+                            <div class="panel-body">
+                                <p style="color: var(--text-secondary); margin-bottom: 1rem;">WebSocket-connected price ticks update your entire portfolio value every 8 seconds. Circuit breakers instantly failover to Redis cache during API outages.</p>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-header">
+                                <span class="panel-title">🤖 AI Advisor</span>
+                            </div>
+                            <div class="panel-body">
+                                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Google Gemini AI analyzes your sector concentration, cash drag, and risk exposure — then delivers personalized, plain-language advice.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+            </main>
         </div>
-        <div class="footer-bottom-bar">
-            <span class="footer-copy">© 2026 QuantVault · All rights reserved · Built with precision for serious investors.</span>
-            <span class="footer-copy">WebSocket · PostgreSQL · Redis · Gemini AI · PWA</span>
-        </div>
-    </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
@@ -984,40 +173,22 @@
     <script src="js/api/portfolioApi.js"></script>
     <script src="js/data-models.js"></script>
     <script src="js/auth.js"></script>
-    <script src="/js/script.js"></script>
+    <script src="js/script.js"></script>
     <script src="/js/bg-pattern.js"></script>
     <script>
-        // Navbar scroll effect
-        const cmdNav = document.getElementById('cmdNav');
-        window.addEventListener('scroll', () => {
-            cmdNav.classList.toggle('solid', window.scrollY > 20);
-        }, { passive: true });
+        // ── Sidebar mobile toggle ─────────────────────────
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('appSidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
 
-        // Mobile nav toggle
-        const navHam = document.getElementById('navHam');
-        const mobileNav = document.getElementById('mobileNav');
-        navHam?.addEventListener('click', () => {
-            mobileNav.classList.toggle('open');
+        menuBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            backdrop.classList.toggle('visible');
         });
-
-        // Scroll animations using IntersectionObserver
-        const animObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry, i) => {
-                if (entry.isIntersecting) {
-                    entry.target.style.transitionDelay = (i * 60) + 'ms';
-                    entry.target.classList.add('visible');
-                    animObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.08 });
-
-        document.querySelectorAll('.anim, .anim-l, .anim-r').forEach(el => animObserver.observe(el));
-    </script>
-    <script src="/js/keyboard.js"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
-      }
+        backdrop?.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            backdrop.classList.remove('visible');
+        });
     </script>
 </body>
 </html>
