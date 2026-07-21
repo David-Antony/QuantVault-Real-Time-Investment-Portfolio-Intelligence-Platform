@@ -2112,9 +2112,16 @@ body.signup-page .ticker-crystal::before {
 
 /* ── Auth orb reuse ── */
 body.signup-page .market-orb.ticker-crystal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: clamp(640px, 76vw, 1320px);
+    height: clamp(640px, 76vw, 1320px);
     opacity: 0.55;
     mix-blend-mode: normal;
+    pointer-events: none;
+    z-index: 0;
 }
 
 body.signup-page .market-orb__scene {
