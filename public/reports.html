@@ -16,6 +16,19 @@
 <body>
     <canvas id="bgCanvas"></canvas>
 
+    <!-- Global Command Palette -->
+    <div class="cmd-backdrop" id="cmdBackdrop"></div>
+    <div class="cmd-palette" id="commandPalette">
+        <div class="cmd-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" class="cmd-input" id="cmdInput" placeholder="Search commands, pages, and actions..." autocomplete="off">
+        </div>
+        <div class="cmd-body" id="cmdResults">
+            <!-- Results populated by JS -->
+        </div>
+    </div>
+
+
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <div class="app-shell">
@@ -584,6 +597,7 @@
       }
     </script>
     <script src="/js/bg-pattern.js"></script>
+    <script src="/js/command-palette.js"></script>
 </body>
 </html>
 

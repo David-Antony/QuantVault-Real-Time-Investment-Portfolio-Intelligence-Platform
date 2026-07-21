@@ -591,19 +591,84 @@ function updateAssetAllocation() {
     const allocationContainer = document.getElementById('assetAllocation');
     if (!allocationContainer) return;
     const p = PortfolioDataStore.getPortfolio();
-    if (!p || !p.assetAllocation) { allocationContainer.innerHTML = ''; return; }
+    if (!p || !p.assetAllocation || Object.keys(p.assetAllocation).length === 0) { 
+        allocationContainer.innerHTML = ''; 
+        return; 
+    }
 
-    allocationContainer.innerHTML = '';
+    // Set fixed height for the chart to render properly
+    allocationContainer.style.height = '350px';
+    allocationContainer.style.width = '100%';
+
+    let chart = window.echarts && echarts.getInstanceByDom(allocationContainer);
+    if (!chart && window.echarts) {
+        chart = echarts.init(allocationContainer);
+    }
+    if (!chart) return;
+
+    // Group assets for Sunburst hierarchy
+    const groups = {};
     Object.entries(p.assetAllocation).forEach(([name, data]) => {
-        const div = document.createElement('div');
-        div.className = 'asset-item';
-        div.innerHTML = `
-            <div class="asset-name">${name}</div>
-            <div class="asset-value">$${data.value.toFixed(2)}</div>
-            <div class="asset-percentage">${data.percentage.toFixed(1)}%</div>
-        `;
-        allocationContainer.appendChild(div);
+        // Try to find the asset in portfolio to get its type, fallback to 'Equities'
+        const asset = p.assets ? p.assets.find(a => a.name === name) : null;
+        const type = asset ? (asset.type.charAt(0).toUpperCase() + asset.type.slice(1)) : 'Equities';
+        
+        if (!groups[type]) groups[type] = { name: type, children: [] };
+        
+        groups[type].children.push({
+            name: name,
+            value: data.value,
+            itemStyle: { color: getAssetColor(name) }
+        });
     });
+
+    const sunburstData = Object.values(groups).map(g => {
+        g.itemStyle = { color: getAssetColor(g.name + 'group') };
+        return g;
+    });
+
+    const option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: function (params) {
+                if (!params.value) return params.name;
+                return `${params.name}<br/>Value: $${params.value.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            },
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            borderColor: '#334155',
+            textStyle: { color: '#f8fafc' }
+        },
+        series: {
+            type: 'sunburst',
+            data: sunburstData,
+            radius: [0, '95%'],
+            itemStyle: {
+                borderRadius: 4,
+                borderWidth: 2,
+                borderColor: '#0f172a'
+            },
+            label: {
+                show: true,
+                color: '#fff',
+                fontSize: 11,
+                formatter: function (param) {
+                    // Only show label if the wedge is large enough
+                    return param.treePathInfo.length === 2 || param.value > (p.totalValue * 0.05) ? param.name : '';
+                }
+            }
+        }
+    };
+    
+    chart.setOption(option);
+    
+    window.addEventListener('resize', () => chart.resize());
+}
+
+function getAssetColor(name) {
+    const colors = ['#38bdf8', '#818cf8', '#10b981', '#a880ff', '#2dd4bf', '#f472b6', '#fbbf24', '#f87171'];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return colors[Math.abs(hash) % colors.length];
 }
 
 async function updatePortfolioChart() {

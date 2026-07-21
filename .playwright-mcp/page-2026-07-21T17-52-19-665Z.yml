@@ -1,0 +1,46 @@
+- generic [active] [ref=f6e1]:
+  - generic:
+    - generic:
+      - textbox "Search commands, pages, and actions..."
+  - main [ref=f6e3]:
+    - generic [ref=f6e4]:
+      - generic [ref=f6e5]:
+        - generic [ref=f6e6]:
+          - generic [ref=f6e7]: QV
+          - generic [ref=f6e8]: QuantVault
+        - heading "Welcome back." [level=1] [ref=f6e9]: Welcomeback.
+        - paragraph [ref=f6e10]: Log in to continue managing your portfolio, review real-time analytics, and stay ahead of the markets.
+        - generic [ref=f6e11]:
+          - generic [ref=f6e12]:
+            - strong [ref=f6e13]: ⚡ Instant Access
+            - generic [ref=f6e14]: Jump straight into your live portfolio dashboard.
+          - generic [ref=f6e15]:
+            - strong [ref=f6e16]: 📊 Real-Time Data
+            - generic [ref=f6e17]: WebSocket price feeds update every 8 seconds.
+          - generic [ref=f6e18]:
+            - strong [ref=f6e19]: 🔒 Secure Session
+            - generic [ref=f6e20]: JWT rotation & httpOnly cookies keep you safe.
+          - generic [ref=f6e21]:
+            - strong [ref=f6e22]: 🔔 Smart Alerts
+            - generic [ref=f6e23]: Your price alerts are waiting — don't miss a move.
+      - generic [ref=f6e24]: QuantVault — Real-Time Investment Intelligence Platform · © 2026
+    - region [ref=f6e25]:
+      - generic [ref=f6e26]:
+        - heading "Sign In" [level=2] [ref=f6e27]
+        - paragraph [ref=f6e28]: Enter your credentials to access your dashboard.
+      - generic [ref=f6e30]:
+        - generic [ref=f6e31]:
+          - generic [ref=f6e32]: Email Address
+          - textbox "Email Address" [ref=f6e33]:
+            - /placeholder: you@example.com
+        - generic [ref=f6e34]:
+          - generic [ref=f6e35]: Password
+          - generic [ref=f6e36]:
+            - textbox "Password" [ref=f6e37]:
+              - /placeholder: Enter your password
+            - button "Toggle password visibility" [ref=f6e38] [cursor=pointer]
+        - button "Sign In to QuantVault" [ref=f6e42] [cursor=pointer]
+      - generic [ref=f6e43]:
+        - text: New to QuantVault?
+        - link "Create a free account" [ref=f6e44] [cursor=pointer]:
+          - /url: signup.html

@@ -1,0 +1,94 @@
+- generic [ref=f4e3]:
+  - complementary [ref=f4e4]:
+    - generic [ref=f4e5]:
+      - generic [ref=f4e6]: QV
+      - generic [ref=f4e7]: QuantVault
+    - navigation "Main navigation" [ref=f4e8]:
+      - generic [ref=f4e9]: Platform
+      - link "🏠 Home" [ref=f4e10] [cursor=pointer]:
+        - /url: index.html
+        - generic [ref=f4e11]: 🏠
+        - text: Home
+      - link "💼 Portfolio" [ref=f4e12] [cursor=pointer]:
+        - /url: portfolio.html
+        - generic [ref=f4e13]: 💼
+        - text: Portfolio
+      - link "💰 Transactions" [ref=f4e14] [cursor=pointer]:
+        - /url: transactions.html
+        - generic [ref=f4e15]: 💰
+        - text: Transactions
+      - link "📈 Reports" [ref=f4e16] [cursor=pointer]:
+        - /url: reports.html
+        - generic [ref=f4e17]: 📈
+        - text: Reports
+      - link "👁️ Watchlist" [ref=f4e18] [cursor=pointer]:
+        - /url: watchlist.html
+        - generic [ref=f4e19]: 👁️
+        - text: Watchlist
+      - link "🔔 Alerts" [ref=f4e20] [cursor=pointer]:
+        - /url: alerts.html
+        - generic [ref=f4e21]: 🔔
+        - text: Alerts
+      - generic [ref=f4e23]: Account
+      - link "👤 Profile" [ref=f4e24] [cursor=pointer]:
+        - /url: profile.html
+        - generic [ref=f4e25]: 👤
+        - text: Profile
+      - link "🚪 Logout" [ref=f4e26] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=f4e27]: 🚪
+        - text: Logout
+    - generic [ref=f4e29] [cursor=pointer]:
+      - img "Avatar" [ref=f4e30]
+      - generic [ref=f4e31]:
+        - generic [ref=f4e32]: Loading...
+        - generic [ref=f4e33]: Investor
+  - generic [ref=f4e34]:
+    - banner [ref=f4e35]:
+      - generic [ref=f4e36]: Welcome to QuantVault
+      - generic [ref=f4e38]:
+        - button "Switch to Light Mode" [ref=f4e39] [cursor=pointer]
+        - link "Log In" [ref=f4e42] [cursor=pointer]:
+          - /url: login.html
+        - link "Get Started" [ref=f4e43] [cursor=pointer]:
+          - /url: signup.html
+    - main [ref=f4e44]:
+      - generic [ref=f4e45]:
+        - generic [ref=f4e46]:
+          - heading "Your Portfolio, Intelligently Tracked" [level=1] [ref=f4e47]: Your Portfolio,Intelligently Tracked
+          - paragraph [ref=f4e48]: WebSocket-powered real-time prices, smart price alerts, and institutional-grade analytics — all in one elegant platform built for serious investors.
+          - generic [ref=f4e49]:
+            - link "Start for Free" [ref=f4e50] [cursor=pointer]:
+              - /url: signup.html
+            - link "Explore Dashboard" [ref=f4e51] [cursor=pointer]:
+              - /url: portfolio.html
+        - generic [ref=f4e52]:
+          - generic [ref=f4e53]:
+            - generic [ref=f4e54]: ⚡
+            - generic [ref=f4e55]: Price Refresh Rate
+            - generic [ref=f4e56]: 8s
+          - generic [ref=f4e57]:
+            - generic [ref=f4e58]: 📈
+            - generic [ref=f4e59]: Simulation Paths
+            - generic [ref=f4e60]: 1,000
+          - generic [ref=f4e61]:
+            - generic [ref=f4e62]: ⚠️
+            - generic [ref=f4e63]: Platform Uptime
+            - generic [ref=f4e64]: 99.9%
+          - generic [ref=f4e65]:
+            - generic [ref=f4e66]: 🔒
+            - generic [ref=f4e67]: Security Standard
+            - generic [ref=f4e68]: E2E
+        - generic [ref=f4e69]:
+          - generic [ref=f4e70]:
+            - generic [ref=f4e71]: 📊 Analytics Engine
+            - paragraph [ref=f4e74]: XIRR, Sharpe ratio, Portfolio Beta, max drawdown, win rate, and diversification score — the same metrics used by professional fund managers, now available to every investor.
+          - generic [ref=f4e75]:
+            - generic [ref=f4e76]: 🎲 Forecasting
+            - paragraph [ref=f4e79]: Run 1,000 probabilistic paths over a 10-year horizon. See pessimistic (10th), median (50th), and optimistic (90th) percentile outcomes for your exact portfolio composition.
+          - generic [ref=f4e80]:
+            - generic [ref=f4e81]: ⚡ Real-Time Engine
+            - paragraph [ref=f4e84]: WebSocket-connected price ticks update your entire portfolio value every 8 seconds. Circuit breakers instantly failover to Redis cache during API outages.
+          - generic [ref=f4e85]:
+            - generic [ref=f4e86]: 🤖 AI Advisor
+            - paragraph [ref=f4e89]: Google Gemini AI analyzes your sector concentration, cash drag, and risk exposure — then delivers personalized, plain-language advice.
