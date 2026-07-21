@@ -296,7 +296,7 @@
                             <label class="form-label">Enter verification code</label>
                             <input type="text" id="verifyToken" class="form-input" placeholder="000000" maxlength="6" style="font-family:var(--font-mono);letter-spacing:4px;text-align:center;font-size:1.25rem" />
                         </div>
-                        <button class="btn btn-primary" onclick="verify2FA()" style="min-width:180px">Verify &amp; Enable 2FA</button>
+                        <button class="btn btn-primary" onclick="verify2FA()">Verify &amp; Enable 2FA</button>
                     </div>`;
             } catch(e) {
                 qrDiv.innerHTML = `<p style="color:var(--rose)">${e.message}</p>`;
