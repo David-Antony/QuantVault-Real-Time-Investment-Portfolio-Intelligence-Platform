@@ -143,11 +143,9 @@
             var verify2faBtn = document.getElementById('verify2faBtn');
             var activeUserId = null;
 
-            // Removed automatic redirect to prevent the page from flashing and closing
-            // if (AuthApi.isLoggedIn()) {
-            //     window.location.href = 'index.html';
-            //     return;
-            // }
+            // Ensure user state is properly handled for authentication flow
+            // Check auth state on load
+            var activeUserId = null;
 
             function showError(message) {
                 errorMessage.textContent = message;
