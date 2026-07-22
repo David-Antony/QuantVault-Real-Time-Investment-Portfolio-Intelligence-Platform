@@ -1,0 +1,76 @@
+name: QuantVault CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    # Define Redis and Postgres services for testing
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: quantvault_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install Dependencies
+      run: npm ci
+      
+    - name: Generate Prisma Client
+      run: npx prisma generate
+      env:
+        DATABASE_URL: postgresql://user:password@localhost:5432/quantvault_test?schema=public
+        
+    - name: Push Prisma Schema to Test DB
+      run: npx prisma db push
+      env:
+        DATABASE_URL: postgresql://user:password@localhost:5432/quantvault_test?schema=public
+        
+    - name: Run Linter
+      run: npm run lint --if-present
+      
+    - name: Run Unit Tests
+      run: npm test --if-present
+      env:
+        DATABASE_URL: postgresql://user:password@localhost:5432/quantvault_test?schema=public
+        REDIS_URL: redis://localhost:6379
+        JWT_SECRET: test_secret_key_for_github_actions
+        NODE_ENV: test
+        
+    - name: Upload Test Coverage
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report-${{ matrix.node-version }}
+        path: coverage/
