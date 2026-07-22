@@ -190,7 +190,7 @@ const createTransaction = async (req, res, next) => {
       }
     });
 
-    // Event Sourcing: Insert into Immutable Ledger
+    // Record transaction event in ledger
     await prisma.ledgerEntry.create({
       data: {
         portfolioId: portfolio.id,
@@ -251,7 +251,7 @@ const deleteTransaction = async (req, res, next) => {
     const portfolioId = transaction.portfolioId;
     await prisma.transaction.delete({ where: { id: parseInt(id) } });
 
-    // Event Sourcing: Insert into Immutable Ledger
+    // Record transaction event in ledger
     await prisma.ledgerEntry.create({
       data: {
         portfolioId: portfolioId,
@@ -340,7 +340,7 @@ const clearAllTransactions = async (req, res, next) => {
       where: { portfolioId: portfolio.id }
     });
 
-    // Event Sourcing: Insert into Immutable Ledger
+    // Record transaction event in ledger
     await prisma.ledgerEntry.create({
       data: {
         portfolioId: portfolio.id,
