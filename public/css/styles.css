@@ -147,6 +147,22 @@ body.signup-page {
     background-image: none !important;
 }
 
+/* ─── CUSTOM SCROLLBARS ──────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--bg-raised);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
 #bgCanvas {
     position: fixed;
     top: 0;
