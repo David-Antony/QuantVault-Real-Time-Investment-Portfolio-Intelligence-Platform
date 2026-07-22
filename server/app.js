@@ -16,6 +16,8 @@ const twoFactorRoutes = require('./routes/twoFactor');
 const reportsRoutes = require('./routes/reports');
 const marketRoutes = require('./routes/market');
 const errorHandler = require('./middleware/errorHandler');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 
 const app = express();
 
@@ -36,6 +38,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: "QuantVault API Documentation"
+}));
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
