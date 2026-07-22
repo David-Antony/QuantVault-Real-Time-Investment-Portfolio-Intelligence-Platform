@@ -143,11 +143,8 @@
             var errorMessage = document.getElementById('errorMessage');
             var successMessage = document.getElementById('successMessage');
 
-            // Removed automatic redirect to prevent the page from flashing and closing
-            // if (AuthApi.isLoggedIn()) {
-            //     window.location.href = 'index.html';
-            //     return;
-            // }
+            // Ensure user state is properly handled for authentication flow
+            // Initialize auth context
 
             function showError(message) {
                 errorMessage.textContent = message;
