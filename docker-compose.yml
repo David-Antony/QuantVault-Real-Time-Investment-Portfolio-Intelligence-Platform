@@ -1,66 +1,46 @@
-version: '3.9'
+version: '3.8'
 
 services:
-  # ── PostgreSQL Database ────────────────────────────────────────────────────
-  db:
-    image: postgres:16-alpine
-    container_name: quantvault_db
+  app:
+    build: .
+    ports:
+      - "3002:3002"
     environment:
-      POSTGRES_USER: portfolio_user
-      POSTGRES_PASSWORD: pass1
-      POSTGRES_DB: portfolio_management
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://quantvault_user:quantvault_pass@db:5432/quantvault?schema=public
+      - REDIS_URL=redis://cache:6379
+      - JWT_SECRET=super_secret_docker_jwt_key
+      - CLIENT_URL=http://localhost:3002
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_started
+    command: >
+      sh -c "npx prisma db push && npm start"
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: quantvault_user
+      POSTGRES_PASSWORD: quantvault_pass
+      POSTGRES_DB: quantvault
     ports:
       - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U portfolio_user -d portfolio_management"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U quantvault_user -d quantvault"]
+      interval: 5s
       timeout: 5s
       retries: 5
 
-  # ── Redis (Cache & Job Queues) ─────────────────────────────────────────────
-  redis:
+  cache:
     image: redis:7-alpine
-    container_name: quantvault_redis
     ports:
       - "6379:6379"
     volumes:
       - redisdata:/data
-    command: redis-server --appendonly yes
-
-  # ── Node.js Application ────────────────────────────────────────────────────
-  app:
-    build: .
-    container_name: quantvault_app
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    environment:
-      DATABASE_URL: postgresql://portfolio_user:pass1@db:5432/portfolio_management
-      REDIS_URL: redis://redis:6379
-      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
-      CLIENT_URL: http://localhost:3002
-      NODE_ENV: production
-      PORT: 3002
-    ports:
-      - "3002:3002"
-    command: >
-      sh -c "npx prisma migrate deploy && node server.js"
-    restart: unless-stopped
-
-  # ── Adminer (DB GUI) ───────────────────────────────────────────────────────
-  adminer:
-    image: adminer:latest
-    container_name: quantvault_adminer
-    depends_on:
-      - db
-    ports:
-      - "8080:8080"
-    restart: unless-stopped
 
 volumes:
   pgdata:
