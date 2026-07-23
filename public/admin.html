@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - QuantVault</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/theme.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="appSidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>QV Admin</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/index.html" class="nav-item">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Back to App</span>
+                </a>
+                <a href="/admin.html" class="nav-item active">
+                    <i class="fa-solid fa-server"></i>
+                    <span>System Analytics</span>
+                </a>
+            </nav>
+        </aside>
+
+        <div class="main-wrapper">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="mobile-menu-btn" id="menuBtn">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2 class="page-title">Platform Statistics</h2>
+                </div>
+                <div class="topbar-right">
+                    <div class="user-profile">
+                        <div class="avatar" id="userAvatar">A</div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="app-content">
+                <section class="dashboard-grid">
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-header">
+                            <h3 class="kpi-title">Total Users</h3>
+                            <i class="fa-solid fa-users kpi-icon"></i>
+                        </div>
+                        <div class="kpi-value skeleton" id="totalUsers">-</div>
+                    </div>
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-header">
+                            <h3 class="kpi-title">Total Portfolios</h3>
+                            <i class="fa-solid fa-briefcase kpi-icon"></i>
+                        </div>
+                        <div class="kpi-value skeleton" id="totalPortfolios">-</div>
+                    </div>
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-header">
+                            <h3 class="kpi-title">Total Assets Tracked</h3>
+                            <i class="fa-solid fa-coins kpi-icon"></i>
+                        </div>
+                        <div class="kpi-value skeleton" id="totalAssets">-</div>
+                    </div>
+                    <div class="kpi-card glass-card">
+                        <div class="kpi-header">
+                            <h3 class="kpi-title">Total Transaction Volume</h3>
+                            <i class="fa-solid fa-money-bill-wave kpi-icon"></i>
+                        </div>
+                        <div class="kpi-value skeleton" id="totalVolume">-</div>
+                    </div>
+                </section>
+                <div id="adminError" class="auth-error" style="display: none; margin-top: 2rem;"></div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+    <script src="js/api/apiClient.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!auth.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const response = await apiClient.get('/admin/stats');
+                const data = response.data.data;
+
+                // Remove skeletons
+                document.querySelectorAll('.skeleton').forEach(el => el.classList.remove('skeleton'));
+
+                document.getElementById('totalUsers').textContent = data.totalUsers.toLocaleString();
+                document.getElementById('totalPortfolios').textContent = data.totalPortfolios.toLocaleString();
+                document.getElementById('totalAssets').textContent = data.totalAssets.toLocaleString();
+                
+                const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+                document.getElementById('totalVolume').textContent = formatter.format(data.totalTransactionVolume);
+
+            } catch (error) {
+                console.error('Admin API error:', error);
+                const errorDiv = document.getElementById('adminError');
+                errorDiv.style.display = 'block';
+                if (error.response && error.response.status === 403) {
+                    errorDiv.textContent = "Access Denied: You do not have administrator privileges.";
+                } else {
+                    errorDiv.textContent = "Failed to load system statistics.";
+                }
+                
+                // Clear skeletons anyway
+                document.querySelectorAll('.skeleton').forEach(el => el.classList.remove('skeleton'));
+                document.querySelectorAll('.kpi-value').forEach(el => el.textContent = 'Error');
+            }
+        });
+    </script>
+</body>
+</html>

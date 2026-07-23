@@ -16,6 +16,7 @@ const watchlistRoutes = require('./routes/watchlist');
 const twoFactorRoutes = require('./routes/twoFactor');
 const reportsRoutes = require('./routes/reports');
 const marketRoutes = require('./routes/market');
+const adminRoutes = require('./routes/admin');
 const errorHandler = require('./middleware/errorHandler');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
@@ -80,6 +81,7 @@ app.use('/api/watchlist', apiLimiter, watchlistRoutes);
 app.use('/api/auth/2fa', apiLimiter, twoFactorRoutes);
 app.use('/api/reports', apiLimiter, reportsRoutes);
 app.use('/api/market', apiLimiter, marketRoutes);
+app.use('/api/admin', apiLimiter, adminRoutes);
 
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
@@ -92,7 +94,7 @@ app.get('*', (req, res) => {
   // All authenticated pages
   const protectedPages = [
     'index.html', 'portfolio.html', 'transactions.html',
-    'reports.html', 'profile.html', 'alerts.html', 'watchlist.html'
+    'reports.html', 'profile.html', 'alerts.html', 'watchlist.html', 'admin.html'
   ];
 
   const requestedPage = req.path.replace(/^\//, '');

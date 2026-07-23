@@ -1,5 +1,6 @@
 const { verifyAccessToken } = require('../utils/jwt');
 const ApiError = require('../utils/ApiError');
+const prisma = require('../config/prisma');
 
 const authenticate = (req, res, next) => {
   try {
@@ -40,4 +41,20 @@ const optionalAuth = (req, res, next) => {
   next();
 };
 
-module.exports = { authenticate, optionalAuth };
+const requireAdmin = async (req, res, next) => {
+  try {
+    // Re-use authenticate logic or just assume req.userId is set if authenticate runs before
+    if (!req.userId) {
+      return next(ApiError.unauthorized('User not authenticated'));
+    }
+    const user = await prisma.user.findUnique({ where: { id: req.userId } });
+    if (!user || user.role !== 'ADMIN') {
+      return next(ApiError.forbidden('Admin access required'));
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { authenticate, optionalAuth, requireAdmin };
