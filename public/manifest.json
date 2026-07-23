@@ -13,6 +13,12 @@
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='64' fill='%23050712'/><text x='256' y='340' font-size='256' text-anchor='middle' font-family='system-ui' font-weight='bold' fill='%2338BDF8'>QV</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ],
   "categories": ["finance", "productivity"],
