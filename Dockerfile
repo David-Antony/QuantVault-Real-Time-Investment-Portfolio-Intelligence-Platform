@@ -1,22 +1,24 @@
-# ── Stage 1: Install dependencies ──────────────────────────────────────────
-FROM node:20-alpine AS deps
-WORKDIR /app
+FROM node:20-alpine
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
-RUN npm ci --omit=dev
+COPY prisma ./prisma/
 
-# ── Stage 2: Production image ───────────────────────────────────────────────
-FROM node:20-alpine AS runner
-WORKDIR /app
+# Install dependencies
+RUN npm ci
 
-# Copy deps and source
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-# Generate Prisma client inside the image
+# Generate Prisma Client
 RUN npx prisma generate
 
+# Bundle app source
+COPY . .
+
+# Expose port
 EXPOSE 3002
 
-ENV NODE_ENV=production
-
-CMD ["node", "server.js"]
+# Command to run the application
+CMD [ "npm", "start" ]
