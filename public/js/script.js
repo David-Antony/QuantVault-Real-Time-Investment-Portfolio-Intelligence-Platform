@@ -1023,3 +1023,24 @@ async function loadMarketNews() {
     }
 }
 window.loadMarketNews = loadMarketNews;
+
+window.exportPortfolioData = async () => {
+    if (typeof exportTransactions === 'function') {
+        return exportTransactions();
+    }
+};
+
+window.exportPortfolioPDF = async () => {
+    try {
+        const btn = document.querySelector('button[onclick="exportPortfolioPDF()"]');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="btn-icon">⏳</span> Generating...'; }
+        
+        await PortfolioApi.exportPDF();
+        showNotification('✅ PDF Report downloaded successfully!', 'success');
+    } catch (err) {
+        showNotification('PDF Export failed. Please try again.', 'error');
+    } finally {
+        const btn = document.querySelector('button[onclick="exportPortfolioPDF()"]');
+        if (btn) { btn.disabled = false; btn.innerHTML = '📄 Download PDF Report'; }
+    }
+};

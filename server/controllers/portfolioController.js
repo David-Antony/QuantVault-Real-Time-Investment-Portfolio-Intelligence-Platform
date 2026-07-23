@@ -2,6 +2,7 @@ const { prisma } = require('../config/db');
 const ApiError = require('../utils/ApiError');
 const { logAudit } = require('../utils/auditLogger');
 const { enqueueCSVExport } = require('../services/jobQueue');
+const { generatePortfolioPDF } = require('../services/pdfService');
 const { calculateXIRR, calculateBeta } = require('../utils/mathUtils');
 
 const getPortfolio = async (req, res, next) => {
@@ -369,6 +370,41 @@ const clearAllTransactions = async (req, res, next) => {
   }
 };
 
+const exportPDF = async (req, res, next) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.userId } });
+    const portfolio = await prisma.portfolio.findUnique({
+      where: { userId: req.userId },
+      include: {
+        assets: true,
+      }
+    });
+
+    if (!portfolio) {
+      throw ApiError.notFound('Portfolio not found');
+    }
+
+    const data = {
+      username: user.username,
+      totalValue: Number(portfolio.totalValue),
+      totalReturn: Number(portfolio.totalReturn),
+      assets: portfolio.assets.map(a => ({
+        symbol: a.symbol,
+        type: a.type,
+        quantity: Number(a.quantity),
+        totalValue: Number(a.totalValue)
+      }))
+    };
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=quantvault_report_${new Date().toISOString().split('T')[0]}.pdf`);
+    
+    generatePortfolioPDF(data, res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const exportCSV = async (req, res, next) => {
   try {
     const portfolio = await prisma.portfolio.findUnique({
@@ -711,6 +747,7 @@ module.exports = {
   deleteTransaction,
   exportPortfolio,
   exportCSV,
+  exportPDF,
   clearAllTransactions,
   getPortfolioHistory,
   getTechnicalIndicators,

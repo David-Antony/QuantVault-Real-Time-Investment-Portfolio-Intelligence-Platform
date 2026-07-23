@@ -46,6 +46,7 @@ router.post('/transactions', validate(transactionValidation), portfolioControlle
 router.post('/transactions/import-csv', portfolioController.importTransactionsCSV);
 router.delete('/transactions/:id', portfolioController.deleteTransaction);
 router.get('/export/csv', portfolioController.exportCSV);
+router.get('/export/pdf', portfolioController.exportPDF);
 router.get('/export', portfolioController.exportPortfolio);
 router.delete('/clear', portfolioController.clearAllTransactions);
 

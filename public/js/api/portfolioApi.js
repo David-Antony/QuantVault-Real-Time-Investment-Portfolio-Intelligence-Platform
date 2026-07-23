@@ -47,6 +47,24 @@ class PortfolioApi {
     URL.revokeObjectURL(url);
   }
 
+  static async exportPDF() {
+    const token = localStorage.getItem('accessToken');
+    const response = await fetch('/api/portfolio/export/pdf', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('PDF export failed');
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const date = new Date().toISOString().split('T')[0];
+    a.download = `quantvault_report_${date}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   static async clearAllTransactions() {
     const response = await apiClient.delete('/portfolio/clear');
     return response.data;
