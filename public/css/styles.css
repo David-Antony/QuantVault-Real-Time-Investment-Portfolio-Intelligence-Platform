@@ -3196,3 +3196,8 @@ body.signup-page .market-orb__signal {
 
 [data-theme="light"] .cmd-backdrop { background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(12px); }
 [data-theme="light"] .cmd-palette { background: var(--bg-base); }
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
