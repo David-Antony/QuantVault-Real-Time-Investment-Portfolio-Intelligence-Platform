@@ -107,8 +107,13 @@ app.get('*', (req, res) => {
     return res.sendFile(path.join(__dirname, '..', 'public', requestedPage));
   }
 
-  // Root '/' and any unknown path → redirect to login
-  res.redirect('/login.html');
+  // Root '/' -> redirect to login
+  if (requestedPage === '') {
+      return res.redirect('/login.html');
+  }
+
+  // Any other unknown path -> 404
+  res.status(404).sendFile(path.join(__dirname, '..', 'public', '404.html'));
 });
 
 app.use(errorHandler);
