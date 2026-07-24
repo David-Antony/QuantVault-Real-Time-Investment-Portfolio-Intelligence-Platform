@@ -98,4 +98,7 @@ router.post('/refresh', authController.refresh);
  */
 router.post('/logout', authenticate, authController.logout);
 
+// Simple ping for testing auth service
+router.get('/ping', (req, res) => res.json({ success: true, message: 'Auth service is up' }));
+
 module.exports = router;
