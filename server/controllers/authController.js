@@ -4,6 +4,12 @@ const ApiError = require('../utils/ApiError');
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt');
 const { logAudit } = require('../utils/auditLogger');
 
+/**
+ * Register a new user account.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
