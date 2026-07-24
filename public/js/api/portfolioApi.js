@@ -1,3 +1,6 @@
+/**
+ * Client-side API wrapper for Portfolio and Transaction management endpoints.
+ */
 class PortfolioApi {
   static async getPortfolio() {
     const response = await apiClient.get('/portfolio');
