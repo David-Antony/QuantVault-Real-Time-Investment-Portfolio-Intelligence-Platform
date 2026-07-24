@@ -79,6 +79,12 @@ const register = async (req, res, next) => {
   }
 };
 
+/**
+ * Authenticate a user and issue JWT tokens.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
