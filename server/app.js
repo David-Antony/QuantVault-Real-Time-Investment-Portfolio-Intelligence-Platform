@@ -83,6 +83,9 @@ app.use('/api/reports', apiLimiter, reportsRoutes);
 app.use('/api/market', apiLimiter, marketRoutes);
 app.use('/api/admin', apiLimiter, adminRoutes);
 
+// Global Health Check
+app.get('/api/health', (req, res) => res.json({ status: 'OK', timestamp: new Date() }));
+
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ success: false, message: 'API endpoint not found' });
