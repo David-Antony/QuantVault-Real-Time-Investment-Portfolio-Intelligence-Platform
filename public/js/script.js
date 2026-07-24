@@ -1035,6 +1035,201 @@ window.exportPortfolioPDF = async () => {
         const btn = document.querySelector('button[onclick="exportPortfolioPDF()"]');
         if (btn) { btn.disabled = true; btn.innerHTML = '<span class="btn-icon">⏳</span> Generating...'; }
         
+    if (confirm('Are you sure you want to clear ALL transactions? This cannot be undone.')) {
+        const result = await PortfolioDataStore.clearAllTransactions();
+        if (!result.success) {
+            showNotification(result.message || 'Failed to clear', 'error');
+            return;
+        }
+
+        updateTransactionList();
+        updateTransactionStats();
+
+        if (document.getElementById('portfolio-summary')) {
+            updatePortfolioSummary();
+            updateTransactionHistory();
+            updateAssetAllocation();
+        }
+        if (document.getElementById('reportTotalValue')) {
+            updateReportsPage();
+        }
+
+        showNotification('All transactions cleared', 'success');
+    }
+}
+
+function updateTransactionStats() {
+    const p = PortfolioDataStore.getPortfolio();
+    if (!p) return;
+
+    const totalTransactionsElem = document.getElementById('totalTransactions');
+    const totalTransactionValueElem = document.getElementById('totalTransactionValue');
+
+    if (totalTransactionsElem) totalTransactionsElem.textContent = p.transactions.length;
+    if (totalTransactionValueElem) {
+        const total = p.transactions.reduce((sum, t) => sum + t.amount, 0);
+        totalTransactionValueElem.textContent = `$${total.toFixed(2)}`;
+    }
+}
+
+function initTransactionsPage() {
+    if (!document.getElementById('transactionForm')) return;
+
+    const dateInput = document.getElementById('date');
+    if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+
+    updateTransactionStats();
+    updateTransactionList();
+
+    const form = document.getElementById('transactionForm');
+    if (form) form.addEventListener('submit', handleTransactionSubmit);
+}
+
+(function () {
+    document.addEventListener('DOMContentLoaded', () => {
+        const user = window.AuthManager ? window.AuthManager.getCurrentUser() : null;
+        if (user && user.username) {
+            const nameEl = document.getElementById('sidebarUsername');
+            if (nameEl) nameEl.textContent = user.username;
+        } else {
+            // fallback to payload if username is ever added to JWT
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const nameEl = document.getElementById('sidebarUsername');
+                    if (nameEl && payload.username) nameEl.textContent = payload.username;
+                } catch(e) {}
+            }
+        }
+    });
+    document.addEventListener('click', function (e) {
+        const toggle = e.target.closest('.nav-toggle');
+        if (toggle) {
+            const nav = toggle.closest('.navbar');
+            if (!nav) return;
+            const links = nav.querySelector('.nav-links');
+            if (!links) return;
+            const expanded = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', String(!expanded));
+            links.classList.toggle('open', !expanded);
+            return;
+        }
+        const openNav = document.querySelector('.nav-links.open');
+        if (openNav && !e.target.closest('.navbar')) {
+            openNav.classList.remove('open');
+            const t = document.querySelector('.nav-toggle[aria-expanded="true"]');
+            if (t) t.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    document.addEventListener('submit', function (e) {
+        const form = e.target.closest('#newsletterForm');
+        if (!form) return;
+        e.preventDefault();
+        subscribeNewsletter(form);
+    });
+})();
+
+function subscribeNewsletter(form) {
+    const input = form ? form.querySelector('input[type="email"]') : null;
+    const email = input ? input.value.trim() : '';
+    if (!email || !email.includes('@')) {
+        if (typeof showNotification === 'function') showNotification('Please enter a valid email address', 'error');
+        else alert('Please enter a valid email address');
+        return;
+    }
+    if (typeof showNotification === 'function') showNotification('Subscribed!', 'success');
+    else alert('Subscribed!');
+    if (form) form.reset();
+}
+
+(function () {
+    const observerOptions = { root: null, rootMargin: '0px 0px -8% 0px', threshold: 0.08 };
+    const revealCallback = (entries, obs) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) { entry.target.classList.add('in-view'); obs.unobserve(entry.target); }
+        });
+    };
+    try {
+        const observer = new IntersectionObserver(revealCallback, observerOptions);
+        document.querySelectorAll('.animate-on-scroll').forEach((el) => observer.observe(el));
+    } catch (err) {
+        document.querySelectorAll('.animate-on-scroll').forEach((el) => el.classList.add('in-view'));
+    }
+
+    function animateCount(el, duration = 1400) {
+        const target = parseFloat(el.getAttribute('data-count')) || 0;
+        const startTime = performance.now();
+        function tick(now) {
+            const progress = Math.min((now - startTime) / duration, 1);
+            const value = Math.floor(progress * target);
+            el.textContent = value.toLocaleString();
+            if (progress < 1) requestAnimationFrame(tick);
+            else el.textContent = target.toLocaleString();
+        }
+        requestAnimationFrame(tick);
+    }
+
+    const counterObserver = new IntersectionObserver((entries, obs) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) { animateCount(entry.target, 1200); obs.unobserve(entry.target); }
+        });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('[data-count]').forEach((el) => counterObserver.observe(el));
+})();
+
+window.showNotification = showNotification;
+window.logout = logout;
+window.exportTransactions = exportTransactions;
+window.clearAllTransactions = clearAllTransactions;
+window.initTransactionsPage = initTransactionsPage;
+
+async function loadMarketNews() {
+    const newsContainer = document.getElementById('marketNewsList');
+    if (!newsContainer) return;
+
+    try {
+        const response = await apiClient.get('/portfolio/news');
+        const news = response.data.data || [];
+
+        if (news.length === 0) {
+            newsContainer.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:var(--space-4)">No recent news available.</p>';
+            return;
+        }
+
+        newsContainer.innerHTML = news.map(item => {
+            const dateStr = item.pubDate ? new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+            return `
+                <div class="news-item" style="border-bottom:1px solid var(--border-subtle); padding-bottom:var(--space-3); margin-bottom:var(--space-1);">
+                    <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
+                        <a href="${item.link}" target="_blank" rel="noopener noreferrer" style="font-weight:600; color:var(--text-primary); text-decoration:none; font-size:var(--text-sm); line-height:1.4;" class="news-title-link">
+                            ${item.title}
+                        </a>
+                        <span style="font-size:var(--text-xs); color:var(--text-muted); white-space:nowrap; margin-left:var(--space-3);">${dateStr}</span>
+                    </div>
+                    <p style="font-size:var(--text-xs); color:var(--text-muted); margin:0; line-height:1.5;">${item.description}</p>
+                </div>
+            `;
+        }).join('');
+    } catch (err) {
+        newsContainer.innerHTML = '<p style="color:var(--rose);text-align:center;padding:var(--space-4)">Failed to load market news.</p>';
+    }
+}
+window.loadMarketNews = loadMarketNews;
+
+window.exportPortfolioData = async () => {
+    if (typeof exportTransactions === 'function') {
+        return exportTransactions();
+    }
+};
+
+window.exportPortfolioPDF = async () => {
+    try {
+        const btn = document.querySelector('button[onclick="exportPortfolioPDF()"]');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="btn-icon">⏳</span> Generating...'; }
+        
         await PortfolioApi.exportPDF();
         showNotification('✅ PDF Report downloaded successfully!', 'success');
     } catch (err) {
@@ -1043,4 +1238,8 @@ window.exportPortfolioPDF = async () => {
         const btn = document.querySelector('button[onclick="exportPortfolioPDF()"]');
         if (btn) { btn.disabled = false; btn.innerHTML = '📄 Download PDF Report'; }
     }
+};
+
+window.formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
 };
