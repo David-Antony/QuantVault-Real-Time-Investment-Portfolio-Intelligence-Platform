@@ -1068,7 +1068,7 @@ function updateTransactionStats() {
     if (totalTransactionsElem) totalTransactionsElem.textContent = p.transactions.length;
     if (totalTransactionValueElem) {
         const total = p.transactions.reduce((sum, t) => sum + t.amount, 0);
-        totalTransactionValueElem.textContent = `$${total.toFixed(2)}`;
+        totalTransactionValueElem.textContent = window.formatCurrency(total);
     }
 }
 
