@@ -3,6 +3,12 @@
  * Fetches and parses general market news headlines from Yahoo Finance RSS.
  */
 
+/**
+ * Fetch and parse market news headlines
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const getMarketNews = async (req, res, next) => {
   try {
     const rssUrl = 'https://finance.yahoo.com/news/rssindex';
