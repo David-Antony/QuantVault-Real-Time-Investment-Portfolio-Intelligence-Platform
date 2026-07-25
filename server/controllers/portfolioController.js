@@ -5,6 +5,13 @@ const { enqueueCSVExport } = require('../services/jobQueue');
 const { generatePortfolioPDF } = require('../services/pdfService');
 const { calculateXIRR, calculateBeta } = require('../utils/mathUtils');
 
+/**
+ * Retrieves the user's portfolio, including assets and recent transactions.
+ * Automatically creates an empty portfolio if one does not exist.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const getPortfolio = async (req, res, next) => {
   try {
     let portfolio = await prisma.portfolio.findUnique({
