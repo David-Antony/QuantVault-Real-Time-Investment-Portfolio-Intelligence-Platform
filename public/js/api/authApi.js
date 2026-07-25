@@ -49,10 +49,18 @@ class AuthApi {
     window.location.href = '/login.html';
   }
 
+  /**
+   * Check if the user is currently logged in based on token presence.
+   * @returns {boolean} True if logged in
+   */
   static isLoggedIn() {
     return !!localStorage.getItem('accessToken');
   }
 
+  /**
+   * Get the current user data from local storage.
+   * @returns {Object|null} User object or null
+   */
   static getCurrentUser() {
     const userJson = localStorage.getItem('user');
     if (!userJson) return null;
