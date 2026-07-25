@@ -1,6 +1,11 @@
 const { validationResult } = require('express-validator');
 const ApiError = require('../utils/ApiError');
 
+/**
+ * Express middleware to run express-validator rules and format errors.
+ * @param {Array} validations - Array of express-validator rules
+ * @returns {Function} Express middleware function
+ */
 const validate = (validations) => {
   return async (req, res, next) => {
     for (const validation of validations) {
