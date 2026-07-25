@@ -1,5 +1,10 @@
 const jwt = require('jsonwebtoken');
 
+/**
+ * Generates a short-lived JSON Web Token for API access.
+ * @param {Object} payload - Data to encode in the token
+ * @returns {string} Signed JWT token
+ */
 const generateAccessToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
     expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m'
