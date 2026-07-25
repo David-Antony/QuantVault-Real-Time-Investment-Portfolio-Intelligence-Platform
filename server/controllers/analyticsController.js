@@ -3,6 +3,9 @@ const { prisma } = require('../config/db');
 /**
  * Compute advanced portfolio analytics from existing portfolio data.
  * All calculations are done server-side from existing assets & transactions.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
  */
 const getAnalytics = async (req, res, next) => {
   try {
