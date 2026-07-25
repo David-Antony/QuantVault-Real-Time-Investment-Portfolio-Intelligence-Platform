@@ -32,6 +32,12 @@ const verifyAccessToken = (token) => {
   return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 };
 
+/**
+ * Verifies a JSON Web Token using the refresh secret.
+ * @param {string} token - The JWT string to verify
+ * @returns {Object} Decoded payload
+ * @throws {Error} If token is invalid or expired
+ */
 const verifyRefreshToken = (token) => {
   return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 };
