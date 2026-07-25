@@ -2,6 +2,9 @@
   "name": "quantvault",
   "version": "2.0.1",
   "description": "QuantVault — Production-grade portfolio management system with PostgreSQL, JWT auth, and RESTful API",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
