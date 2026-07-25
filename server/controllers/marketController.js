@@ -3,6 +3,9 @@ const ApiError = require('../utils/ApiError');
 /**
  * GET /api/market/search?q={query}
  * Searches Yahoo Finance for stock symbols matching the query.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
  */
 const searchSymbols = async (req, res, next) => {
   try {
