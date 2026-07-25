@@ -11,6 +11,11 @@ const generateAccessToken = (payload) => {
   });
 };
 
+/**
+ * Generates a long-lived JSON Web Token for refreshing access tokens.
+ * @param {Object} payload - Data to encode in the token
+ * @returns {string} Signed JWT refresh token
+ */
 const generateRefreshToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
     expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d'
