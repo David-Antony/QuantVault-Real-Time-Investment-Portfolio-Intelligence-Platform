@@ -2,6 +2,13 @@ const { verifyAccessToken } = require('../utils/jwt');
 const ApiError = require('../utils/ApiError');
 const prisma = require('../config/prisma');
 
+/**
+ * Express middleware to authenticate API requests using JWT access tokens.
+ * Extracts user ID and attaches it to the request object.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const authenticate = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
