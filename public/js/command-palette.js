@@ -3,6 +3,7 @@
  * Instantiated on Cmd+K or Ctrl+K
  */
 
+/* global logout */
 document.addEventListener('DOMContentLoaded', () => {
     const palette = document.getElementById('commandPalette');
     const input = document.getElementById('cmdInput');
