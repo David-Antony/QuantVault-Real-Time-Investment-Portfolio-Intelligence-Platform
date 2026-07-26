@@ -17,7 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const Y_OFFSET = HEX_HEIGHT * 0.75;
     
     // Store vertices and edges for pathing
+    // eslint-disable-next-line no-unused-vars
     let vertices = []; // {x, y, id}
+    // eslint-disable-next-line no-unused-vars
     let edges = []; // {v1, v2} (indices of vertices)
     let adjList = new Map(); // vId -> [vId1, vId2...]
     
