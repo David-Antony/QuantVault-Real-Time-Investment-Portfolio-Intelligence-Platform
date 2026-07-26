@@ -701,7 +701,7 @@ const recalculatePortfolio = async (portfolioId) => {
   });
 };
 
-const getBenchmarkHistory = async (req, res, next) => {
+const getBenchmarkHistory = async (req, res) => {
   try {
     const { days } = req.query;
     let range = '1mo';
@@ -731,7 +731,7 @@ const getBenchmarkHistory = async (req, res, next) => {
     res.json({ success: true, data });
   } catch (err) {
     console.warn('[Benchmark] Error fetching S&P 500 history, using fallback:', err.message);
-    const daysNum = parseInt(days) || 30;
+    const daysNum = parseInt(req.query.days) || 30;
     const data = [];
     let price = 5000;
     for (let i = daysNum; i >= 0; i--) {
