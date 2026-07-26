@@ -1,6 +1,8 @@
+/* global apiClient */
 /**
  * Client-side API wrapper for Portfolio and Transaction management endpoints.
  */
+// eslint-disable-next-line no-unused-vars
 class PortfolioApi {
   static async getPortfolio() {
     const response = await apiClient.get('/portfolio');
