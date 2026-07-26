@@ -98,6 +98,11 @@ class Portfolio {
 
 let portfolioData = null;
 
+/* global AuthApi, PortfolioApi */
+/**
+ * Data Models & Store for Client-Side state management.
+ */
+// eslint-disable-next-line no-unused-vars
 const PortfolioDataStore = {
   async loadPortfolio() {
     try {
