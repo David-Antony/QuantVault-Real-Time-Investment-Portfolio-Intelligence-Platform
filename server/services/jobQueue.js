@@ -31,7 +31,7 @@ const reportingWorker = new Worker('reportingQueue', async (job) => {
   console.log(`[JobQueue] Processing job ${job.id} of type ${job.name}...`);
   
   if (job.name === 'generateCSV') {
-    const { userId, portfolio } = job.data;
+    const { userId } = job.data;
     
     // Simulate a heavy operation
     await new Promise(resolve => setTimeout(resolve, 2000));
