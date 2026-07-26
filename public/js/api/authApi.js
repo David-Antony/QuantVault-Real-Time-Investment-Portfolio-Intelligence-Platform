@@ -1,6 +1,8 @@
+/* global apiClient */
 /**
  * Client-side API wrapper for Authentication and User Profile endpoints.
  */
+// eslint-disable-next-line no-unused-vars
 class AuthApi {
   static async register(username, email, password) {
     const response = await apiClient.post('/auth/register', { username, email, password });
