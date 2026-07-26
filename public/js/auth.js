@@ -1,3 +1,5 @@
+/* global AuthApi, apiClient */
+// eslint-disable-next-line no-unused-vars
 class AuthManager {
   static isLoggedIn() {
     return AuthApi.isLoggedIn();
