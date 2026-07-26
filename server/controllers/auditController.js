@@ -1,5 +1,4 @@
 const { prisma } = require('../config/db');
-const { logAudit } = require('../utils/auditLogger');
 
 // GET /api/audit — last 50 audit entries for the logged-in user
 const getAuditLog = async (req, res, next) => {
