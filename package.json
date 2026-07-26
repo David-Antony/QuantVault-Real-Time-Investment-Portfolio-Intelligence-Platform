@@ -51,5 +51,11 @@
     "prettier": "^3.2.5",
     "prisma": "^5.14.0",
     "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/__tests__/e2e/"
+    ]
   }
 }
