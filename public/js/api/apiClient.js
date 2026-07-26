@@ -1,3 +1,4 @@
+/* global axios */
 const apiClient = axios.create({
   baseURL: '/api',
   headers: {
