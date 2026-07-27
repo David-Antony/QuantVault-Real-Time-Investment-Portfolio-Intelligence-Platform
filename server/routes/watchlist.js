@@ -5,6 +5,10 @@ const { authenticate } = require('../middleware/auth');
 
 router.use(authenticate);
 
+/**
+ * Watchlist Routes
+ * Handles adding, removing, and fetching assets from user watchlist.
+ */
 router.get('/', getWatchlist);
 router.post('/', addToWatchlist);
 router.delete('/:id', removeFromWatchlist);
