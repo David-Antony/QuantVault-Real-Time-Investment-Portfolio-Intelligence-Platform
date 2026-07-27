@@ -15,6 +15,7 @@
     "prisma:studio": "prisma studio",
     "test": "jest --forceExit --detectOpenHandles",
     "lint": "eslint .",
+    "clean": "rm -rf dist build",
     "format": "prettier --write .",
     "db:seed": "node prisma/seed.js"
   },
