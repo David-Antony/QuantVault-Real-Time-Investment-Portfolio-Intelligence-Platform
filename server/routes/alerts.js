@@ -5,6 +5,11 @@ const { getAlerts, createAlert, toggleAlert, deleteAlert } = require('../control
 const router = express.Router();
 router.use(authenticate);
 
+/**
+ * Alert Routes
+ * Handles CRUD operations for price and percentage alerts.
+ * All routes require authentication.
+ */
 router.get('/', getAlerts);
 router.post('/', createAlert);
 router.patch('/:id/toggle', toggleAlert);
