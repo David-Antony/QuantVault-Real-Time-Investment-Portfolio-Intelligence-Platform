@@ -3,8 +3,12 @@ const QRCode = require('qrcode');
 const { prisma } = require('../config/db');
 const ApiError = require('../utils/ApiError');
 
-// ── POST /api/auth/2fa/setup ──────────────────────────────────
-// Generate a TOTP secret + QR code for the user
+/**
+ * Generates a TOTP secret and QR code for the user to set up 2FA.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const setup2FA = async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({ where: { id: req.userId } });
@@ -38,6 +42,12 @@ const setup2FA = async (req, res, next) => {
 
 // ── POST /api/auth/2fa/verify ─────────────────────────────────
 // Verify the TOTP token and enable 2FA
+/**
+ * Verifies the TOTP code and permanently enables 2FA for the user.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const verify2FA = async (req, res, next) => {
   try {
     const { token } = req.body;
