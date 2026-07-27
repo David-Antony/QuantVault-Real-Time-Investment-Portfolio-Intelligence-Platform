@@ -1,7 +1,12 @@
 const { prisma } = require('../config/db');
 const ApiError = require('../utils/ApiError');
 
-// ── GET /api/watchlist ─────────────────────────────────────────
+/**
+ * Retrieves the user's watchlist with current prices.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const getWatchlist = async (req, res, next) => {
   try {
     const items = await prisma.watchlistItem.findMany({
@@ -22,7 +27,12 @@ const getWatchlist = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// ── POST /api/watchlist ────────────────────────────────────────
+/**
+ * Adds a new asset to the user's watchlist.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const addToWatchlist = async (req, res, next) => {
   try {
     const { symbol, name, notes, targetPrice } = req.body;
