@@ -9,6 +9,10 @@ const router = express.Router();
 
 router.use(authenticate);
 
+/**
+ * Validation schema for adding/updating a transaction.
+ * Ensures asset name, type, and amount are correctly formatted.
+ */
 const transactionValidation = [
   body('assetName')
     .trim()
