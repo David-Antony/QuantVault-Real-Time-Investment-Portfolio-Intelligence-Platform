@@ -8,6 +8,10 @@ const router = express.Router();
 
 router.use(authenticate);
 
+/**
+ * Validation schema for updating user profile.
+ * Ensures username and avatar preferences are valid.
+ */
 const updateProfileValidation = [
   body('username')
     .optional()
