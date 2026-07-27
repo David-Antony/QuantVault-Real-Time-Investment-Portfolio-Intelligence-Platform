@@ -1,7 +1,12 @@
 const { prisma } = require('../config/db');
 const ApiError = require('../utils/ApiError');
 
-// GET /api/alerts
+/**
+ * Retrieves all price alerts for the authenticated user.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const getAlerts = async (req, res, next) => {
   try {
     const alerts = await prisma.priceAlert.findMany({
@@ -25,7 +30,12 @@ const getAlerts = async (req, res, next) => {
   }
 };
 
-// POST /api/alerts
+/**
+ * Creates a new price or percentage alert for a specific asset.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const createAlert = async (req, res, next) => {
   try {
     const { assetName, condition, targetPrice } = req.body;
