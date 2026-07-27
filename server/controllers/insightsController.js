@@ -6,6 +6,12 @@
 
 const { prisma } = require('../config/db');
 
+/**
+ * Retrieves AI-generated or rule-based portfolio insights based on user assets.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const getPortfolioInsights = async (req, res, next) => {
   try {
     const portfolio = await prisma.portfolio.findUnique({
