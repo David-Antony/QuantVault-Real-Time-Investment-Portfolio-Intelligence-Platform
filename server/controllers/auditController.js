@@ -1,6 +1,11 @@
 const { prisma } = require('../config/db');
 
-// GET /api/audit — last 50 audit entries for the logged-in user
+/**
+ * Retrieves the last 50 audit log entries for the authenticated user.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const getAuditLog = async (req, res, next) => {
   try {
     const logs = await prisma.auditLog.findMany({
