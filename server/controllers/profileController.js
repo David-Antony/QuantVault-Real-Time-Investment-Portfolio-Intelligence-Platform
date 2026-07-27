@@ -2,6 +2,12 @@ const { prisma } = require('../config/db');
 const ApiError = require('../utils/ApiError');
 const bcrypt = require('bcrypt');
 
+/**
+ * Retrieves the profile information for the authenticated user.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const getProfile = async (req, res, next) => {
   try {
     const user = await prisma.user.findUnique({
