@@ -63,8 +63,8 @@ function generateFaceSVG(preset, size = 160) {
     // Glasses SVG
     const glassesSVG = preset.glasses ? `
         <g opacity="0.9">
-            <circle cx="67" cy="78" r="11" fill="none" stroke="#1e293b" stroke-width="2.5" />
-            <circle cx="93" cy="78" r="11" fill="none" stroke="#1e293b" stroke-width="2.5" />
+            <circle cx="67" cy="78" r="11" fill="rgba(255,255,255,0.1)" stroke="#1e293b" stroke-width="2.5" />
+            <circle cx="93" cy="78" r="11" fill="rgba(255,255,255,0.1)" stroke="#1e293b" stroke-width="2.5" />
             <line x1="78" y1="78" x2="82" y2="78" stroke="#1e293b" stroke-width="2.5" />
             <path d="M 56 78 L 48 74" stroke="#1e293b" stroke-width="2" stroke-linecap="round" />
             <path d="M 104 78 L 112 74" stroke="#1e293b" stroke-width="2" stroke-linecap="round" />
