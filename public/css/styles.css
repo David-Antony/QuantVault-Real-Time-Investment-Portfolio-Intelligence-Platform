@@ -1156,7 +1156,8 @@ textarea:focus {
     outline: none;
     border-color: var(--cyan);
     background: rgba(0, 238, 255, 0.05);
-    box-shadow: 0 0 15px rgba(0, 238, 255, 0.3), inset 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 0 20px rgba(0, 238, 255, 0.4), inset 0 2px 8px rgba(0, 238, 255, 0.1);
+    transform: translateY(-1px);
 }
 
 select {
