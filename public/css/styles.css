@@ -1781,6 +1781,11 @@ body.landing-page {
     box-shadow: 0 12px 40px rgba(56,189,248,0.1);
 }
 
+.feature-card:hover .feature-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: rgba(56,189,248,0.2);
+}
+
 .feature-icon {
     width: 44px; height: 44px;
     border-radius: var(--radius-sm);
@@ -1791,6 +1796,7 @@ body.landing-page {
     justify-content: center;
     font-size: 1.3rem;
     margin-bottom: var(--space-4);
+    transition: all var(--transition-base);
 }
 
 .feature-card h3 {
