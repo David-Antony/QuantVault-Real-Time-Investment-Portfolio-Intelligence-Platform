@@ -124,6 +124,13 @@
     padding: 0;
 }
 
+hr {
+    border: none;
+    height: 1px;
+    background: var(--border-subtle);
+    margin: var(--space-6) 0;
+}
+
 html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
