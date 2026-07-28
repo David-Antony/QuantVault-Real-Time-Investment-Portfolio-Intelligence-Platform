@@ -502,10 +502,14 @@ strong { color: var(--text-primary); font-weight: 600; }
     background: rgba(56,189,248,0.07);
     color: var(--cyan);
     border-color: rgba(56,189,248,0.12);
+    transform: translateX(4px);
 }
 
 .nav-item:hover svg,
-.nav-item:hover .nav-icon { opacity: 1; }
+.nav-item:hover .nav-icon { 
+    opacity: 1; 
+    transform: scale(1.1);
+}
 
 .nav-item.active {
     background: rgba(56,189,248,0.12);
