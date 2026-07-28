@@ -584,7 +584,6 @@ const importTransactionsCSV = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Portfolio not found' });
     }
 
-    const { classifyAsset } = require('../services/assetClassifier');
     const valid = [];
     const errors = [];
 
