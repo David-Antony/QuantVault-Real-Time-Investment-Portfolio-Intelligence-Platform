@@ -711,6 +711,7 @@ strong { color: var(--text-primary); font-weight: 600; }
     box-shadow: var(--shadow-card);
     position: relative;
     overflow: hidden;
+    transition: all var(--transition-base);
 }
 
 /* Inner top shimmer */
