@@ -1,3 +1,4 @@
+/* global portfolioData:writable, PortfolioDataStore, AuthManager, echarts, PortfolioApi, apiClient, loadMarketNews */
 const AVATAR_PRESETS = [
     { id: 'face-01', bgGrad: ['#818cf8', '#c084fc'], skinColor: '#fde047', hairType: 'short', hairColor: '#1e293b', shirtColor: '#f43f5e', glasses: false, beard: false },
     { id: 'face-02', bgGrad: ['#38bdf8', '#818cf8'], skinColor: '#fed7aa', hairType: 'long', hairColor: '#78350f', shirtColor: '#0ea5e9', glasses: false, beard: false },
@@ -15,6 +16,7 @@ const AVATAR_PRESETS = [
 
 function generateFaceSVG(preset, size = 160) {
     const bgId = `bg-${preset.id}`;
+    const shadowId = `drop-shadow-${preset.id}`;
     const skinShadow = adjustColorBrightness(preset.skinColor, -15);
     const neckColor = adjustColorBrightness(preset.skinColor, -20);
     const browColor = adjustColorBrightness(preset.hairColor, -10);
@@ -79,6 +81,9 @@ function generateFaceSVG(preset, size = 160) {
             <clipPath id="avatarClip">
                 <circle cx="80" cy="80" r="72" />
             </clipPath>
+            <filter id="${shadowId}" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/>
+            </filter>
         </defs>
         
         <!-- Background Circle -->
@@ -94,7 +99,7 @@ function generateFaceSVG(preset, size = 160) {
             <path d="M 68 122 C 72 130, 88 130, 92 122" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" stroke-linecap="round" />
 
             <!-- Head Base -->
-            <rect x="52" y="50" width="56" height="64" rx="28" fill="${preset.skinColor}" />
+            <rect x="52" y="50" width="56" height="64" rx="28" fill="${preset.skinColor}" filter="url(#${shadowId})" />
             
             <!-- Cheek Blush -->
             <circle cx="63" cy="89" r="5" fill="#f43f5e" opacity="0.16" />
@@ -578,7 +583,7 @@ function updateTransactionHistory() {
     const sorted = [...p.transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
     let html = '<table class="data-table transactions-table"><thead><tr><th>Date</th><th>Asset</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead><tbody>';
 
-    sorted.forEach((t, i) => {
+    sorted.forEach((t) => {
         const tDate = t.date ? new Date(t.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
         html += `<tr class="transaction-row"><td>${tDate}</td><td><strong>${t.assetName}</strong></td><td><span class="transaction-type ${t.type}">${t.type.charAt(0).toUpperCase() + t.type.slice(1)}</span></td><td class="amount-cell">$${t.amount.toFixed(2)}</td><td><span class="status-badge ${t.status}">${t.status}</span></td></tr>`;
     });
@@ -904,7 +909,7 @@ function initTransactionsPage() {
                     const payload = JSON.parse(atob(token.split('.')[1]));
                     const nameEl = document.getElementById('sidebarUsername');
                     if (nameEl && payload.username) nameEl.textContent = payload.username;
-                } catch(e) {}
+                } catch(e) { /* ignore parse error */ }
             }
         }
     });
