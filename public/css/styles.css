@@ -764,6 +764,11 @@ strong { color: var(--text-primary); font-weight: 600; }
     box-shadow: var(--shadow-card), 0 0 40px rgba(56,189,248,0.12);
 }
 
+.kpi-card:hover .kpi-icon {
+    transform: scale(1.1) rotate(5deg);
+    transition: transform 300ms var(--ease-spring);
+}
+
 .kpi-label {
     font-size: var(--text-xs);
     font-weight: 600;
