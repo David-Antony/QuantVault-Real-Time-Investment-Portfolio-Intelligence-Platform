@@ -156,11 +156,11 @@ body.signup-page {
     background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    background: var(--bg-raised);
+    background: var(--border-strong);
     border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--text-muted);
+    background: var(--cyan-dim);
 }
 
 #bgCanvas {
