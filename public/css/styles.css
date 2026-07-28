@@ -935,7 +935,7 @@ button {
     100% { box-shadow: 0 0 0 0 rgba(0, 238, 255, 0); }
 }
 
-.btn-primary {
+.btn-primary, .submit-btn {
     animation: buttonPulse 2s infinite;
 }
 
