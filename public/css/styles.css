@@ -443,6 +443,8 @@ strong { color: var(--text-primary); font-weight: 600; }
     padding: var(--space-2) var(--space-2) var(--space-6);
     border-bottom: 1px solid var(--border-subtle);
     margin-bottom: var(--space-4);
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .sidebar-logo-mark {
