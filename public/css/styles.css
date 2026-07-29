@@ -2540,7 +2540,7 @@ body.signup-page .market-orb__signal {
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
     gap: var(--space-4);
-    transition: background var(--transition-fast), border-color var(--transition-fast);
+    transition: all var(--transition-fast);
 }
 
 .transaction-item:hover {
