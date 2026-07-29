@@ -689,9 +689,19 @@ async function updatePortfolioChart() {
         if (historyResponse && historyResponse.success && historyResponse.data && historyResponse.data.length > 0) {
             chartData.labels = historyResponse.data.map(s => new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
             chartData.values = historyResponse.data.map(s => s.totalValue);
-        } else {
-            // Fallback to geometric generation if no history exists (e.g. new user)
+        } else if (p && p.transactions && p.transactions.length > 0) {
+            // Fallback to geometric generation if no history exists but we have transactions
             chartData = generateHistoricalData(p);
+        } else {
+            // Empty state for brand new users
+            chartContainer.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;color:var(--text-muted);">
+                    <div style="font-size:3rem;margin-bottom:1rem;opacity:0.5;">📈</div>
+                    <h3 style="color:var(--text-primary);margin-bottom:0.5rem;">Welcome to QuantVault!</h3>
+                    <p style="font-size:var(--text-sm);max-width:300px;">Add your first transaction to start visualizing your portfolio's performance over time.</p>
+                </div>
+            `;
+            return;
         }
 
         if (window.echarts) {
