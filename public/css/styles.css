@@ -579,6 +579,7 @@ strong { color: var(--text-primary); font-weight: 600; }
     border: 1.5px solid var(--border-accent);
     object-fit: cover;
     background: var(--bg-elevated);
+    box-shadow: 0 0 10px rgba(56,189,248,0.15);
 }
 
 .sidebar-user-info {
