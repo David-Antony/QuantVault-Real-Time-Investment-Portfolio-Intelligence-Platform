@@ -971,6 +971,14 @@ button {
     box-shadow: 0 2px 8px rgba(0, 238, 255, 0.3), inset 0 2px 5px rgba(0, 238, 255, 0.2);
 }
 
+.btn:disabled, .btn-primary:disabled, .submit-btn:disabled,
+.btn[disabled], .btn-primary[disabled], .submit-btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    animation: none;
+}
+
 /* ── Secondary (Ghost Glass) ── */
 .btn-secondary, button.secondary {
     background: var(--grad-glass);
