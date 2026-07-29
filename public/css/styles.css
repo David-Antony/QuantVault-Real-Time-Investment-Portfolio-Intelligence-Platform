@@ -2483,7 +2483,10 @@ body.signup-page .market-orb__signal {
     transition: transform var(--transition-base);
 }
 
-.summary-item:hover { transform: translateY(-2px); }
+.summary-item:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 20px rgba(56,189,248,0.15);
+}
 
 .summary-item h3 {
     font-size: var(--text-xs);
