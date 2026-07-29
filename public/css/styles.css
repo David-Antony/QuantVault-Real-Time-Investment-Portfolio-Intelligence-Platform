@@ -2546,6 +2546,8 @@ body.signup-page .market-orb__signal {
 .transaction-item:hover {
     background: var(--surface-hover);
     border-color: var(--border-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .transaction-type-badge {
