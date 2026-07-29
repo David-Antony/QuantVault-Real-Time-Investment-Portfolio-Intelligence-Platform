@@ -785,29 +785,69 @@ function generateHistoricalData(p) {
 }
 
 function showNotification(message, type = 'info') {
-    const existing = document.querySelector('.notification');
+    const existing = document.querySelector('.toast-notification');
     if (existing) existing.remove();
 
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    notification.style.cssText = 'position:fixed;top:20px;right:20px;padding:15px 20px;border-radius:5px;color:white;font-weight:bold;z-index:1000;animation:slideIn 0.3s ease;';
-
-    if (type === 'success') notification.style.backgroundColor = '#28a745';
-    else if (type === 'error') notification.style.backgroundColor = '#dc3545';
-    else notification.style.backgroundColor = '#17a2b8';
+    notification.className = `toast-notification toast-${type}`;
+    
+    let icon = 'ℹ️';
+    if (type === 'success') icon = '✅';
+    if (type === 'error') icon = '🚨';
+    
+    notification.innerHTML = `
+        <div class="toast-content">
+            <span class="toast-icon">${icon}</span>
+            <span class="toast-message">${message}</span>
+        </div>
+        <div class="toast-progress"></div>
+    `;
 
     document.body.appendChild(notification);
 
     setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
+        notification.classList.add('hide');
+        setTimeout(() => notification.remove(), 400);
+    }, 4000);
 
-    if (!document.querySelector('#notification-styles')) {
+    if (!document.querySelector('#toast-styles')) {
         const style = document.createElement('style');
-        style.id = 'notification-styles';
-        style.textContent = '@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } } @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } } .positive { color: #2ecc71; } .negative { color: #e74c3c; }';
+        style.id = 'toast-styles';
+        style.textContent = `
+            .toast-notification {
+                position: fixed; top: 24px; right: 24px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-md);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                color: var(--text-primary);
+                padding: 16px 20px;
+                min-width: 300px;
+                z-index: 9999;
+                transform: translateX(120%);
+                animation: toastSlideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+                overflow: hidden;
+            }
+            .toast-notification.hide {
+                animation: toastSlideOut 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            }
+            .toast-content {
+                display: flex; align-items: center; gap: 12px; font-weight: 500;
+            }
+            .toast-progress {
+                position: absolute; bottom: 0; left: 0; height: 3px; width: 100%;
+                background: var(--cyan);
+                animation: toastProgress 4s linear forwards;
+            }
+            .toast-success { border-color: var(--emerald-light); }
+            .toast-success .toast-progress { background: var(--emerald-light); }
+            .toast-error { border-color: var(--rose-light); }
+            .toast-error .toast-progress { background: var(--rose-light); }
+            @keyframes toastSlideIn { to { transform: translateX(0); } }
+            @keyframes toastSlideOut { to { transform: translateX(120%); } }
+            @keyframes toastProgress { to { width: 0%; } }
+            .positive { color: #10b981; } .negative { color: #ef4444; }
+        `;
         document.head.appendChild(style);
     }
 }
