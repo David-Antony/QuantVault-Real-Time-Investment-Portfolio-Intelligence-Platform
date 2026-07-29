@@ -1253,6 +1253,7 @@ select {
     background-position: right 12px center;
     padding-right: 36px;
     cursor: pointer;
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 select:hover {
