@@ -3030,7 +3030,7 @@ body.signup-page .market-orb__signal {
     .kpi-grid { grid-template-columns: 1fr 1fr; }
     .analytics-grid { grid-template-columns: 1fr 1fr; }
     .tx-breakdown { grid-template-columns: 1fr 1fr; }
-    .hero h1 { font-size: 2.2rem; }
+    .hero h1, h1 { font-size: 2.2rem !important; }
     .signup-shell { grid-template-columns: 1fr; min-height: auto; max-height: none; }
     .signup-hero { display: none; }
     .footer-inner { grid-template-columns: 1fr; justify-items: center; text-align: center; }
