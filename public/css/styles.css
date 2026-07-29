@@ -2275,6 +2275,28 @@ body.signup-page .ticker-crystal::before {
     margin-top: var(--space-2);
 }
 
+.password-strength {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+    margin-top: -4px;
+    overflow: hidden;
+}
+
+.strength-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: var(--radius-full);
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-text {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    text-align: right;
+}
+
 .no-transactions, .no-alerts {
     text-align: center;
     padding: var(--space-8);
