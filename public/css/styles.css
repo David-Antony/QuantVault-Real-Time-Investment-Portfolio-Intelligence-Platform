@@ -1189,7 +1189,15 @@ textarea {
 }
 
 input::placeholder,
-textarea::placeholder { color: rgba(255,255,255,0.3); }
+textarea::placeholder { 
+    color: rgba(255,255,255,0.4); 
+    transition: color var(--transition-fast);
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+    color: rgba(255,255,255,0.2);
+}
 
 input:focus,
 select:focus,
