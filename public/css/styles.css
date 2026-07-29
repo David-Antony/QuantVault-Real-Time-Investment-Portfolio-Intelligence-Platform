@@ -659,6 +659,7 @@ strong { color: var(--text-primary); font-weight: 600; }
     font-size: var(--text-xs);
     font-weight: 600;
     color: var(--emerald-light);
+    text-shadow: 0 0 8px rgba(16,185,129,0.3);
 }
 
 .live-dot {
