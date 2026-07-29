@@ -2202,6 +2202,16 @@ body.signup-page .ticker-crystal::before {
     text-align: center;
     margin-top: var(--space-2);
 }
+
+.no-transactions, .no-alerts {
+    text-align: center;
+    padding: var(--space-8);
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.02);
+    border: 1px dashed var(--border-subtle);
+    border-radius: var(--radius-lg);
+    margin: var(--space-4) 0;
+}
 .login-link a {
     color: var(--cyan);
     font-weight: 600;
