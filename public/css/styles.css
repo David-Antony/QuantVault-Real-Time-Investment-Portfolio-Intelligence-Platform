@@ -152,6 +152,10 @@ body {
     background: rgba(56,189,248,0.3);
     color: #ffffff;
 }
+::-moz-selection {
+    background: rgba(56,189,248,0.3);
+    color: #ffffff;
+}
 
 /* Exclude login and signup pages from the custom background image */
 body.signup-page {
