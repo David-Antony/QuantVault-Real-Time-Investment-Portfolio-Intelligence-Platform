@@ -842,6 +842,10 @@ strong { color: var(--text-primary); font-weight: 600; }
     font-weight: 600;
     padding: 3px 8px;
     border-radius: var(--radius-full);
+    transition: transform var(--transition-fast);
+}
+.kpi-delta:hover {
+    transform: scale(1.05);
 }
 .kpi-delta.positive {
     background: rgba(16,185,129,0.15);
