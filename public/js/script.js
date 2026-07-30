@@ -181,7 +181,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (document.getElementById('transactionList') && document.getElementById('transactionList').closest('.transactions-container')) {
         updateTransactionList();
         updateTransactionStats();
-        initTransactionsPage();
+        
+        const searchInput = document.getElementById('transactionSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', updateTransactionList);
+        }
+        
+        const filterInput = document.getElementById('transactionFilter');
+        if (filterInput) {
+            filterInput.addEventListener('change', updateTransactionList);
+        }
     }
 
     if (document.getElementById('portfolioChart')) {
@@ -385,7 +394,28 @@ function updateTransactionList() {
     table.innerHTML = `<thead><tr><th>Date</th><th>Asset</th><th>Type</th><th>Amount</th><th>Price</th><th>Quantity</th><th>Status</th></tr></thead><tbody></tbody>`;
 
     const tbody = table.querySelector('tbody');
-    const recent = [...p.transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
+    let recent = [...p.transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Apply filters if they exist on the page
+    const searchInput = document.getElementById('transactionSearch');
+    const filterInput = document.getElementById('transactionFilter');
+
+    if (searchInput && searchInput.value) {
+        const query = searchInput.value.toLowerCase();
+        recent = recent.filter(t => t.assetName.toLowerCase().includes(query));
+    }
+
+    if (filterInput && filterInput.value !== 'all') {
+        recent = recent.filter(t => t.type === filterInput.value);
+    }
+
+    if (recent.length === 0) {
+        transactionList.innerHTML = '<div class="no-transactions"><p>No transactions match your filters.</p></div>';
+        return;
+    }
+
+    // Limit to 50 instead of 10 if we have search enabled, or keep 10? Keep all if searching, else top 50
+    recent = recent.slice(0, 50);
 
     recent.forEach((t) => {
         const row = document.createElement('tr');
