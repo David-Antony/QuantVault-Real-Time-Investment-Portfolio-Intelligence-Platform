@@ -441,7 +441,8 @@ function updateTransactionList() {
             .transactions-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: transparent; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 30px rgba(2,6,23,0.25); }
             .transactions-table th { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; text-align: left; font-weight: 600; }
             .transactions-table td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.02); }
-            .transactions-table tr:hover { background-color: rgba(255,255,255,0.02); }
+            .transactions-table tbody tr:nth-child(even) { background-color: rgba(255,255,255,0.01); }
+            .transactions-table tr:hover { background-color: rgba(255,255,255,0.03); }
             .transaction-type { padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.8em; display: inline-block; }
             .transaction-type.buy { background-color: #d4edda; color: #155724; }
             .transaction-type.sell { background-color: #f8d7da; color: #721c24; }
