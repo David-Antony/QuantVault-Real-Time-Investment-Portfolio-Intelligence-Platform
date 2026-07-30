@@ -385,7 +385,13 @@ function updateTransactionList() {
     transactionList.innerHTML = '';
 
     if (!p || !p.transactions || p.transactions.length === 0) {
-        transactionList.innerHTML = '<div class="no-transactions"><p>No transactions yet. Add your first transaction above!</p></div>';
+        transactionList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📝</div>
+                <h3>No Transactions Yet</h3>
+                <p>Add your first transaction above to get started.</p>
+            </div>
+        `;
         return;
     }
 
@@ -410,7 +416,13 @@ function updateTransactionList() {
     }
 
     if (recent.length === 0) {
-        transactionList.innerHTML = '<div class="no-transactions"><p>No transactions match your filters.</p></div>';
+        transactionList.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h3>No Transactions Found</h3>
+                <p>Try adjusting your filters or add a new transaction.</p>
+            </div>
+        `;
         return;
     }
 
