@@ -163,6 +163,18 @@
                             </div>
                         </div>
 
+                        <div class="transaction-controls" style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4);flex-wrap:wrap;">
+                            <div style="flex:1;min-width:200px;position:relative;">
+                                <input type="text" id="transactionSearch" placeholder="Search assets..." style="width:100%;padding-left:36px;" autocomplete="off">
+                                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:0.5;">🔍</span>
+                            </div>
+                            <select id="transactionFilter" style="width:auto;min-width:140px;">
+                                <option value="all">All Types</option>
+                                <option value="buy">Buys Only</option>
+                                <option value="sell">Sells Only</option>
+                            </select>
+                        </div>
+
                         <div id="transactionList" class="transaction-list">
                             <div class="loading-transactions">
                                 <div class="spinner"></div>
