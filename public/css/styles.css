@@ -1219,6 +1219,25 @@ textarea:focus {
     transform: translateY(-1px);
 }
 
+input:not(:placeholder-shown):valid {
+    border-color: var(--emerald-light);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+input:not(:placeholder-shown):invalid {
+    border-color: var(--rose-light);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+/* ── Focus Visible ── */
+input:focus-visible,
+button:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+}
+
 .autocomplete-container {
     position: relative;
 }
