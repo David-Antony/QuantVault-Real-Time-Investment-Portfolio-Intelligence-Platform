@@ -1391,6 +1391,22 @@ select option {
     overflow-x: auto;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
+    margin-bottom: var(--space-4);
+}
+
+.table-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+.table-wrapper::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+    border-radius: 3px;
+}
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: var(--border-accent);
+    border-radius: 3px;
+}
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--cyan);
 }
 
 .data-table {
