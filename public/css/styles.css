@@ -670,6 +670,12 @@ strong { color: var(--text-primary); font-weight: 600; }
     font-weight: 600;
     color: var(--emerald-light);
     text-shadow: 0 0 8px rgba(16,185,129,0.3);
+    animation: pulseBadge 3s infinite;
+}
+
+@keyframes pulseBadge {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.2); }
+    50%      { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
 }
 
 .live-dot {
