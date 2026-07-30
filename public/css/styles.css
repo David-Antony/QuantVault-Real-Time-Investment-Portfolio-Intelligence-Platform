@@ -3303,13 +3303,19 @@ body.signup-page .market-orb__signal {
     display: none;
     align-items: center;
     justify-content: center;
-    width: 36px; height: 36px;
-    border-radius: var(--radius-sm);
+    width: 44px; height: 44px;
+    border-radius: var(--radius-md);
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--text-primary);
     cursor: pointer;
     padding: 0;
+    transition: all var(--transition-fast);
+}
+.topbar-menu-btn:hover {
+    background: var(--surface-hover);
+    color: var(--cyan);
+    border-color: var(--border-accent);
 }
 
 @media (max-width: 1024px) {
