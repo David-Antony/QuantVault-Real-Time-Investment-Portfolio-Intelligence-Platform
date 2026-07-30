@@ -537,16 +537,22 @@ strong { color: var(--text-primary); font-weight: 600; }
     transform: translateX(4px);
 }
 
-.nav-item.active::before {
+.nav-item::before {
     content: '';
     position: absolute;
     left: 0;
-    top: 20%;
-    bottom: 20%;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    height: 60%;
     width: 3px;
     background: var(--cyan);
     border-radius: 0 var(--radius-full) var(--radius-full) 0;
     box-shadow: 0 0 8px var(--cyan-glow);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-item.active::before {
+    transform: translateY(-50%) scaleY(1);
 }
 
 .sidebar-divider {
