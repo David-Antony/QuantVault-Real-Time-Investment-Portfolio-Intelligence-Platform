@@ -569,9 +569,12 @@ strong { color: var(--text-primary); font-weight: 600; }
     padding: var(--space-3);
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: background var(--transition-fast);
+    transition: background var(--transition-fast), transform var(--transition-fast);
 }
-.sidebar-user:hover { background: var(--surface-hover); }
+.sidebar-user:hover { 
+    background: var(--surface-hover); 
+    transform: translateX(4px);
+}
 
 .sidebar-avatar {
     width: 32px;
