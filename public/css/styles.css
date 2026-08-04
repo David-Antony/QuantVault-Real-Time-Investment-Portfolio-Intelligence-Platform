@@ -3582,6 +3582,19 @@ body.signup-page .market-orb__signal {
     overflow-y: auto;
     padding: var(--space-2);
 }
+.cmd-body::-webkit-scrollbar {
+    width: 6px;
+}
+.cmd-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+.cmd-body::-webkit-scrollbar-thumb {
+    background: var(--border-accent);
+    border-radius: 3px;
+}
+.cmd-body::-webkit-scrollbar-thumb:hover {
+    background: var(--cyan);
+}
 .cmd-item {
     display: flex;
     align-items: center;
