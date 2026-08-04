@@ -2133,6 +2133,10 @@ body.landing-page {
     transform: translateY(-1px);
     box-shadow: 0 6px 20px var(--cyan-glow-lg);
 }
+.footer-newsletter button:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 10px var(--cyan-glow);
+}
 
 .footer-bottom {
     max-width: 1200px;
