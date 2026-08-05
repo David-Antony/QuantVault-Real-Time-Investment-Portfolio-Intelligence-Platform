@@ -238,7 +238,7 @@
       document.getElementById('wlCount').textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
       if (items.length === 0) {
         document.getElementById('watchlistContent').innerHTML = `
-          <div class="no-alerts" style="padding:var(--space-10)">
+          <div class="empty-state" style="padding:var(--space-10)">
             <div style="font-size:2.5rem;margin-bottom:var(--space-3)">👁️</div>
             <p>Your watchlist is empty. Add assets you want to track!</p>
           </div>`;
