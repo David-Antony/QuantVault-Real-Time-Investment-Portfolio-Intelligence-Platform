@@ -2997,7 +2997,39 @@ body.signup-page .market-orb__signal {
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     gap: var(--space-4);
-    transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+/* ── Transaction Breakdown (Reports) ── */
+.tx-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+}
+.tx-breakdown-item {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    text-align: center;
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+.tx-breakdown-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--cyan-dim);
+}
+.tx-count {
+    font-size: var(--text-2xl);
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+}
+.tx-label {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .alert-item:hover {
