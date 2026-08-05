@@ -115,7 +115,7 @@
                 <div id="twoFactorFields" style="display:none; flex-direction: column; gap: 16px;">
                     <div class="form-group">
                         <label for="totpToken">Two-Factor Authentication Code</label>
-                        <input type="text" id="totpToken" name="totpToken" placeholder="000000" maxlength="6" style="text-align:center; letter-spacing: 4px; font-size: 1.25rem;">
+                        <input type="text" id="totpToken" name="totpToken" placeholder="000000" maxlength="6" style="text-align:center; letter-spacing: 4px; font-size: 1.25rem;" autocomplete="one-time-code" required>
                     </div>
 
                     <button type="button" id="verify2faBtn" class="btn w-full">
