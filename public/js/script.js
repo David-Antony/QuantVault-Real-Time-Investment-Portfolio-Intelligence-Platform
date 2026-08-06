@@ -463,7 +463,6 @@ function updateTransactionList() {
             .status.completed { color: #2ecc71; }
             .status.pending { color: #f39c12; }
             .status.cancelled { color: #e74c3c; }
-            .no-transactions { text-align: center; padding: 40px; color: rgba(255,255,255,0.8); font-size: 1.1em; }
         `;
         document.head.appendChild(style);
     }
