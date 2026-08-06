@@ -484,6 +484,12 @@ strong { color: var(--text-primary); font-weight: 600; }
     color: white;
     flex-shrink: 0;
     box-shadow: 0 4px 14px var(--cyan-glow);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.sidebar-logo:hover .sidebar-logo-mark {
+    transform: scale(1.05) rotate(-5deg);
+    box-shadow: 0 6px 20px var(--cyan-glow-lg);
 }
 
 .sidebar-logo-text {
