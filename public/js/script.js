@@ -531,7 +531,7 @@ function updateReportsTransactionTable() {
     if (!tableBody) return;
     const p = PortfolioDataStore.getPortfolio();
     if (!p || p.transactions.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No transactions yet</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="5"><div class="empty-state" style="border: none; background: transparent; padding: var(--space-4);"><div class="empty-state-icon" style="font-size: 1.5rem; margin-bottom: var(--space-2);">📝</div><p>No transactions yet</p></div></td></tr>';
         return;
     }
     const sorted = [...p.transactions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
