@@ -56,8 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (filteredCommands.length === 0) {
             resultsContainer.innerHTML = `
-                <div class="cmd-no-results">
-                    No commands found matching "${input.value}"
+                <div class="empty-state" style="margin: var(--space-4);">
+                    <div class="empty-state-icon">🔍</div>
+                    <p>No commands found matching "${input.value}"</p>
                 </div>
             `;
             return;
