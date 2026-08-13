@@ -2876,7 +2876,7 @@ body.signup-page .market-orb__signal {
 .analytics-card {
     background: var(--grad-card);
     border: 1px solid var(--border-accent);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     padding: 1.4rem 1.2rem;
     text-align: center;
     backdrop-filter: blur(20px);
