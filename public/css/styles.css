@@ -809,7 +809,7 @@ strong { color: var(--text-primary); font-weight: 600; }
 .kpi-card {
     background: var(--grad-card);
     border: 1px solid var(--border-accent);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     padding: var(--space-5) var(--space-6);
     backdrop-filter: blur(24px);
     box-shadow: var(--shadow-card), 0 0 30px rgba(56,189,248,0.05);
