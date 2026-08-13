@@ -762,7 +762,7 @@ strong { color: var(--text-primary); font-weight: 600; }
 .card {
     background: var(--grad-glass);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     box-shadow: var(--shadow-card);
