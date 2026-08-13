@@ -2859,8 +2859,8 @@ body.signup-page .market-orb__signal {
 .transactions-container {
     background: var(--grad-glass);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
     backdrop-filter: blur(20px);
 }
 
