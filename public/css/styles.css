@@ -1208,7 +1208,7 @@ button {
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-4);
 }
 
 .form-group label, .form-label {
