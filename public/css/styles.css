@@ -966,7 +966,7 @@ button {
     background: rgba(0, 238, 255, 0.1);
     color: var(--cyan);
     border: 1px solid rgba(0, 238, 255, 0.3);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-full);
     padding: 12px 24px;
     font-size: var(--text-sm);
     font-weight: 700;
