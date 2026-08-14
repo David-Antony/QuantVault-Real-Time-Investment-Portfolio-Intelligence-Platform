@@ -1100,7 +1100,7 @@ button {
     background: var(--grad-brand);
     color: #fff;
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-full);
     padding: 11px 22px;
     font-size: var(--text-sm);
     font-weight: 600;
