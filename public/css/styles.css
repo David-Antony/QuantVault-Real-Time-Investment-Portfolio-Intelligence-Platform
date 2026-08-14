@@ -1504,10 +1504,6 @@ select option {
     transition: background 250ms ease, transform 250ms ease;
 }
 
-.data-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.03);
-}
-
 /* Numeric cells */
 .data-table .cell-numeric {
     font-family: var(--font-mono);
