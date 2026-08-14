@@ -1487,7 +1487,7 @@ select option {
 .data-table tbody tr:last-child { border-bottom: none; }
 
 .data-table tbody tr:hover {
-    background: rgba(56,189,248,0.03);
+    background: rgba(56,189,248,0.05);
 }
 
 .data-table tbody td {
