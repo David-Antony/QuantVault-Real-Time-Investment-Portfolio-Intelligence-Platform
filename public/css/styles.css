@@ -1034,7 +1034,7 @@ button {
     background: var(--grad-glass);
     border: 1px solid rgba(255,255,255,0.1);
     color: var(--text-primary);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-full);
     padding: 12px 24px;
     font-size: var(--text-sm);
     font-weight: 600;
