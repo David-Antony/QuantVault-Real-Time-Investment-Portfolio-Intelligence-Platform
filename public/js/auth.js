@@ -14,7 +14,18 @@ class AuthManager {
       const response = await AuthApi.register(username, email, password);
       return { success: true, user: response.data.user };
     } catch (error) {
-      const message = error.response?.data?.message || 'Registration failed';
+      let message = 'Registration failed';
+      if (error.response) {
+        if (error.response.status === 404) {
+          message = 'Registration failed: Backend API endpoint not found (Server is likely offline).';
+        } else {
+          message = error.response.data?.message || `Registration failed (Status: ${error.response.status})`;
+        }
+      } else if (error.request) {
+        message = 'Registration failed: Could not connect to the server (Network error).';
+      } else {
+        message = `Registration failed: ${error.message}`;
+      }
       return { success: false, message };
     }
   }
@@ -27,7 +38,18 @@ class AuthManager {
       }
       return { success: true, user: response.data.user };
     } catch (error) {
-      const message = error.response?.data?.message || 'Login failed';
+      let message = 'Login failed';
+      if (error.response) {
+        if (error.response.status === 404) {
+          message = 'Login failed: Backend API endpoint not found (Server is likely offline).';
+        } else {
+          message = error.response.data?.message || `Login failed (Status: ${error.response.status})`;
+        }
+      } else if (error.request) {
+        message = 'Login failed: Could not connect to the server (Network error).';
+      } else {
+        message = `Login failed: ${error.message}`;
+      }
       return { success: false, message };
     }
   }
@@ -37,7 +59,14 @@ class AuthManager {
       const response = await AuthApi.verify2FA(userId, token);
       return { success: true, user: response.data.user };
     } catch (error) {
-      const message = error.response?.data?.message || '2FA Verification failed';
+      let message = '2FA Verification failed';
+      if (error.response) {
+        message = error.response.data?.message || `Verification failed (Status: ${error.response.status})`;
+      } else if (error.request) {
+        message = 'Verification failed: Could not connect to the server.';
+      } else {
+        message = `Verification failed: ${error.message}`;
+      }
       return { success: false, message };
     }
   }
@@ -57,7 +86,14 @@ class AuthManager {
       }
       return { success: true, user: response.data.data };
     } catch (error) {
-      const message = error.response?.data?.message || 'Update failed';
+      let message = 'Update failed';
+      if (error.response) {
+        message = error.response.data?.message || `Update failed (Status: ${error.response.status})`;
+      } else if (error.request) {
+        message = 'Update failed: Could not connect to the server.';
+      } else {
+        message = `Update failed: ${error.message}`;
+      }
       return { success: false, message };
     }
   }
