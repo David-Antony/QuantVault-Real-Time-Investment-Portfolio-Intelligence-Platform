@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const prisma = require('../config/prisma');
+const { prisma } = require('../config/db');
 const { authenticate, requireAdmin } = require('../middleware/auth');
 // Protected admin routes
 router.use(authenticate, requireAdmin);
