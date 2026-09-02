@@ -16,7 +16,7 @@ router.get('/stats', async (req, res, next) => {
     
     // Total portfolios and assets
     const totalPortfolios = await prisma.portfolio.count();
-    const totalAssets = await prisma.portfolioAsset.count();
+    const totalAssets = await prisma.asset.count();
 
     // Aggregating total transaction volume
     const transactionAggregate = await prisma.transaction.aggregate({
