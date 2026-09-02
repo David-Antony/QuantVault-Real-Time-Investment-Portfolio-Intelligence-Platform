@@ -86,7 +86,7 @@
     <script src="js/auth.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            if (!auth.isAuthenticated()) {
+            if (!AuthApi.isLoggedIn()) {
                 window.location.href = '/login.html';
                 return;
             }
