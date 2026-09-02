@@ -372,13 +372,18 @@
                 const snapshots = jsonPortfolio.success ? jsonPortfolio.data : [];
                 const benchmarkData = jsonBenchmark.success ? jsonBenchmark.data : [];
 
-                const canvas = document.getElementById('portfolioChart');
-                if (chartInstance) chartInstance.destroy();
+                const chartDom = document.getElementById('portfolioChart');
+                if (chartInstance) {
+                    chartInstance.dispose();
+                    chartInstance = null;
+                }
 
                 if (snapshots.length === 0) {
-                    updatePortfolioChart();
+                    chartDom.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);">No portfolio history data available yet. Add transactions and check back tomorrow.</div>';
                     return;
                 }
+
+                chartInstance = echarts.init(chartDom);
 
                 const labels = snapshots.map(s => new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
                 const values = snapshots.map(s => Number(s.totalValue));
@@ -402,81 +407,97 @@
                     benchmarkValues = snapshots.map(() => startValue);
                 }
 
-                chartInstance = new Chart(canvas.getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels,
-                        datasets: [
-                            {
-                                label: 'Your Portfolio',
-                                data: values,
-                                borderColor: '#38BDF8',
-                                backgroundColor: 'rgba(56,189,248,0.05)',
-                                fill: true,
-                                tension: 0.35,
-                                pointRadius: 3,
-                                pointHoverRadius: 6,
-                                pointBackgroundColor: '#38BDF8',
-                                borderWidth: 2
-                            },
-                            {
-                                label: 'S&P 500 (Benchmark)',
-                                data: benchmarkValues,
-                                borderColor: '#818CF8',
-                                backgroundColor: 'transparent',
-                                fill: false,
-                                tension: 0.35,
-                                pointRadius: 1,
-                                pointHoverRadius: 3,
-                                pointBackgroundColor: '#818CF8',
-                                borderWidth: 1.5,
-                                borderDash: [4, 4]
-                            }
-                        ]
+                const option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        backgroundColor: 'rgba(9,13,28,0.95)',
+                        borderColor: 'rgba(56,189,248,0.3)',
+                        borderWidth: 1,
+                        textStyle: { color: '#F1F5F9', fontFamily: 'Space Grotesk', fontSize: 12 },
+                        axisPointer: { type: 'cross', lineStyle: { color: 'rgba(56,189,248,0.2)' } },
+                        formatter: function(params) {
+                            let html = '<div style="color:#94A3B8;margin-bottom:4px;">' + params[0].axisValue + '</div>';
+                            params.forEach(function(p) {
+                                html += '<div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + p.color + ';"></span>' + p.seriesName + ': <strong>$' + p.value.toLocaleString('en-US', {minimumFractionDigits:2}) + '</strong></div>';
+                            });
+                            return html;
+                        }
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            title: { display: false },
-                            tooltip: {
-                                backgroundColor: 'rgba(9,13,28,0.95)',
-                                borderColor: 'rgba(56,189,248,0.3)',
-                                borderWidth: 1,
-                                titleColor: '#94A3B8',
-                                bodyColor: '#F1F5F9',
-                                callbacks: { label: (ctx) => `${ctx.dataset.label}: $${ctx.parsed.y.toLocaleString('en-US', {minimumFractionDigits:2})}` }
-                            },
-                            legend: {
-                                display: true,
-                                labels: {
-                                    color: '#94A3B8',
-                                    boxWidth: 12,
-                                    font: { size: 11, family: 'Space Grotesk' }
-                                }
+                    legend: {
+                        data: ['Your Portfolio', 'S&P 500 (Benchmark)'],
+                        textStyle: { color: '#94A3B8', fontFamily: 'Space Grotesk', fontSize: 11 },
+                        top: 0,
+                        right: 0,
+                        itemWidth: 12,
+                        itemHeight: 8
+                    },
+                    grid: {
+                        left: 60,
+                        right: 20,
+                        top: 35,
+                        bottom: 30,
+                        containLabel: false
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: labels,
+                        axisLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } },
+                        axisLabel: { color: '#64748B', fontFamily: 'Space Grotesk', fontSize: 11 },
+                        splitLine: { show: false }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLine: { show: false },
+                        axisLabel: {
+                            color: '#64748B',
+                            fontFamily: 'Space Grotesk',
+                            fontSize: 11,
+                            formatter: function(val) { return '$' + val.toLocaleString(); }
+                        },
+                        splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } }
+                    },
+                    series: [
+                        {
+                            name: 'Your Portfolio',
+                            type: 'line',
+                            data: values,
+                            smooth: 0.35,
+                            symbol: 'circle',
+                            symbolSize: 6,
+                            itemStyle: { color: '#38BDF8' },
+                            lineStyle: { width: 2, color: '#38BDF8' },
+                            areaStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                    { offset: 0, color: 'rgba(56,189,248,0.15)' },
+                                    { offset: 1, color: 'rgba(56,189,248,0.01)' }
+                                ])
                             }
                         },
-                        scales: {
-                            x: {
-                                grid: { color: 'rgba(255,255,255,0.05)' },
-                                ticks: { color: '#64748B', font: { size: 11 } }
-                            },
-                            y: {
-                                beginAtZero: false,
-                                grid: { color: 'rgba(255,255,255,0.05)' },
-                                ticks: {
-                                    color: '#64748B',
-                                    font: { size: 11 },
-                                    callback: (val) => '$' + val.toLocaleString()
-                                }
-                            }
+                        {
+                            name: 'S&P 500 (Benchmark)',
+                            type: 'line',
+                            data: benchmarkValues,
+                            smooth: 0.35,
+                            symbol: 'circle',
+                            symbolSize: 3,
+                            itemStyle: { color: '#818CF8' },
+                            lineStyle: { width: 1.5, color: '#818CF8', type: 'dashed' }
                         }
-                    }
+                    ]
+                };
+
+                chartInstance.setOption(option);
+
+                // Resize chart responsively
+                window.addEventListener('resize', function() {
+                    if (chartInstance) chartInstance.resize();
                 });
-            } catch {
-                updatePortfolioChart();
+            } catch (e) {
+                var chartDom = document.getElementById('portfolioChart');
+                if (chartDom) chartDom.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);">Could not load chart data.</div>';
             }
         }
+
 
         document.addEventListener('DOMContentLoaded', async () => {
             await loadAnalytics();
