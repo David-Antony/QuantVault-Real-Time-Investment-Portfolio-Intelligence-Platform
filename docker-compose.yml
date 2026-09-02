@@ -26,7 +26,7 @@ services:
       POSTGRES_PASSWORD: quantvault_pass
       POSTGRES_DB: quantvault
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
