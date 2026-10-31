@@ -82,9 +82,10 @@
                 <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Nova" alt="User Avatar" class="sidebar-avatar" id="sidebarAvatar">
                 <div class="sidebar-user-info">
                     <div class="sidebar-username" id="sidebarUsername">Loading...</div>
-                <div class="sidebar-user-role" style="display:flex;justify-content:space-between;align-items:center;">
-                    <span>Investor</span>
-                    <span style="font-size:10px;opacity:0.5;">▶</span>
+                    <div class="sidebar-user-role" style="display:flex;justify-content:space-between;align-items:center;">
+                        <span>Investor</span>
+                        <span style="font-size:10px;opacity:0.5;">▶</span>
+                    </div>
                 </div>
             </div>
         </a>
@@ -168,8 +169,24 @@
                         </div>
                     </div>
 
+                    <!-- Active Holdings -->
+                    <div class="panel" style="margin-top: var(--space-6);">
+                        <div class="panel-header">
+                            <span class="panel-title">📊 Active Holdings</span>
+                            <a href="transactions.html" class="btn-pill active">+ Trade Asset</a>
+                        </div>
+                        <div class="panel-body" style="padding:0; overflow-x: auto;">
+                            <div id="portfolioHoldingsList">
+                                <div class="loading-transactions" style="padding: 2rem;">
+                                    <div class="spinner"></div>
+                                    <p>Loading holdings...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Recent Transactions -->
-                    <div class="panel">
+                    <div class="panel" style="margin-top: var(--space-6);">
                         <div class="panel-header">
                             <span class="panel-title">Recent Transactions</span>
                             <a href="transactions.html" class="btn-pill active">View All</a>
