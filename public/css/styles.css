@@ -1,119 +1,438 @@
 /* ============================================================
-   QuantVault — "Midnight Markets" Design System
-   Deep Space Glass Theme | v2.0
+   QuantVault — "Obsidian Terminal" Design System
+   Researched from: shadcn/ui, Linear.app, Vercel, 21st.dev,
+   Dribbble Financial Dashboards | v3.0 — Premium Edition
    ============================================================ */
 
 /* ─── GOOGLE FONTS ─────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* Inter: Premium sans-serif used by Linear, Vercel, shadcn/ui  */
+/* Space Grotesk: Geometric display face for headers/brand      */
+/* JetBrains Mono: Tabular mono for tickers, prices, amounts    */
+/* Plus Jakarta Sans: Secondary geometric used in fintech UIs   */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 /* ─── CSS VARIABLES / DESIGN TOKENS ──────────────────────────
-   All colors, fonts, spacing, shadows, and transitions
-   are defined here as CSS custom properties.
+   Research synthesis from:
+   · shadcn/ui zinc/slate dark palette (OKLCH perceptual)
+   · Linear.app near-black canvas + micro-border system
+   · Vercel's neutral dark + vivid accent approach
+   · 21st.dev glassmorphism + aurora gradient patterns
+   · Dribbble premium fintech: depth, P&L colors, data legibility
    ─────────────────────────────────────────────────────────── */
 :root {
-    /* ── Typography ── */
-    --font-display:  'Space Grotesk', system-ui, -apple-system, sans-serif;
-    --font-sans:     'Inter', system-ui, -apple-system, sans-serif;
-    --font-mono:     'JetBrains Mono', 'Courier New', monospace;
 
-    /* ── Type Scale ── */
-    --text-xs:   0.75rem;    /* 12px – timestamps, micro-labels */
-    --text-sm:   0.875rem;   /* 14px – body, nav items, table cells */
-    --text-base: 1rem;       /* 16px – primary body */
-    --text-lg:   1.125rem;   /* 18px – section subheadings */
-    --text-xl:   1.25rem;    /* 20px – card titles */
-    --text-2xl:  1.5rem;     /* 24px – KPI values */
-    --text-3xl:  1.875rem;   /* 30px – page headings */
-    --text-4xl:  2.25rem;    /* 36px – hero sections */
-    --text-5xl:  3rem;       /* 48px – landing hero */
+    /* ══════════════════════════════════════════════════════
+       TYPOGRAPHY SYSTEM
+       Based on: Linear's Inter Variable type scale,
+       financial-grade tabular number rendering
+       ══════════════════════════════════════════════════════ */
 
-    /* ── Background Layers ── */
-    --bg-deep:      hsl(222, 47%, 5%);   /* Deepest page bg */
-    --bg-base:      hsl(222, 42%, 7%);   /* App shell bg */
-    --bg-elevated:  hsl(222, 36%, 10%);  /* Sidebar, raised panels */
-    --bg-raised:    hsl(222, 30%, 13%);  /* Cards on elevated surfaces */
+    /* Font Families */
+    --font-display:  'Space Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-sans:     'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono:     'JetBrains Mono', 'Berkeley Mono', 'Fira Code', monospace;
 
-    /* ── Surface (Glass) ── */
-    --surface:       rgba(255,255,255,0.05);
-    --surface-hover: rgba(255,255,255,0.08);
-    --surface-active:rgba(56,189,248,0.1);
+    /* Font Feature Settings for financial data legibility */
+    --font-features-body:    "cv01" 1, "ss03" 1, "kern" 1;
+    --font-features-numbers: "tnum" 1, "lnum" 1, "kern" 1;
+    --font-features-display: "ss01" 1, "cv01" 1, "kern" 1;
 
-    /* ── Border ── */
-    --border:         rgba(255,255,255,0.08);
-    --border-subtle:  rgba(255,255,255,0.05);
-    --border-strong:  rgba(255,255,255,0.14);
-    --border-glow:    rgba(56,189,248,0.35);
-    --border-accent:  rgba(56,189,248,0.22);
+    /* Type Scale — Linear / shadcn research-based */
+    /* 12px – status pills, column headers, timestamps */
+    --text-xs:      0.75rem;
+    /* 13px – secondary nav, metadata, dense table rows */
+    --text-2xs:     0.8125rem;
+    /* 14px – primary body, form labels, nav items, table cells */
+    --text-sm:      0.875rem;
+    /* 16px – card subtitles, input fields */
+    --text-base:    1rem;
+    /* 18px – section subheadings */
+    --text-lg:      1.125rem;
+    /* 20px – card titles, panel headers */
+    --text-xl:      1.25rem;
+    /* 24px – KPI metric values */
+    --text-2xl:     1.5rem;
+    /* 30px – page H1 headings */
+    --text-3xl:     1.875rem;
+    /* 36px – section titles */
+    --text-4xl:     2.25rem;
+    /* 48px – hero / landing */
+    --text-5xl:     3rem;
+    /* 60px – hero display numbers */
+    --text-6xl:     3.75rem;
 
-    /* ── Brand Accent Colors ── */
-    --cyan:          hsl(192, 100%, 50%);  /* More vibrant cyan */
-    --cyan-dim:      hsl(192, 100%, 35%);  
-    --cyan-glow:     rgba(0, 238, 255, 0.4);
-    --cyan-glow-lg:  rgba(0, 238, 255, 0.6);
-    --purple:        hsl(260, 100%, 75%);  /* More vibrant purple */
-    --purple-glow:   rgba(168, 128, 255, 0.4);
-    --emerald:       hsl(160, 84%, 39%);   /* #10B981 — gains / success */
-    --emerald-light: hsl(160, 84%, 55%);   /* #34D399 */
-    --rose:          hsl(0, 72%, 51%);     /* #EF4444 — losses / danger */
-    --rose-light:    hsl(0, 72%, 67%);     /* #F87171 */
-    --amber:         hsl(38, 92%, 50%);    /* #F59E0B — warning */
-    --amber-light:   hsl(38, 92%, 65%);    /* #FBBF24 */
+    /* Line Heights — research-precise for financial dashboards */
+    --leading-tight:   1.1;     /* Display / KPI headers */
+    --leading-snug:    1.25;    /* Card titles, headings */
+    --leading-normal:  1.5;     /* Nav items, labels */
+    --leading-relaxed: 1.65;    /* Body paragraphs */
+    --leading-loose:   1.8;     /* Long-form content */
 
-    /* ── Text Colors ── */
-    --text-primary:   hsl(210, 40%, 96%);  /* #F1F5F9 — main headings */
-    --text-secondary: hsl(215, 20%, 65%);  /* #94A3B8 — labels */
-    --text-muted:     hsl(215, 16%, 47%);  /* #64748B — captions */
-    --text-accent:    var(--cyan);
+    /* Font Weights */
+    --weight-regular:    400;
+    --weight-medium:     500;
+    --weight-semibold:   600;
+    --weight-bold:       700;
+    --weight-extrabold:  800;
 
-    /* ── Gradients ── */
-    --grad-brand:    linear-gradient(135deg, #38BDF8 0%, #818CF8 100%);
-    --grad-emerald:  linear-gradient(135deg, #10B981 0%, #34D399 100%);
-    --grad-danger:   linear-gradient(135deg, #EF4444 0%, #F97316 100%);
-    --grad-glass:    linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%);
-    --grad-glass-hover: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-    --grad-card:     linear-gradient(135deg, rgba(0, 238, 255, 0.07) 0%, rgba(168, 128, 255, 0.04) 100%);
+    /* Letter Spacing — Linear.app's financial UI spec */
+    --tracking-tightest: -0.06em;  /* Hero display numbers */
+    --tracking-tighter:  -0.04em;  /* H1 page titles */
+    --tracking-tight:    -0.025em; /* H2/H3 card headers */
+    --tracking-snug:     -0.01em;  /* Body text */
+    --tracking-normal:   0em;      /* Table cells */
+    --tracking-wide:     0.04em;   /* Labels, uppercase */
+    --tracking-wider:    0.06em;   /* Section eyebrows */
+    --tracking-widest:   0.1em;    /* Status badges, MICRO */
+
+
+    /* ══════════════════════════════════════════════════════
+       BACKGROUND / CANVAS SYSTEM
+       Based on: shadcn/ui zinc-950, Linear #08090a near-black,
+       Vercel's layered elevation model
+       ══════════════════════════════════════════════════════ */
+
+    /* Layer 0 — Deepest void (behind everything) */
+    --bg-void:        hsl(224, 40%, 3.5%);     /* #070910 */
+    /* Layer 1 — Page canvas (main app background) */
+    --bg-deep:        hsl(224, 36%, 5%);        /* #090C16 */
+    /* Layer 2 — App shell (body bg) */
+    --bg-base:        hsl(222, 33%, 7%);        /* #0E1120 */
+    /* Layer 3 — Elevated (sidebar, top bar) */
+    --bg-elevated:    hsl(222, 30%, 10%);       /* #131829 */
+    /* Layer 4 — Raised cards on elevated surfaces */
+    --bg-raised:      hsl(220, 26%, 13%);       /* #191F31 */
+    /* Layer 5 — Overlay (modals, dropdowns) */
+    --bg-overlay:     hsl(220, 24%, 15%);       /* #1C2238 */
+
+
+    /* ══════════════════════════════════════════════════════
+       GLASS SURFACE SYSTEM
+       Based on: 21st.dev glassmorphism patterns,
+       premium fintech frosted-card conventions
+       ══════════════════════════════════════════════════════ */
+
+    --surface:              rgba(255, 255, 255, 0.04);
+    --surface-hover:        rgba(255, 255, 255, 0.07);
+    --surface-active:       rgba(99, 102, 241, 0.12);
+    --surface-glass:        rgba(255, 255, 255, 0.03);
+    --surface-glass-strong: rgba(255, 255, 255, 0.06);
+
+
+    /* ══════════════════════════════════════════════════════
+       BORDER SYSTEM
+       Based on: Linear's micro-border aesthetic,
+       shadcn/ui border opacity tokens
+       ══════════════════════════════════════════════════════ */
+
+    --border:           rgba(255, 255, 255, 0.07);
+    --border-subtle:    rgba(255, 255, 255, 0.04);
+    --border-strong:    rgba(255, 255, 255, 0.12);
+    --border-emphasis:  rgba(255, 255, 255, 0.20);
+    /* Indigo accent glow borders */
+    --border-glow:      rgba(99, 102, 241, 0.45);
+    --border-accent:    rgba(99, 102, 241, 0.25);
+    /* Violet secondary accent */
+    --border-violet:    rgba(167, 139, 250, 0.25);
+
+
+    /* ══════════════════════════════════════════════════════
+       COLOR PALETTE — ACCENT SYSTEM
+       Brand: Electric Indigo + Violet spectrum
+       Inspired by: shadcn default blue, Linear's indigo,
+       21st.dev vivid accent patterns
+       ══════════════════════════════════════════════════════ */
+
+    /* ─── PRIMARY ACCENT: Indigo ───────────────────────── */
+    /* Used for: active states, CTAs, primary actions, charts */
+    --indigo:           hsl(239, 84%, 67%);   /* #6366F1 */
+    --indigo-light:     hsl(239, 100%, 76%);  /* #818CF8 */
+    --indigo-dim:       hsl(239, 60%, 50%);   /* #4F46E5 */
+    --indigo-glow:      rgba(99, 102, 241, 0.35);
+    --indigo-glow-lg:   rgba(99, 102, 241, 0.55);
+    --indigo-subtle:    rgba(99, 102, 241, 0.08);
+
+    /* ─── SECONDARY ACCENT: Violet ─────────────────────── */
+    /* Used for: charts, crypto assets, secondary highlights */
+    --violet:           hsl(258, 90%, 66%);   /* #7C3AED */
+    --violet-light:     hsl(258, 100%, 78%);  /* #A78BFA */
+    --violet-glow:      rgba(124, 58, 237, 0.3);
+    --violet-subtle:    rgba(124, 58, 237, 0.08);
+
+    /* ─── TERTIARY ACCENT: Sky ──────────────────────────── */
+    /* Used for: info states, links, data points */
+    --sky:              hsl(199, 89%, 48%);   /* #0EA5E9 */
+    --sky-light:        hsl(199, 89%, 65%);   /* #38BDF8 */
+    --sky-glow:         rgba(14, 165, 233, 0.3);
+    --sky-subtle:       rgba(14, 165, 233, 0.08);
+
+    /* Legacy alias — preserves backward compat with existing selectors */
+    --cyan:             var(--sky-light);
+    --cyan-dim:         var(--sky);
+    --cyan-glow:        var(--sky-glow);
+    --cyan-glow-lg:     rgba(14, 165, 233, 0.5);
+    --purple:           var(--violet-light);
+    --purple-glow:      var(--violet-glow);
+
+    /* ─── FINANCIAL SEMANTIC COLORS ─────────────────────── */
+    /* Research: Bloomberg green/red, shadcn success/danger */
+
+    /* Bullish / Profit / Success — Emerald */
+    --emerald:          hsl(160, 84%, 39%);   /* #10B981 */
+    --emerald-light:    hsl(158, 64%, 52%);   /* #34D399 */
+    --emerald-dim:      hsl(160, 84%, 28%);
+    --emerald-glow:     rgba(16, 185, 129, 0.3);
+    --emerald-subtle:   rgba(16, 185, 129, 0.10);
+    --emerald-subtle2:  rgba(16, 185, 129, 0.15);
+
+    /* Bearish / Loss / Danger — Rose */
+    --rose:             hsl(0, 72%, 51%);     /* #EF4444 */
+    --rose-light:       hsl(0, 84%, 67%);     /* #F87171 */
+    --rose-dim:         hsl(0, 72%, 40%);
+    --rose-glow:        rgba(239, 68, 68, 0.3);
+    --rose-subtle:      rgba(239, 68, 68, 0.10);
+    --rose-subtle2:     rgba(239, 68, 68, 0.15);
+
+    /* Neutral / Warning / Caution — Amber */
+    --amber:            hsl(38, 92%, 50%);    /* #F59E0B */
+    --amber-light:      hsl(43, 96%, 58%);    /* #FBBF24 */
+    --amber-dim:        hsl(38, 92%, 38%);
+    --amber-glow:       rgba(245, 158, 11, 0.3);
+    --amber-subtle:     rgba(245, 158, 11, 0.10);
+
+    /* ─── MULTI-ASSET CHART PALETTE ─────────────────────── */
+    /* Perceptually uniform, based on shadcn oklch chart colors */
+    /* Distinguishable even in data-dense sparklines */
+    --chart-1:          hsl(239, 84%, 67%);   /* Indigo  — primary metric */
+    --chart-2:          hsl(160, 84%, 39%);   /* Emerald — bullish/gain */
+    --chart-3:          hsl(258, 90%, 66%);   /* Violet  — crypto/alt */
+    --chart-4:          hsl(0,   72%, 51%);   /* Rose    — bearish/loss */
+    --chart-5:          hsl(38,  92%, 50%);   /* Amber   — warning/hold */
+    --chart-6:          hsl(199, 89%, 48%);   /* Sky     — info/bonds */
+    --chart-7:          hsl(280, 68%, 60%);   /* Purple  — real estate */
+    --chart-8:          hsl(170, 75%, 41%);   /* Teal    — commodities */
+
+
+    /* ══════════════════════════════════════════════════════
+       TEXT COLOR SYSTEM
+       Based on: Linear text palette, shadcn foreground tokens
+       Precise contrast ratios for financial legibility
+       ══════════════════════════════════════════════════════ */
+
+    /* Primary — nearly white, never pure #FFF (reduces halation) */
+    --text-primary:     hsl(220, 20%, 94%);   /* #EDEEF2 */
+    /* Secondary — muted steel for labels, secondary data */
+    --text-secondary:   hsl(218, 14%, 65%);   /* #9DA5B4 */
+    /* Muted — for timestamps, placeholders, disabled */
+    --text-muted:       hsl(218, 12%, 45%);   /* #6B7280 */
+    /* Subtle — ghost text, watermarks */
+    --text-subtle:      hsl(218, 10%, 32%);   /* #4B5563 */
+    /* Accent — links and highlighted values */
+    --text-accent:      var(--indigo-light);
+    /* Financial specific */
+    --text-positive:    var(--emerald-light);
+    --text-negative:    var(--rose-light);
+    --text-warning:     var(--amber-light);
+    --text-info:        var(--sky-light);
+
+
+    /* ══════════════════════════════════════════════════════
+       GRADIENT SYSTEM
+       Research: 21st.dev aurora gradients, Linear card gradients,
+       premium fintech atmospheric depth effects
+       ══════════════════════════════════════════════════════ */
+
+    /* ─── Brand Gradient: Indigo → Violet ───────────────── */
+    --grad-brand:       linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #A78BFA 100%);
+    --grad-brand-alt:   linear-gradient(135deg, #818CF8 0%, #C084FC 100%);
+    --grad-brand-glow:  linear-gradient(135deg, #6366F1 0%, #7C3AED 100%);
+
+    /* ─── Financial Semantic Gradients ──────────────────── */
+    --grad-emerald:     linear-gradient(135deg, #10B981 0%, #34D399 100%);
+    --grad-danger:      linear-gradient(135deg, #EF4444 0%, #F97316 100%);
+    --grad-amber:       linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%);
+
+    /* ─── Glass Surface Gradients ───────────────────────── */
+    --grad-glass:       linear-gradient(135deg,
+                            rgba(255,255,255,0.055) 0%,
+                            rgba(255,255,255,0.018) 100%);
+    --grad-glass-hover: linear-gradient(135deg,
+                            rgba(255,255,255,0.085) 0%,
+                            rgba(255,255,255,0.04) 100%);
+    --grad-glass-active:linear-gradient(135deg,
+                            rgba(99,102,241,0.12) 0%,
+                            rgba(139,92,246,0.06) 100%);
+
+    /* ─── Card Surface Gradient ─────────────────────────── */
+    --grad-card:        linear-gradient(135deg,
+                            rgba(99,102,241,0.07) 0%,
+                            rgba(139,92,246,0.04) 50%,
+                            rgba(167,139,250,0.02) 100%);
+    --grad-card-hover:  linear-gradient(135deg,
+                            rgba(99,102,241,0.12) 0%,
+                            rgba(139,92,246,0.07) 100%);
+
+    /* ─── Aurora Hero Background ────────────────────────── */
+    /* Inspired by 21st.dev and premium fintech landing pages */
     --grad-hero-bg:
-        radial-gradient(ellipse at 20% 50%, rgba(56,189,248,0.12), transparent 55%),
-        radial-gradient(ellipse at 80% 20%, rgba(129,140,248,0.12), transparent 55%),
-        radial-gradient(ellipse at 50% 90%, rgba(16,185,129,0.08), transparent 50%),
-        hsl(222, 47%, 5%);
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(99,102,241,0.13), transparent 55%),
+        radial-gradient(ellipse 70% 50% at 80% 20%, rgba(139,92,246,0.11), transparent 55%),
+        radial-gradient(ellipse 60% 50% at 50% 90%, rgba(16,185,129,0.07), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 70% 60%, rgba(14,165,233,0.06), transparent 50%),
+        hsl(224, 36%, 5%);
 
-    /* ── Shadows ── */
-    --shadow-sm:    0 1px 3px rgba(0,0,0,0.4);
-    --shadow-md:    0 4px 16px rgba(0,0,0,0.5);
-    --shadow-lg:    0 8px 32px rgba(0,0,0,0.6);
-    --shadow-xl:    0 16px 48px rgba(0,0,0,0.7);
-    --shadow-glow:  0 4px 20px var(--cyan-glow);
-    --shadow-card:  0 4px 24px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05) inset;
+    /* ─── Sidebar Gradient ──────────────────────────────── */
+    --grad-sidebar:     linear-gradient(180deg,
+                            rgba(9,12,22,0.92) 0%,
+                            rgba(7,9,17,0.95) 100%);
 
-    /* ── Border Radius ── */
-    --radius-sm:   12px;
-    --radius-md:   18px;
-    --radius-lg:   24px;
-    --radius-xl:   32px;
-    --radius-full: 9999px;
 
-    /* ── Spacing ── */
-    --space-1:  4px;
-    --space-2:  8px;
-    --space-3:  12px;
-    --space-4:  16px;
-    --space-5:  20px;
-    --space-6:  24px;
-    --space-8:  32px;
-    --space-10: 40px;
-    --space-12: 48px;
-    --space-16: 64px;
+    /* ══════════════════════════════════════════════════════
+       SHADOW SYSTEM
+       Based on: shadcn elevation, Vercel card shadows,
+       premium dark-mode depth modeling
+       ══════════════════════════════════════════════════════ */
 
-    /* ── Sidebar ── */
-    --sidebar-width: 260px;
+    /* Structural shadows — pure black-based */
+    --shadow-xs:    0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-sm:    0 1px 4px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.2);
+    --shadow-lg:    0 8px 30px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.25);
+    --shadow-xl:    0 16px 48px rgba(0, 0, 0, 0.65), 0 8px 20px rgba(0, 0, 0, 0.3);
+    --shadow-2xl:   0 24px 64px rgba(0, 0, 0, 0.75), 0 12px 28px rgba(0, 0, 0, 0.35);
 
-    /* ── Transitions ── */
-    --ease-out:    cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --transition-fast:   150ms var(--ease-out);
-    --transition-base:   250ms var(--ease-out);
-    --transition-slow:   400ms var(--ease-out);
+    /* Colored glow shadows — brand accents */
+    --shadow-glow:       0 4px 24px rgba(99, 102, 241, 0.35);
+    --shadow-glow-sm:    0 2px 12px rgba(99, 102, 241, 0.25);
+    --shadow-glow-lg:    0 8px 40px rgba(99, 102, 241, 0.5);
+    --shadow-emerald:    0 4px 20px rgba(16, 185, 129, 0.3);
+    --shadow-rose:       0 4px 20px rgba(239, 68, 68, 0.3);
+    --shadow-sky:        0 4px 20px rgba(14, 165, 233, 0.3);
+
+    /* Card-specific composite shadow */
+    --shadow-card:  0 2px 8px rgba(0, 0, 0, 0.3),
+                    0 8px 24px rgba(0, 0, 0, 0.2),
+                    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+    --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.4),
+                         0 12px 36px rgba(0, 0, 0, 0.3),
+                         0 0 0 1px rgba(99, 102, 241, 0.15),
+                         0 1px 0 rgba(255, 255, 255, 0.08) inset;
+
+
+    /* ══════════════════════════════════════════════════════
+       BORDER RADIUS SYSTEM
+       Based on: shadcn/ui radius scale, Linear's 12px sweet-spot
+       ══════════════════════════════════════════════════════ */
+
+    --radius-2xs:  4px;    /* Tight chips, tiny pills */
+    --radius-xs:   6px;    /* Small badges, micro buttons */
+    --radius-sm:   10px;   /* Icons, small cards */
+    --radius-md:   14px;   /* Standard cards, dropdowns */
+    --radius-lg:   20px;   /* Large panels, modals */
+    --radius-xl:   28px;   /* Hero cards, full-bleed sections */
+    --radius-2xl:  36px;   /* Auth pages, landing hero */
+    --radius-full: 9999px; /* Pills, circular elements */
+
+
+    /* ══════════════════════════════════════════════════════
+       SPACING SYSTEM
+       8px base grid, consistent with shadcn/ui & Tailwind
+       ══════════════════════════════════════════════════════ */
+
+    --space-px:  1px;
+    --space-0-5: 2px;
+    --space-1:   4px;
+    --space-1-5: 6px;
+    --space-2:   8px;
+    --space-2-5: 10px;
+    --space-3:   12px;
+    --space-3-5: 14px;
+    --space-4:   16px;
+    --space-5:   20px;
+    --space-6:   24px;
+    --space-7:   28px;
+    --space-8:   32px;
+    --space-9:   36px;
+    --space-10:  40px;
+    --space-11:  44px;
+    --space-12:  48px;
+    --space-14:  56px;
+    --space-16:  64px;
+    --space-20:  80px;
+    --space-24:  96px;
+
+
+    /* ══════════════════════════════════════════════════════
+       LAYOUT SYSTEM
+       ══════════════════════════════════════════════════════ */
+
+    --sidebar-width:     264px;
+    --topbar-height:     60px;
+    --content-max-width: 1280px;
+    --card-gap:          var(--space-5);
+
+
+    /* ══════════════════════════════════════════════════════
+       ANIMATION & TRANSITION SYSTEM
+       Based on: Linear's physics-based micro-interactions,
+       21st.dev animation patterns, shadcn transition tokens
+       ══════════════════════════════════════════════════════ */
+
+    /* Easing curves */
+    --ease-linear:  linear;
+    --ease-in:      cubic-bezier(0.4, 0, 1, 1);
+    --ease-out:     cubic-bezier(0, 0, 0.2, 1);
+    --ease-in-out:  cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);    /* Bouncy spring */
+    --ease-bounce:  cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --ease-smooth:  cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Apple-style */
+    --ease-snap:    cubic-bezier(0.77, 0, 0.175, 1);       /* Snap entrance */
+
+    /* Duration scale */
+    --duration-instant: 80ms;
+    --duration-fast:    150ms;
+    --duration-base:    250ms;
+    --duration-slow:    350ms;
+    --duration-slower:  500ms;
+    --duration-sluggish:700ms;
+
+    /* Pre-built transitions */
+    --transition-instant: var(--duration-instant) var(--ease-out);
+    --transition-fast:    var(--duration-fast) var(--ease-out);
+    --transition-base:    var(--duration-base) var(--ease-out);
+    --transition-slow:    var(--duration-slow) var(--ease-smooth);
+    --transition-spring:  var(--duration-slow) var(--ease-spring);
+    --transition-bounce:  var(--duration-slow) var(--ease-bounce);
+
+
+    /* ══════════════════════════════════════════════════════
+       Z-INDEX SCALE
+       Consistent layering system across all components
+       ══════════════════════════════════════════════════════ */
+
+    --z-below:    -1;
+    --z-base:     0;
+    --z-raised:   10;
+    --z-dropdown: 100;
+    --z-sticky:   200;
+    --z-overlay:  300;
+    --z-modal:    400;
+    --z-toast:    500;
+    --z-tooltip:  600;
+    --z-max:      9999;
+
+
+    /* ══════════════════════════════════════════════════════
+       BLUR / BACKDROP SYSTEM
+       Based on: 21st.dev glassmorphism, Apple macOS vibrancy
+       ══════════════════════════════════════════════════════ */
+
+    --blur-sm:   blur(8px) saturate(140%);
+    --blur-md:   blur(16px) saturate(160%);
+    --blur-lg:   blur(24px) saturate(180%);
+    --blur-xl:   blur(40px) saturate(200%);
+    --blur-card: blur(20px) saturate(150%);
+    --blur-bar:  blur(20px) saturate(160%);
 }
 
 
@@ -141,19 +460,23 @@ body {
     color: var(--text-primary);
     font-family: var(--font-sans);
     font-size: var(--text-sm);
-    line-height: 1.6;
+    line-height: var(--leading-relaxed);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    /* Inter: Enable CV01 (alternate 'a'), SS03 (alternate '&'), tabular nums */
+    font-feature-settings: "cv01" 1, "ss03" 1, "kern" 1;
+    font-variant-numeric: proportional-nums;
+    letter-spacing: var(--tracking-snug);
 }
 
 ::selection {
-    background: rgba(56,189,248,0.3);
+    background: rgba(99, 102, 241, 0.35);
     color: #ffffff;
 }
 ::-moz-selection {
-    background: rgba(56,189,248,0.3);
+    background: rgba(99, 102, 241, 0.35);
     color: #ffffff;
 }
 
@@ -176,7 +499,7 @@ body.signup-page {
     border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--cyan-dim);
+    background: var(--indigo-dim);
 }
 
 #bgCanvas {
@@ -190,53 +513,101 @@ body.signup-page {
 }
 
 /* ─── LIGHT THEME OVERRIDES ──────────────────────────────── */
+/* Inspired by: shadcn/ui light tokens, Vercel's clean light mode */
 [data-theme="light"] {
-    --bg-deep:      hsl(210, 40%, 98%);
-    --bg-base:      hsl(210, 35%, 95%);
-    --bg-elevated:  hsl(210, 30%, 91%);
-    --bg-raised:    hsl(210, 25%, 87%);
+    /* Background layers — warm off-white instead of blue-tinted */
+    --bg-void:        hsl(0, 0%, 100%);
+    --bg-deep:        hsl(220, 25%, 97%);
+    --bg-base:        hsl(220, 20%, 96%);
+    --bg-elevated:    hsl(220, 15%, 93%);
+    --bg-raised:      hsl(220, 12%, 90%);
+    --bg-overlay:     hsl(220, 10%, 87%);
 
-    --surface:       rgba(0,0,0,0.04);
-    --surface-hover: rgba(0,0,0,0.07);
-    --surface-active:rgba(56,189,248,0.12);
+    /* Glass surfaces */
+    --surface:              rgba(255, 255, 255, 0.70);
+    --surface-hover:        rgba(255, 255, 255, 0.85);
+    --surface-active:       rgba(99, 102, 241, 0.08);
+    --surface-glass:        rgba(255, 255, 255, 0.60);
+    --surface-glass-strong: rgba(255, 255, 255, 0.80);
 
-    --border:         rgba(0,0,0,0.1);
-    --border-subtle:  rgba(0,0,0,0.06);
-    --border-strong:  rgba(0,0,0,0.18);
-    --border-glow:    rgba(56,189,248,0.4);
-    --border-accent:  rgba(56,189,248,0.3);
+    /* Borders — dark on light */
+    --border:           rgba(0, 0, 0, 0.09);
+    --border-subtle:    rgba(0, 0, 0, 0.05);
+    --border-strong:    rgba(0, 0, 0, 0.15);
+    --border-emphasis:  rgba(0, 0, 0, 0.22);
+    --border-glow:      rgba(99, 102, 241, 0.45);
+    --border-accent:    rgba(99, 102, 241, 0.30);
+    --border-violet:    rgba(139, 92, 246, 0.30);
 
-    --cyan:          hsl(199, 93%, 40%);
-    --cyan-dim:      hsl(199, 93%, 30%);
-    --cyan-glow:     rgba(2,132,199,0.15);
-    --cyan-glow-lg:  rgba(2,132,199,0.25);
-    --purple:        hsl(234, 80%, 55%);
-    --emerald:       hsl(160, 84%, 29%);
-    --emerald-light: hsl(160, 84%, 35%);
-    --rose:          hsl(0, 72%, 42%);
-    --rose-light:    hsl(0, 72%, 50%);
-    --amber:         hsl(38, 92%, 35%);
-    --amber-light:   hsl(38, 92%, 42%);
+    /* Accent colors — slightly richer in light mode for contrast */
+    --indigo:           hsl(239, 70%, 55%);
+    --indigo-light:     hsl(239, 80%, 63%);
+    --indigo-dim:       hsl(239, 70%, 44%);
+    --indigo-glow:      rgba(79, 70, 229, 0.2);
+    --indigo-glow-lg:   rgba(79, 70, 229, 0.35);
+    --indigo-subtle:    rgba(79, 70, 229, 0.06);
 
-    --text-primary:   hsl(222, 47%, 10%);
-    --text-secondary: hsl(215, 20%, 35%);
-    --text-muted:     hsl(215, 16%, 50%);
-    --text-accent:    var(--cyan);
+    --violet:           hsl(258, 85%, 55%);
+    --violet-light:     hsl(258, 90%, 65%);
+    --violet-glow:      rgba(109, 40, 217, 0.2);
 
-    --grad-brand:    linear-gradient(135deg, hsl(199,93%,40%) 0%, hsl(234,80%,55%) 100%);
-    --grad-glass:    linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.4) 100%);
-    --grad-card:     linear-gradient(135deg, rgba(56,189,248,0.06) 0%, rgba(129,140,248,0.04) 100%);
+    --sky:              hsl(199, 93%, 40%);
+    --sky-light:        hsl(199, 89%, 50%);
+    --sky-glow:         rgba(2, 132, 199, 0.2);
+
+    --cyan:             var(--sky-light);
+    --cyan-dim:         var(--sky);
+    --cyan-glow:        var(--sky-glow);
+    --cyan-glow-lg:     rgba(2, 132, 199, 0.35);
+    --purple:           var(--violet-light);
+    --purple-glow:      var(--violet-glow);
+
+    /* Financial semantics — deeper for light mode legibility */
+    --emerald:          hsl(160, 84%, 29%);
+    --emerald-light:    hsl(160, 84%, 36%);
+    --emerald-glow:     rgba(5, 150, 105, 0.2);
+    --emerald-subtle:   rgba(5, 150, 105, 0.08);
+
+    --rose:             hsl(0, 72%, 44%);
+    --rose-light:       hsl(0, 72%, 52%);
+    --rose-glow:        rgba(220, 38, 38, 0.2);
+    --rose-subtle:      rgba(220, 38, 38, 0.08);
+
+    --amber:            hsl(38, 92%, 38%);
+    --amber-light:      hsl(38, 92%, 45%);
+    --amber-glow:       rgba(217, 119, 6, 0.2);
+    --amber-subtle:     rgba(217, 119, 6, 0.08);
+
+    /* Text — near-black on light backgrounds */
+    --text-primary:     hsl(222, 40%, 10%);
+    --text-secondary:   hsl(220, 16%, 35%);
+    --text-muted:       hsl(220, 12%, 52%);
+    --text-subtle:      hsl(220, 10%, 68%);
+    --text-accent:      var(--indigo);
+    --text-positive:    var(--emerald);
+    --text-negative:    var(--rose);
+    --text-warning:     var(--amber);
+    --text-info:        var(--sky);
+
+    /* Gradients */
+    --grad-brand:        linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #9333EA 100%);
+    --grad-glass:        linear-gradient(135deg, rgba(255,255,255,0.80) 0%, rgba(255,255,255,0.60) 100%);
+    --grad-glass-hover:  linear-gradient(135deg, rgba(255,255,255,0.90) 0%, rgba(255,255,255,0.75) 100%);
+    --grad-card:         linear-gradient(135deg, rgba(99,102,241,0.05) 0%, rgba(139,92,246,0.03) 100%);
     --grad-hero-bg:
-        radial-gradient(ellipse at 20% 50%, rgba(56,189,248,0.1), transparent 55%),
-        radial-gradient(ellipse at 80% 20%, rgba(129,140,248,0.1), transparent 55%),
-        hsl(210, 40%, 98%);
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(99,102,241,0.08), transparent 55%),
+        radial-gradient(ellipse 70% 50% at 80% 20%, rgba(139,92,246,0.07), transparent 55%),
+        hsl(220, 25%, 97%);
 
-    --shadow-sm:    0 1px 3px rgba(0,0,0,0.12);
-    --shadow-md:    0 4px 16px rgba(0,0,0,0.15);
-    --shadow-lg:    0 8px 32px rgba(0,0,0,0.2);
-    --shadow-xl:    0 16px 48px rgba(0,0,0,0.25);
-    --shadow-glow:  0 4px 20px var(--cyan-glow);
-    --shadow-card:  0 2px 16px rgba(0,0,0,0.1), 0 1px 0 rgba(255,255,255,0.8) inset;
+    /* Shadows — softer, warm-tinted for light mode */
+    --shadow-xs:    0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-sm:    0 1px 4px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+    --shadow-lg:    0 8px 30px rgba(0, 0, 0, 0.16), 0 4px 12px rgba(0, 0, 0, 0.10);
+    --shadow-xl:    0 16px 48px rgba(0, 0, 0, 0.18), 0 8px 20px rgba(0, 0, 0, 0.12);
+    --shadow-glow:  0 4px 24px rgba(99, 102, 241, 0.25);
+    --shadow-card:  0 2px 8px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06),
+                    0 1px 0 rgba(255, 255, 255, 0.9) inset;
 }
 
 [data-theme="light"] body {
@@ -313,7 +684,7 @@ body.signup-page {
 }
 
 [data-theme="light"] .data-table tbody tr:hover {
-    background: rgba(2, 132, 199, 0.08);
+    background: rgba(99, 102, 241, 0.06);
 }
 
 [data-theme="light"] .notification-success {
@@ -356,8 +727,8 @@ body.signup-page {
 [data-theme="light"] input:focus,
 [data-theme="light"] select:focus,
 [data-theme="light"] textarea:focus {
-    background: rgba(2, 132, 199, 0.04);
-    box-shadow: 0 0 10px rgba(2, 132, 199, 0.2), inset 0 2px 4px rgba(0,0,0,0.05);
+    background: rgba(99, 102, 241, 0.04);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.2), inset 0 2px 4px rgba(0,0,0,0.05);
 }
 
 [data-theme="light"] ::-webkit-scrollbar-thumb {
@@ -421,7 +792,7 @@ strong { color: var(--text-primary); font-weight: 600; }
     background: rgba(255,255,255,0.1);
     border-radius: var(--radius-full);
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(56,189,248,0.3); }
+::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.4); }
 
 
 /* ══════════════════════════════════════════════════════════
@@ -438,12 +809,9 @@ strong { color: var(--text-primary); font-weight: 600; }
 .sidebar {
     width: var(--sidebar-width);
     min-height: 100vh;
-    background: linear-gradient(180deg,
-        rgba(9, 13, 28, 0.85) 0%,
-        rgba(6, 9, 20, 0.85) 100%
-    );
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: var(--grad-sidebar);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     border-right: 1px solid var(--border-subtle);
     display: flex;
     flex-direction: column;
@@ -483,7 +851,7 @@ strong { color: var(--text-primary); font-weight: 600; }
     font-size: var(--text-base);
     color: white;
     flex-shrink: 0;
-    box-shadow: 0 4px 14px var(--cyan-glow);
+    box-shadow: 0 4px 14px var(--indigo-glow);
     transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 
@@ -542,24 +910,24 @@ strong { color: var(--text-primary); font-weight: 600; }
 }
 
 .nav-item:hover {
-    background: rgba(56,189,248,0.07);
-    color: var(--cyan);
-    border-color: rgba(56,189,248,0.12);
-    transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(3px);
 }
 
 .nav-item:hover svg,
 .nav-item:hover .nav-icon { 
     opacity: 1; 
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .nav-item.active {
-    background: rgba(56,189,248,0.12);
-    color: var(--cyan);
-    border-color: rgba(56,189,248,0.2);
-    box-shadow: 0 0 0 1px rgba(56,189,248,0.08) inset, 0 4px 12px rgba(56,189,248,0.05);
-    transform: translateX(4px);
+    background: rgba(99, 102, 241, 0.12);
+    color: #ffffff;
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.18) inset, 0 4px 16px rgba(99, 102, 241, 0.12);
+    transform: translateX(3px);
 }
 
 .nav-item::before {
@@ -570,10 +938,10 @@ strong { color: var(--text-primary); font-weight: 600; }
     transform: translateY(-50%) scaleY(0);
     height: 60%;
     width: 3px;
-    background: var(--cyan);
+    background: var(--indigo);
     border-radius: 0 var(--radius-full) var(--radius-full) 0;
-    box-shadow: 0 0 8px var(--cyan-glow);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 10px var(--indigo-glow);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .nav-item.active::before {
@@ -761,7 +1129,7 @@ strong { color: var(--text-primary); font-weight: 600; }
    ══════════════════════════════════════════════════════════ */
 
 /* Base Glass Card */
-.card {
+.card, .glass-card {
     background: var(--grad-glass);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
@@ -771,10 +1139,11 @@ strong { color: var(--text-primary); font-weight: 600; }
     position: relative;
     overflow: hidden;
     transition: all var(--transition-base);
+    padding: var(--space-6);
 }
 
 /* Inner top shimmer */
-.card::before {
+.card::before, .glass-card::before {
     content: '';
     position: absolute;
     top: 0;
@@ -798,7 +1167,7 @@ strong { color: var(--text-primary); font-weight: 600; }
 .card-interactive:hover {
     transform: translateY(-2px);
     border-color: var(--border-accent);
-    box-shadow: var(--shadow-card), 0 0 0 1px rgba(56,189,248,0.1);
+    box-shadow: var(--shadow-card), 0 0 20px var(--indigo-glow);
 }
 
 /* ─── KPI STAT CARDS ─────────────────────────────────────── */
@@ -810,12 +1179,12 @@ strong { color: var(--text-primary); font-weight: 600; }
 
 .kpi-card {
     background: var(--grad-card);
-    border: 1px solid var(--border-accent);
+    border: 1px solid var(--border);
     border-radius: var(--radius-xl);
     padding: var(--space-5) var(--space-6);
     backdrop-filter: blur(24px);
-    box-shadow: var(--shadow-card), 0 0 30px rgba(56,189,248,0.05);
-    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
     position: relative;
     overflow: hidden;
 }
@@ -824,26 +1193,28 @@ strong { color: var(--text-primary); font-weight: 600; }
     content: '';
     position: absolute;
     top: 0; right: 0;
-    width: 80px; height: 80px;
-    background: radial-gradient(circle at top right, rgba(56,189,248,0.1), transparent 70%);
+    width: 120px; height: 120px;
+    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.12), transparent 70%);
     pointer-events: none;
 }
 
 .kpi-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-card), 0 0 40px rgba(56,189,248,0.12);
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-lg), 0 0 24px rgba(99, 102, 241, 0.15);
 }
 
 .kpi-card:hover .kpi-icon {
-    transform: scale(1.1) rotate(5deg);
+    transform: scale(1.08) rotate(4deg);
     transition: transform 300ms var(--ease-spring);
+    border-color: var(--border-accent);
 }
 
 .kpi-label {
     font-size: var(--text-xs);
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-wide);
     color: var(--text-muted);
     margin-bottom: var(--space-2);
 }
@@ -854,8 +1225,10 @@ strong { color: var(--text-primary); font-weight: 600; }
     font-weight: 700;
     color: var(--text-primary);
     font-variant-numeric: tabular-nums;
+    font-feature-settings: var(--font-features-numbers);
     margin-bottom: var(--space-2);
-    line-height: 1.1;
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
     transition: color 500ms ease;
 }
 
@@ -865,7 +1238,7 @@ strong { color: var(--text-primary); font-weight: 600; }
 
 @keyframes valueFlash {
     0%, 100% { color: var(--text-primary); }
-    50%       { color: var(--cyan); }
+    50%       { color: var(--indigo); text-shadow: 0 0 12px var(--indigo-glow); }
 }
 
 .kpi-delta {
@@ -882,17 +1255,17 @@ strong { color: var(--text-primary); font-weight: 600; }
     transform: scale(1.05);
 }
 .kpi-delta.positive {
-    background: rgba(16,185,129,0.15);
+    background: rgba(16,185,129,0.12);
     color: var(--emerald-light);
-    border: 1px solid rgba(16,185,129,0.2);
+    border: 1px solid rgba(16,185,129,0.22);
 }
 .kpi-delta.negative {
-    background: rgba(239,68,68,0.15);
+    background: rgba(239,68,68,0.12);
     color: var(--rose-light);
-    border: 1px solid rgba(239,68,68,0.2);
+    border: 1px solid rgba(239,68,68,0.22);
 }
 .kpi-delta.neutral {
-    background: rgba(148,163,184,0.1);
+    background: rgba(148,163,184,0.08);
     color: var(--text-muted);
     border: 1px solid rgba(148,163,184,0.15);
 }
@@ -903,13 +1276,14 @@ strong { color: var(--text-primary); font-weight: 600; }
     right: var(--space-4);
     width: 36px;
     height: 36px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
-    background: rgba(56,189,248,0.1);
-    border: 1px solid rgba(56,189,248,0.15);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    transition: all var(--transition-fast);
 }
 
 /* ─── SECTION / PANEL CARDS ─────────────────────────────── */
@@ -961,64 +1335,55 @@ button {
     font-weight: 600;
 }
 
-/* ── Primary (Premium Glass Neon) ── */
+/* ── Primary (Linear / shadcn Inspired High-Contrast Brand) ── */
 .btn, .btn-primary, .submit-btn, .submit-btn.primary {
-    background: rgba(0, 238, 255, 0.1);
-    color: var(--cyan);
-    border: 1px solid rgba(0, 238, 255, 0.3);
-    border-radius: var(--radius-full);
-    padding: 12px 24px;
+    background: linear-gradient(180deg, hsl(239, 84%, 67%) 0%, hsl(239, 70%, 54%) 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-md);
+    padding: 10px 20px;
     font-size: var(--text-sm);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    letter-spacing: var(--tracking-snug);
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(12px);
-    box-shadow: 0 4px 15px rgba(0, 238, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    transition: all 400ms var(--ease-spring);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 4px 14px var(--indigo-glow);
+    transition: all 200ms var(--ease-out);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
 .btn::before, .btn-primary::before, .submit-btn::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
-    transform: translateX(-100%) skewX(-15deg);
-    transition: transform 600ms ease;
-}
-
-@keyframes buttonPulse {
-    0% { box-shadow: 0 0 0 0 rgba(0, 238, 255, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(0, 238, 255, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(0, 238, 255, 0); }
-}
-
-.btn-primary, .submit-btn {
-    animation: buttonPulse 2s infinite;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 500ms ease;
+    pointer-events: none;
 }
 
 .btn:hover, .btn-primary:hover, .submit-btn:hover {
-    transform: translateY(-2px);
-    background: rgba(0, 238, 255, 0.25);
-    border-color: rgba(0, 238, 255, 0.8);
-    box-shadow: 0 0 25px rgba(0, 238, 255, 0.5), inset 0 2px 10px rgba(0, 238, 255, 0.3);
-    color: #fff;
-    text-shadow: 0 0 8px rgba(255,255,255,0.5);
+    transform: translateY(-1px);
+    background: linear-gradient(180deg, hsl(239, 88%, 70%) 0%, hsl(239, 75%, 58%) 100%);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 6px 20px var(--indigo-glow-lg);
+    color: #ffffff;
 }
 
 .btn:hover::before, .btn-primary:hover::before, .submit-btn:hover::before {
-    transform: translateX(100%) skewX(-15deg);
+    transform: translateX(100%);
 }
 
 .btn:active, .btn-primary:active, .submit-btn:active { 
-    transform: scale(0.96); 
-    box-shadow: 0 2px 8px rgba(0, 238, 255, 0.3), inset 0 2px 5px rgba(0, 238, 255, 0.2);
+    transform: translateY(1px); 
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .btn:disabled, .btn-primary:disabled, .submit-btn:disabled,
@@ -1026,72 +1391,71 @@ button {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
-    animation: none;
 }
 
-/* ── Secondary (Ghost Glass) ── */
+/* ── Secondary (Subtle Frosted Glass) ── */
 .btn-secondary, button.secondary {
-    background: var(--grad-glass);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-strong);
     color: var(--text-primary);
-    border-radius: var(--radius-full);
-    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    padding: 10px 18px;
     font-size: var(--text-sm);
-    font-weight: 600;
-    backdrop-filter: blur(10px);
-    transition: all 300ms var(--ease-out);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    font-weight: 500;
+    font-family: var(--font-sans);
+    letter-spacing: var(--tracking-snug);
+    backdrop-filter: blur(12px);
+    transition: all 200ms var(--ease-out);
+    box-shadow: var(--shadow-xs);
 }
 .btn-secondary:hover, button.secondary:hover {
-    background: var(--grad-glass-hover);
-    border-color: rgba(255,255,255,0.25);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
     transform: translateY(-1px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2), 0 0 10px rgba(255,255,255,0.05);
+    box-shadow: var(--shadow-sm);
 }
 .btn-secondary:active, button.secondary:active {
-    transform: scale(0.97);
+    transform: translateY(1px);
 }
 
-/* ── Danger ── */
+/* ── Danger Button ── */
 .btn-danger, button.danger, .action-btn.clear-btn {
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.25);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
     color: var(--rose-light);
-    border-radius: var(--radius-full);
-    padding: 11px 22px;
+    border-radius: var(--radius-md);
+    padding: 10px 18px;
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    transition: all 200ms var(--ease-out);
 }
 .btn-danger:hover, button.danger:hover, .action-btn.clear-btn:hover {
-    background: rgba(239,68,68,0.18);
-    border-color: rgba(239,68,68,0.4);
-    box-shadow: 0 4px 16px rgba(239,68,68,0.2);
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.45);
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25);
     transform: translateY(-1px);
-    animation: dangerShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
-@keyframes dangerShake {
-    10%, 90% { transform: translate3d(-1px, 0, 0); }
-    20%, 80% { transform: translate3d(2px, 0, 0); }
-    30%, 50%, 70% { transform: translate3d(-2px, 0, 0); }
-    40%, 60% { transform: translate3d(2px, 0, 0); }
-}
-
-/* ── Export Button ── */
+/* ── Export / Utility Button ── */
 .action-btn.export-btn, .btn-export {
-    background: rgba(16,185,129,0.1);
-    border: 1px solid rgba(16,185,129,0.25);
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.25);
     color: var(--emerald-light);
-    border-radius: var(--radius-full);
-    padding: 11px 22px;
+    border-radius: var(--radius-md);
+    padding: 10px 18px;
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    transition: all 200ms var(--ease-out);
 }
 .action-btn.export-btn:hover, .btn-export:hover {
-    background: rgba(16,185,129,0.18);
-    border-color: rgba(16,185,129,0.4);
-    box-shadow: 0 4px 16px rgba(16,185,129,0.2);
+    background: rgba(16, 185, 129, 0.18);
+    border-color: rgba(16, 185, 129, 0.45);
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
     transform: translateY(-1px);
 }
 
@@ -1099,73 +1463,80 @@ button {
 .action-btn.save-profile-btn {
     background: var(--grad-brand);
     color: #fff;
-    border: none;
-    border-radius: var(--radius-full);
-    padding: 11px 22px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-md);
+    padding: 10px 20px;
     font-size: var(--text-sm);
     font-weight: 600;
-    box-shadow: 0 4px 20px var(--cyan-glow);
+    font-family: var(--font-sans);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px var(--indigo-glow);
+    transition: all 200ms var(--ease-out);
 }
 .action-btn.save-profile-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px var(--cyan-glow-lg);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px var(--indigo-glow-lg);
 }
 
 /* ── Pill Range Buttons ── */
 .btn-pill, .range-btn {
-    padding: 5px 16px;
-    border-radius: var(--radius-full);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border);
-    background: transparent;
+    background: rgba(255, 255, 255, 0.03);
     color: var(--text-muted);
     font-size: var(--text-xs);
-    font-weight: 600;
+    font-weight: 500;
+    font-family: var(--font-sans);
     cursor: pointer;
     transition: all var(--transition-fast);
 }
 .btn-pill:hover, .range-btn:hover {
-    border-color: var(--border-accent);
-    color: var(--cyan);
-    background: rgba(56,189,248,0.06);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
 }
 .btn-pill.active, .range-btn.active {
-    background: rgba(56,189,248,0.15);
-    border-color: rgba(56,189,248,0.4);
-    color: var(--cyan);
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.35);
+    color: #ffffff;
+    box-shadow: 0 0 12px var(--indigo-glow);
 }
 
 /* ── Icon Buttons ── */
 .btn-icon {
     width: 36px; height: 36px; padding: 0;
-    border-radius: var(--radius-sm);
-    background: var(--surface);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--border);
     color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: all var(--transition-fast);
 }
 .btn-icon:hover {
-    background: var(--surface-hover);
-    color: var(--cyan);
-    border-color: var(--border-accent);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border-color: var(--border-strong);
 }
 
 /* ── Create Alert Button ── */
 .btn-create-alert {
-    padding: 11px 20px;
+    padding: 10px 20px;
     background: var(--grad-brand);
     color: white;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: var(--radius-md);
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
     font-size: var(--text-sm);
-    box-shadow: 0 4px 20px var(--cyan-glow);
+    box-shadow: 0 4px 16px var(--indigo-glow);
     transition: all var(--transition-base);
 }
 .btn-create-alert:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px var(--cyan-glow-lg);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px var(--indigo-glow-lg);
 }
 
 /* ── Toggle / Delete Alert Buttons ── */
@@ -1221,6 +1592,8 @@ button {
     color: var(--text-secondary);
 }
 
+.form-input,
+.form-select,
 input[type="text"],
 input[type="number"],
 input[type="email"],
@@ -1230,26 +1603,28 @@ input[type="search"],
 select,
 textarea {
     width: 100%;
-    padding: 16px 18px;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-strong);
     border-radius: var(--radius-md);
     color: var(--text-primary);
     font-family: var(--font-sans);
-    font-size: var(--text-base);
-    transition: all 300ms var(--ease-out);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    transition: all 200ms var(--ease-out);
     box-sizing: border-box;
     appearance: none;
     -webkit-appearance: none;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+.form-select,
 select {
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2338BDF8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 14px center;
-    background-size: 10px auto;
-    padding-right: 40px;
+    background-position: right 12px center;
+    padding-right: 36px;
+    cursor: pointer;
 }
 
 input::placeholder,
@@ -1274,10 +1649,9 @@ input:focus,
 select:focus,
 textarea:focus {
     outline: none;
-    border-color: var(--cyan);
-    background: rgba(0, 238, 255, 0.05);
-    box-shadow: 0 0 20px rgba(0, 238, 255, 0.4), inset 0 2px 8px rgba(0, 238, 255, 0.1);
-    transform: translateY(-1px);
+    border-color: var(--indigo);
+    background: rgba(0, 0, 0, 0.35);
+    box-shadow: 0 0 0 1px var(--indigo), 0 0 16px rgba(99, 102, 241, 0.25);
 }
 
 input:not(:placeholder-shown):valid {
@@ -1295,7 +1669,7 @@ input:focus-visible,
 button:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-    outline: 2px solid var(--cyan);
+    outline: 2px solid var(--indigo);
     outline-offset: 2px;
 }
 
@@ -1425,10 +1799,10 @@ select option {
     color: var(--text-secondary);
     border: 1px solid rgba(148,163,184,0.18);
 }
-.badge-cyan {
-    background: rgba(56,189,248,0.12);
-    color: var(--cyan);
-    border: 1px solid rgba(56,189,248,0.22);
+.badge-cyan, .badge-indigo, .badge-brand {
+    background: rgba(99, 102, 241, 0.12);
+    color: var(--indigo);
+    border: 1px solid rgba(99, 102, 241, 0.25);
 }
 
 
@@ -1455,7 +1829,7 @@ select option {
     border-radius: 3px;
 }
 .table-wrapper::-webkit-scrollbar-thumb:hover {
-    background: var(--cyan);
+    background: var(--indigo);
 }
 
 .data-table {
@@ -1466,14 +1840,14 @@ select option {
 
 .data-table thead th {
     padding: var(--space-3) var(--space-4);
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.02);
     color: var(--text-muted);
     font-size: var(--text-xs);
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: var(--tracking-wide);
     text-align: left;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-strong);
     white-space: nowrap;
 }
 
@@ -1481,13 +1855,13 @@ select option {
 
 .data-table tbody tr {
     border-bottom: 1px solid var(--border-subtle);
-    transition: background var(--transition-fast);
+    transition: background 150ms ease;
 }
 
 .data-table tbody tr:last-child { border-bottom: none; }
 
 .data-table tbody tr:hover {
-    background: rgba(56,189,248,0.05);
+    background: rgba(255, 255, 255, 0.035);
 }
 
 .data-table tbody td {
@@ -1500,18 +1874,14 @@ select option {
     text-align: right;
 }
 
-.data-table tbody tr {
-    transition: background 250ms ease, transform 250ms ease;
-}
-
 /* Numeric cells */
 .data-table .cell-numeric {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
+    font-feature-settings: var(--font-features-numbers);
     text-align: right;
 }
 
-/* Positive/negative cell values */
 .cell-positive { color: var(--emerald-light); }
 .cell-negative { color: var(--rose-light); }
 
@@ -1546,9 +1916,9 @@ select option {
     color: var(--rose-light);
 }
 .notification-info {
-    background: rgba(56,189,248,0.12);
-    border: 1px solid rgba(56,189,248,0.3);
-    color: var(--cyan);
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    color: #ffffff;
 }
 
 @keyframes toastIn {
@@ -1592,7 +1962,7 @@ select option {
     width: 28px;
     height: 28px;
     border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top-color: var(--cyan);
+    border-top-color: var(--indigo);
     border-radius: 50%;
     animation: spin 700ms linear infinite;
     margin: 0 auto;
@@ -1604,7 +1974,7 @@ select option {
     inset: -3px;
     border-radius: 50%;
     border: 3px solid transparent;
-    border-top-color: var(--cyan);
+    border-top-color: var(--indigo);
     opacity: 0.3;
     filter: blur(4px);
 }
@@ -1672,8 +2042,8 @@ select option {
 }
 
 @keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 0 6px rgba(56,189,248,0.3); }
-    50%       { box-shadow: 0 0 24px rgba(56,189,248,0.6); }
+    0%, 100% { box-shadow: 0 0 6px rgba(99, 102, 241, 0.3); }
+    50%       { box-shadow: 0 0 24px rgba(99, 102, 241, 0.6); }
 }
 
 @keyframes shimmerSweep {
