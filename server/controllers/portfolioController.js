@@ -170,6 +170,8 @@ const getTransactions = async (req, res, next) => {
 const createTransaction = async (req, res, next) => {
   try {
     const { assetName, type, amount, price, quantity, date } = req.body;
+    const normType = type ? type.toLowerCase().trim() : 'buy';
+    const normAssetName = assetName ? assetName.trim().toUpperCase() : '';
 
     let portfolio = await prisma.portfolio.findUnique({
       where: { userId: req.userId },
@@ -186,14 +188,70 @@ const createTransaction = async (req, res, next) => {
       });
     }
 
+    let finalAmount = Math.abs(Number(amount));
+    let finalPrice = price ? Math.abs(Number(price)) : null;
+    let finalQuantity = quantity ? Math.abs(Number(quantity)) : null;
+
+    // Fetch market price if price wasn't specified
+    if (!finalPrice && normAssetName) {
+      try {
+        const { fetchPrice } = require('../services/priceService');
+        const livePrice = await fetchPrice(normAssetName);
+        if (livePrice && livePrice > 0) {
+          finalPrice = livePrice;
+        }
+      } catch (err) {
+        // use fallback if available
+      }
+    }
+
+    // Auto-calculate quantity or price if one is present and amount is known
+    if (!finalQuantity && finalPrice && finalPrice > 0) {
+      finalQuantity = Math.round((finalAmount / finalPrice) * 1000000) / 1000000;
+    } else if (!finalPrice && finalQuantity && finalQuantity > 0) {
+      finalPrice = Math.round((finalAmount / finalQuantity) * 100) / 100;
+    }
+
+    const currentCash = Number(portfolio.cashBalance);
+
+    // Business Logic Validation
+    if (normType === 'buy') {
+      if (currentCash < finalAmount) {
+        throw ApiError.badRequest(
+          `Insufficient cash balance. Available: $${currentCash.toFixed(2)}, Required: $${finalAmount.toFixed(2)}`
+        );
+      }
+    } else if (normType === 'sell') {
+      const existingAsset = portfolio.assets.find(
+        (a) => a.name.trim().toUpperCase() === normAssetName
+      );
+      const ownedQty = existingAsset ? Number(existingAsset.quantity) : 0;
+      if (!existingAsset || ownedQty <= 0) {
+        throw ApiError.badRequest(
+          `Cannot sell ${normAssetName}. You do not currently hold any shares of this asset.`
+        );
+      }
+      if (finalQuantity && ownedQty < finalQuantity) {
+        throw ApiError.badRequest(
+          `Cannot sell ${finalQuantity} shares of ${normAssetName}. You currently hold ${ownedQty} shares.`
+        );
+      }
+    } else if (normType === 'withdrawal') {
+      if (currentCash < finalAmount) {
+        throw ApiError.badRequest(
+          `Insufficient cash balance for withdrawal. Available: $${currentCash.toFixed(2)}`
+        );
+      }
+    }
+
     const transaction = await prisma.transaction.create({
       data: {
         portfolioId: portfolio.id,
-        assetName,
-        type,
-        amount,
-        price: price || null,
-        quantity: quantity || null,
+        assetName: normAssetName,
+        type: normType,
+        amount: finalAmount,
+        price: finalPrice || null,
+        quantity: finalQuantity || null,
         date: new Date(date)
       }
     });
@@ -205,14 +263,24 @@ const createTransaction = async (req, res, next) => {
         eventType: `TRANSACTION_CREATED`,
         payload: {
           transactionId: transaction.id,
-          assetName, type, amount, price, quantity, date
+          assetName: normAssetName,
+          type: normType,
+          amount: finalAmount,
+          price: finalPrice,
+          quantity: finalQuantity,
+          date
         }
       }
     });
 
     await recalculatePortfolio(portfolio.id);
 
-    await logAudit(req.userId, `TRANSACTION_${type.toUpperCase()}`, { assetName, type, amount, quantity }, req);
+    await logAudit(
+      req.userId,
+      `TRANSACTION_${normType.toUpperCase()}`,
+      { assetName: normAssetName, type: normType, amount: finalAmount, quantity: finalQuantity },
+      req
+    );
 
     res.status(201).json({
       success: true,
@@ -391,15 +459,27 @@ const exportPDF = async (req, res, next) => {
       throw ApiError.notFound('Portfolio not found');
     }
 
+    const totalAssetValue = portfolio.assets.reduce(
+      (sum, a) => sum + Number(a.currentPrice) * Number(a.quantity),
+      0
+    );
+    const cashBalance = Number(portfolio.cashBalance);
+    const totalValue = totalAssetValue + cashBalance;
+    const totalInvested = portfolio.assets.reduce(
+      (sum, a) => sum + Number(a.totalInvested),
+      0
+    );
+    const totalReturn = totalAssetValue - totalInvested;
+
     const data = {
       username: user.username,
-      totalValue: Number(portfolio.totalValue),
-      totalReturn: Number(portfolio.totalReturn),
+      totalValue: Math.round(totalValue * 100) / 100,
+      totalReturn: Math.round(totalReturn * 100) / 100,
       assets: portfolio.assets.map(a => ({
-        symbol: a.symbol,
+        symbol: a.name,
         type: a.type,
         quantity: Number(a.quantity),
-        totalValue: Number(a.totalValue)
+        totalValue: Math.round((Number(a.currentPrice) * Number(a.quantity)) * 100) / 100
       }))
     };
 
@@ -640,8 +720,8 @@ const recalculatePortfolio = async (portfolioId) => {
   const assetMap = {};
 
   for (const tx of transactions) {
-    const assetName = tx.assetName.trim();
-    const type = tx.type.toLowerCase();
+    const assetName = tx.assetName.trim().toUpperCase();
+    const type = tx.type.toLowerCase().trim();
     const amount = Number(tx.amount);
     const quantity = tx.quantity ? Number(tx.quantity) : 0;
 
@@ -658,14 +738,16 @@ const recalculatePortfolio = async (portfolioId) => {
         const avgCost = assetMap[assetName].quantity > 0 
           ? assetMap[assetName].totalInvested / assetMap[assetName].quantity 
           : 0;
-        assetMap[assetName].quantity -= quantity;
-        assetMap[assetName].totalInvested -= avgCost * quantity;
-        if (assetMap[assetName].quantity <= 0) {
+        assetMap[assetName].quantity = Math.max(0, assetMap[assetName].quantity - quantity);
+        assetMap[assetName].totalInvested = Math.max(0, assetMap[assetName].totalInvested - avgCost * quantity);
+        if (assetMap[assetName].quantity <= 0.000001) {
           delete assetMap[assetName];
         }
       }
-    } else if (type === 'dividend' || type === 'interest') {
+    } else if (type === 'dividend' || type === 'interest' || type === 'deposit') {
       cash += amount;
+    } else if (type === 'withdrawal') {
+      cash -= amount;
     }
   }
 
@@ -675,29 +757,44 @@ const recalculatePortfolio = async (portfolioId) => {
   const { fetchPrice } = require('../services/priceService');
 
   for (const [name, data] of Object.entries(assetMap)) {
-    if (data.quantity > 0) {
+    if (data.quantity > 0.000001) {
       const type = classifyAsset(name);
-      const currentPrice = await fetchPrice(name);
-      const averageCost = data.totalInvested / data.quantity;
+      let currentPrice = data.quantity > 0 ? (data.totalInvested / data.quantity) : 100;
+      try {
+        const livePrice = await fetchPrice(name);
+        if (livePrice && livePrice > 0) currentPrice = livePrice;
+      } catch (e) {
+        // use average cost fallback
+      }
+      const averageCost = data.quantity > 0 ? data.totalInvested / data.quantity : currentPrice;
 
       await prisma.asset.create({
         data: {
           portfolioId,
           name,
           type,
-          currentPrice,
-          quantity: data.quantity,
-          averageCost,
-          totalInvested: data.totalInvested
+          currentPrice: Math.round(currentPrice * 100) / 100,
+          quantity: Math.round(data.quantity * 1000000) / 1000000,
+          averageCost: Math.round(averageCost * 100) / 100,
+          totalInvested: Math.round(data.totalInvested * 100) / 100
         }
       });
     }
   }
 
+  const finalCash = Math.max(0, Math.round(cash * 100) / 100);
   await prisma.portfolio.update({
     where: { id: portfolioId },
-    data: { cashBalance: Math.max(0, cash) }
+    data: { cashBalance: finalCash }
   });
+
+  // Sync daily portfolio snapshot so chart is live immediately
+  try {
+    const { takeSnapshot } = require('../services/snapshotService');
+    await takeSnapshot();
+  } catch (err) {
+    // Non-blocking
+  }
 };
 
 const getBenchmarkHistory = async (req, res) => {
