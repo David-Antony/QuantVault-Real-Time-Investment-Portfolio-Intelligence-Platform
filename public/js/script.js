@@ -1,4 +1,4 @@
-/* global portfolioData:writable, PortfolioDataStore, AuthManager, echarts, PortfolioApi, apiClient, loadMarketNews */
+/* global PortfolioDataStore, AuthManager, echarts, PortfolioApi, apiClient */
 const AVATAR_PRESETS = [
     { id: 'face-01', bgGrad: ['#818cf8', '#c084fc'], skinColor: '#fde047', hairType: 'short', hairColor: '#1e293b', shirtColor: '#f43f5e', glasses: false, beard: false },
     { id: 'face-02', bgGrad: ['#38bdf8', '#818cf8'], skinColor: '#fed7aa', hairType: 'long', hairColor: '#78350f', shirtColor: '#0ea5e9', glasses: false, beard: false },
@@ -167,7 +167,7 @@ function adjustColorBrightness(hex, percent) {
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
-    portfolioData = await PortfolioDataStore.loadPortfolio();
+    await PortfolioDataStore.loadPortfolio();
     setActiveNavLink();
     setBodyPageClass();
 
@@ -191,6 +191,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (filterInput) {
             filterInput.addEventListener('change', updateTransactionList);
         }
+    }
+
+    if (document.getElementById('transactionForm')) {
+        initTransactionsPage();
     }
 
     if (document.getElementById('portfolioChart')) {
@@ -341,41 +345,78 @@ async function handleTransactionSubmit(event) {
     }
 
     const p = PortfolioDataStore.getPortfolio();
-    if (type === 'buy' && amount > p.cashBalance) {
-        showNotification(`Insufficient cash balance. Available: $${p.cashBalance.toFixed(2)}`, 'error');
+    if (type === 'buy' && p && amount > p.cashBalance) {
+        showNotification(`Insufficient cash balance. Available: $${p.cashBalance.toFixed(2)}, Required: $${amount.toFixed(2)}`, 'error');
         return;
     }
 
-    const result = await PortfolioDataStore.addTransaction({
-        assetName,
-        type,
-        amount,
-        price,
-        quantity,
-        date
-    });
-
-    if (!result.success) {
-        showNotification(result.message || 'Failed to add transaction', 'error');
-        return;
+    const submitBtn = document.getElementById('addTxSubmitBtn');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Processing...';
     }
 
-    updateTransactionList();
-    updateTransactionStats();
+    try {
+        const result = await PortfolioDataStore.addTransaction({
+            assetName,
+            type,
+            amount,
+            price,
+            quantity,
+            date
+        });
 
-    if (document.getElementById('portfolio-summary')) {
-        updatePortfolioSummary();
-        updateTransactionHistory();
-        updateAssetAllocation();
+        if (!result.success) {
+            showNotification(result.message || 'Failed to add transaction', 'error');
+            return;
+        }
+
+        updateTransactionList();
+        updateTransactionStats();
+
+        if (document.getElementById('portfolio-summary')) {
+            updatePortfolioSummary();
+            updateTransactionHistory();
+            updateAssetAllocation();
+        }
+
+        if (document.getElementById('reportTotalValue')) {
+            updateReportsPage();
+        }
+
+        showNotification(`Transaction recorded: ${type.toUpperCase()} ${assetName} ($${amount.toFixed(2)})`, 'success');
+        document.getElementById('transactionForm').reset();
+        if (dateEl) dateEl.value = new Date().toISOString().split('T')[0];
+    } catch (err) {
+        showNotification('Failed to submit transaction', 'error');
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span class="btn-icon">✓</span> Add Transaction';
+        }
     }
-
-    if (document.getElementById('reportTotalValue')) {
-        updateReportsPage();
-    }
-
-    showNotification(`Transaction added! ${type} ${assetName} for $${amount.toFixed(2)}`, 'success');
-    document.getElementById('transactionForm').reset();
 }
+
+window.handleDeleteTx = async function(id) {
+    if (!confirm('Are you sure you want to delete this transaction? Your portfolio holdings and cash balance will automatically be recalculated.')) return;
+    try {
+        const result = await PortfolioDataStore.deleteTransaction(id);
+        if (result.success) {
+            showNotification('Transaction deleted and portfolio recalculated', 'success');
+            updateTransactionList();
+            updateTransactionStats();
+            if (document.getElementById('portfolio-summary')) {
+                updatePortfolioSummary();
+                updateTransactionHistory();
+                updateAssetAllocation();
+            }
+        } else {
+            showNotification(result.message || 'Failed to delete transaction', 'error');
+        }
+    } catch (err) {
+        showNotification('Error deleting transaction', 'error');
+    }
+};
 
 function updateTransactionList() {
     const transactionList = document.getElementById('transactionList');
@@ -397,7 +438,7 @@ function updateTransactionList() {
 
     const table = document.createElement('table');
     table.className = 'transactions-table';
-    table.innerHTML = `<thead><tr><th>Date</th><th>Asset</th><th>Type</th><th>Amount</th><th>Price</th><th>Quantity</th><th>Status</th></tr></thead><tbody></tbody>`;
+    table.innerHTML = `<thead><tr><th>Date</th><th>Asset</th><th>Type</th><th>Amount</th><th>Price</th><th>Quantity</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody>`;
 
     const tbody = table.querySelector('tbody');
     let recent = [...p.transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -426,7 +467,6 @@ function updateTransactionList() {
         return;
     }
 
-    // Limit to 50 instead of 10 if we have search enabled, or keep 10? Keep all if searching, else top 50
     recent = recent.slice(0, 50);
 
     recent.forEach((t) => {
@@ -434,12 +474,17 @@ function updateTransactionList() {
         const tDate = t.date ? new Date(t.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
         row.innerHTML = `
             <td>${tDate}</td>
-            <td>${t.assetName}</td>
+            <td><strong>${t.assetName}</strong></td>
             <td><span class="transaction-type ${t.type}">${t.type.toUpperCase()}</span></td>
-            <td>$${t.amount.toFixed(2)}</td>
+            <td><strong>$${t.amount.toFixed(2)}</strong></td>
             <td>${t.price ? '$' + t.price.toFixed(2) : 'N/A'}</td>
-            <td>${t.quantity ? t.quantity.toFixed(2) : 'N/A'}</td>
+            <td>${t.quantity ? t.quantity.toFixed(4) : 'N/A'}</td>
             <td class="status ${t.status}">${t.status.charAt(0).toUpperCase() + t.status.slice(1)}</td>
+            <td>
+                <button type="button" onclick="handleDeleteTx(${t.id})" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; border-radius: 6px; padding: 3px 8px; font-size: 0.75rem; cursor: pointer;" title="Delete transaction">
+                    Delete
+                </button>
+            </td>
         `;
         tbody.appendChild(row);
     });
@@ -451,18 +496,19 @@ function updateTransactionList() {
         style.id = 'transaction-styles';
         style.textContent = `
             .transactions-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: transparent; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 30px rgba(2,6,23,0.25); }
-            .transactions-table th { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; text-align: left; font-weight: 600; }
-            .transactions-table td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.02); }
-            .transactions-table tbody tr:nth-child(even) { background-color: rgba(255,255,255,0.01); }
-            .transactions-table tr:hover { background-color: rgba(255,255,255,0.03); }
-            .transaction-type { padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.8em; display: inline-block; }
-            .transaction-type.buy { background-color: #d4edda; color: #155724; }
-            .transaction-type.sell { background-color: #f8d7da; color: #721c24; }
-            .transaction-type.dividend { background-color: #fff3cd; color: #856404; }
-            .transaction-type.interest { background-color: #cce5ff; color: #004085; }
-            .status.completed { color: #2ecc71; }
-            .status.pending { color: #f39c12; }
-            .status.cancelled { color: #e74c3c; }
+            .transactions-table th { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #94a3b8; padding: 12px 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--border-subtle); }
+            .transactions-table td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+            .transactions-table tbody tr:hover { background-color: rgba(255,255,255,0.02); }
+            .transaction-type { padding: 3px 8px; border-radius: 12px; font-weight: 600; font-size: 0.75rem; display: inline-block; }
+            .transaction-type.buy { background-color: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+            .transaction-type.sell { background-color: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+            .transaction-type.deposit { background-color: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
+            .transaction-type.withdrawal { background-color: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+            .transaction-type.dividend { background-color: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+            .transaction-type.interest { background-color: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
+            .status.completed { color: #34d399; }
+            .status.pending { color: #fbbf24; }
+            .status.cancelled { color: #f87171; }
         `;
         document.head.appendChild(style);
     }
@@ -478,7 +524,7 @@ function updatePortfolioSummary() {
     const cashBalanceElem = document.getElementById('cashBalance');
 
     if (totalValueElem) {
-        totalValueElem.textContent = `$${p.totalValue.toFixed(2)}`;
+        totalValueElem.textContent = `$${Number(p.totalValue || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
     if (growthElem) {
         const cls = p.totalGainLossPercentage >= 0 ? 'positive' : 'negative';
@@ -495,12 +541,89 @@ function updatePortfolioSummary() {
         riskElem.style.fontWeight = 'bold';
     }
     if (cashBalanceElem) {
-        cashBalanceElem.textContent = `$${p.cashBalance.toFixed(2)}`;
+        cashBalanceElem.textContent = `$${Number(p.cashBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 
+    updateHoldingsTable();
     updateAssetAllocation();
     updateTransactionHistory();
 }
+
+function updateHoldingsTable() {
+    const container = document.getElementById('portfolioHoldingsList');
+    if (!container) return;
+
+    const p = PortfolioDataStore.getPortfolio();
+    if (!p || !p.assets || p.assets.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state" style="padding: 2.5rem 1rem; text-align: center;">
+                <div class="empty-state-icon" style="font-size: 2rem; margin-bottom: 0.5rem;">💼</div>
+                <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem;">No Active Holdings</h3>
+                <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">You currently don't own any assets. Add your first transaction to build your portfolio.</p>
+                <a href="transactions.html" class="btn btn-primary" style="display: inline-block; padding: 8px 18px; font-size: 0.85rem;">+ Add Buy Transaction</a>
+            </div>
+        `;
+        return;
+    }
+
+    let html = `
+        <table class="data-table transactions-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>Type</th>
+                    <th>Shares / Qty</th>
+                    <th>Avg Cost</th>
+                    <th>Current Price</th>
+                    <th>Market Value</th>
+                    <th>Unrealized Gain / Loss</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    p.assets.forEach((a) => {
+        const qty = Number(a.quantity || 0);
+        const curPrice = Number(a.currentPrice || 0);
+        const avgCost = Number(a.averageCost || 0);
+        const mktVal = qty * curPrice;
+        const totalInvested = Number(a.totalInvested || 0);
+        const gainLoss = mktVal - totalInvested;
+        const gainLossPct = totalInvested > 0 ? (gainLoss / totalInvested) * 100 : 0;
+        const isPos = gainLoss >= 0;
+        const gainLossColor = isPos ? 'var(--emerald-light, #34d399)' : 'var(--rose-light, #f87171)';
+        const sign = isPos ? '+' : '';
+
+        html += `
+            <tr class="transaction-row">
+                <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-weight: 700; font-family: var(--font-mono, monospace); font-size: 0.95rem; color: var(--text-primary); letter-spacing: -0.01em;">${a.name}</span>
+                    </div>
+                </td>
+                <td><span class="badge" style="background: rgba(99, 102, 241, 0.12); color: var(--indigo); font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; border: 1px solid rgba(99, 102, 241, 0.25);">${a.type || 'Stock'}</span></td>
+                <td style="font-weight: 600; font-family: var(--font-mono);">${qty.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 4 })}</td>
+                <td style="font-family: var(--font-mono);">$${avgCost.toFixed(2)}</td>
+                <td style="font-family: var(--font-mono);"><strong>$${curPrice.toFixed(2)}</strong></td>
+                <td style="font-family: var(--font-mono);"><strong>$${mktVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+                <td style="color: ${gainLossColor}; font-weight: 600; font-family: var(--font-mono);">
+                    ${sign}$${gainLoss.toFixed(2)} (${sign}${gainLossPct.toFixed(2)}%)
+                </td>
+                <td>
+                    <button onclick="tradeAsset('${a.name}')" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 12px; cursor: pointer; border-radius: 6px;">Trade</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+window.tradeAsset = function(symbol) {
+    window.location.href = `transactions.html?asset=${encodeURIComponent(symbol)}`;
+};
 
 function updateReportsPage() {
     const p = PortfolioDataStore.getPortfolio();
@@ -596,20 +719,34 @@ function initProfilePage() {
         const selectedIdx = Array.from(avatarGrid.querySelectorAll('.avatar-option')).findIndex((o) => o.classList.contains('selected'));
         const presetId = AVATAR_PRESETS[selectedIdx >= 0 ? selectedIdx : 0].id;
 
-        const result = await AuthManager.updateProfile(user.id, {
-            username: updatedName,
-            avatarPreset: presetId
-        });
+        saveButton.disabled = true;
+        saveButton.textContent = 'Saving...';
 
-        if (!result.success) {
-            showNotification(result.message || 'Failed to update profile', 'error');
-            return;
+        try {
+            const result = await AuthManager.updateProfile(user.id, {
+                username: updatedName,
+                avatarPreset: presetId
+            });
+
+            if (!result.success) {
+                showNotification(result.message || 'Failed to update profile', 'error');
+                return;
+            }
+
+            showNotification('Profile updated successfully', 'success');
+
+            const heroTitle = document.querySelector('.hero h1');
+            if (heroTitle) heroTitle.textContent = `Welcome back, ${updatedName}!`;
+
+            if (window.PageGuard) {
+                PageGuard.renderUserElements({ ...user, username: updatedName, avatarPreset: presetId });
+            }
+        } catch (err) {
+            showNotification('Failed to update profile', 'error');
+        } finally {
+            saveButton.disabled = false;
+            saveButton.textContent = '💾 Save Profile';
         }
-
-        showNotification('Profile updated successfully', 'success');
-
-        const heroTitle = document.querySelector('.hero h1');
-        if (heroTitle) heroTitle.textContent = `Welcome back, ${updatedName}!`;
     });
 }
 
@@ -712,7 +849,7 @@ function updateAssetAllocation() {
 }
 
 function getAssetColor(name) {
-    const colors = ['#38bdf8', '#818cf8', '#10b981', '#a880ff', '#2dd4bf', '#f472b6', '#fbbf24', '#f87171'];
+    const colors = ['#6366f1', '#8b5cf6', '#10b981', '#3b82f6', '#14b8a6', '#ec4899', '#f59e0b', '#f43f5e'];
     let hash = 0;
     for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
     return colors[Math.abs(hash) % colors.length];
@@ -787,11 +924,11 @@ async function updatePortfolioChart() {
                         symbol: 'none',
                         areaStyle: {
                             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                                { offset: 0, color: 'rgba(56, 189, 248, 0.4)' },
-                                { offset: 1, color: 'rgba(56, 189, 248, 0.0)' }
+                                { offset: 0, color: 'rgba(99, 102, 241, 0.35)' },
+                                { offset: 1, color: 'rgba(99, 102, 241, 0.0)' }
                             ])
                         },
-                        lineStyle: { width: 3, color: '#38bdf8' },
+                        lineStyle: { width: 3, color: '#6366f1' },
                         data: chartData.values
                     }
                 ]
@@ -966,19 +1103,68 @@ function updateTransactionStats() {
 
     const totalTransactionsElem = document.getElementById('totalTransactions');
     const totalTransactionValueElem = document.getElementById('totalTransactionValue');
+    const availableCashElem = document.getElementById('availableCashBalance');
 
     if (totalTransactionsElem) totalTransactionsElem.textContent = p.transactions.length;
     if (totalTransactionValueElem) {
         const total = p.transactions.reduce((sum, t) => sum + t.amount, 0);
-        totalTransactionValueElem.textContent = `$${total.toFixed(2)}`;
+        totalTransactionValueElem.textContent = `$${total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    if (availableCashElem) {
+        availableCashElem.textContent = `$${Number(p.cashBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 }
 
 function initTransactionsPage() {
     if (!document.getElementById('transactionForm')) return;
 
+    // Check if query param ?asset= is passed (e.g. from Trade button in holdings)
+    const params = new URLSearchParams(window.location.search);
+    const assetParam = params.get('asset');
+    const assetInput = document.getElementById('assetName');
+    if (assetParam && assetInput) {
+        assetInput.value = assetParam;
+    }
+
     const dateInput = document.getElementById('date');
-    if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+    if (dateInput && !dateInput.value) dateInput.value = new Date().toISOString().split('T')[0];
+
+    // Real-time auto-calculation of amount from price * quantity
+    const priceInput = document.getElementById('price');
+    const qtyInput = document.getElementById('quantity');
+    const amountInput = document.getElementById('amount');
+    const typeSelect = document.getElementById('transactionType');
+
+    if (priceInput && qtyInput && amountInput) {
+        const calculateAmount = () => {
+            const p = parseFloat(priceInput.value);
+            const q = parseFloat(qtyInput.value);
+            if (!isNaN(p) && !isNaN(q) && p > 0 && q > 0) {
+                amountInput.value = (p * q).toFixed(2);
+            }
+        };
+
+        priceInput.addEventListener('input', calculateAmount);
+        qtyInput.addEventListener('input', calculateAmount);
+
+        // If amount changes and price is filled, auto-calculate quantity
+        amountInput.addEventListener('input', () => {
+            const a = parseFloat(amountInput.value);
+            const p = parseFloat(priceInput.value);
+            if (!isNaN(a) && !isNaN(p) && a > 0 && p > 0 && !qtyInput.matches(':focus')) {
+                qtyInput.value = (a / p).toFixed(4);
+            }
+        });
+    }
+
+    if (typeSelect && assetInput) {
+        typeSelect.addEventListener('change', () => {
+            const val = typeSelect.value;
+            if (val === 'deposit' || val === 'withdrawal') {
+                if (!assetInput.value) assetInput.value = 'USD CASH';
+            }
+        });
+    }
 
     updateTransactionStats();
     updateTransactionList();
