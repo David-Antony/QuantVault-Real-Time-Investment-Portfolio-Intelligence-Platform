@@ -115,7 +115,7 @@ class PageGuard {
       // Landing pages that are completely public, but show different UI if logged in
       const landingPages = ['index.html', ''];
 
-      // If on a auth page and already logged in → go to portfolio dashboard
+      // If on an auth page and already logged in → go to portfolio dashboard
       if (authPages.includes(currentPage)) {
         if (AuthApi.isLoggedIn()) {
           window.location.href = 'portfolio.html';
@@ -137,32 +137,80 @@ class PageGuard {
         return;
       }
 
-      // Logged in — populate any shared UI elements
-      if (AuthApi.isLoggedIn()) {
-        PageGuard.updateUIForLoggedInUser();
+      // Logged in — populate shared UI elements
+      PageGuard.updateUIForLoggedInUser();
+
+      // Background fetch latest profile from DB to ensure complete persistence
+      if (typeof apiClient !== 'undefined') {
+        apiClient.get('/profile')
+          .then((res) => {
+            if (res.data && res.data.data) {
+              const current = AuthApi.getCurrentUser() || {};
+              const fresh = { ...current, ...res.data.data };
+              localStorage.setItem('user', JSON.stringify(fresh));
+              PageGuard.renderUserElements(fresh);
+            }
+          })
+          .catch(() => {});
       }
     });
   }
 
-  static updateUIForLoggedInUser() {
-    const user = AuthManager.getCurrentUser();
+  static renderUserElements(user) {
     if (!user) return;
 
+    // Sidebar usernames
+    const sidebarUsernames = document.querySelectorAll('#sidebarUsername, .sidebar-username');
+    sidebarUsernames.forEach((el) => {
+      el.textContent = user.username || 'User';
+    });
+
+    // Profile page fields
+    const profileNameInput = document.getElementById('profileNameInput');
     const profileNameValue = document.getElementById('profileNameValue');
     const profileEmailValue = document.getElementById('profileEmailValue');
-    if (profileNameValue) profileNameValue.textContent = user.username;
-    if (profileEmailValue) profileEmailValue.textContent = user.email;
+    const profileCreatedValue = document.getElementById('profileCreatedValue');
+    const profileLastLoginValue = document.getElementById('profileLastLoginValue');
 
+    if (profileNameInput && !profileNameInput.value) profileNameInput.value = user.username || '';
+    if (profileNameValue) profileNameValue.textContent = user.username || '';
+    if (profileEmailValue) profileEmailValue.textContent = user.email || '';
+    if (profileCreatedValue && user.createdAt) profileCreatedValue.textContent = new Date(user.createdAt).toLocaleDateString();
+    if (profileLastLoginValue && user.lastLogin) profileLastLoginValue.textContent = new Date(user.lastLogin).toLocaleString();
+
+    // Avatars
+    const avatarUrl = user.avatarPreset && user.avatarPreset.startsWith('face-')
+      ? `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(user.avatarPreset + '-' + user.username)}`
+      : `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(user.username || 'Investor')}`;
+
+    const sidebarAvatars = document.querySelectorAll('#sidebarAvatar, .sidebar-avatar');
+    sidebarAvatars.forEach((img) => {
+      img.src = avatarUrl;
+    });
+
+    const previewAvatar = document.getElementById('profileAvatarPreview');
+    if (previewAvatar && !previewAvatar.dataset.customPicked) {
+      previewAvatar.src = avatarUrl;
+    }
+
+    // Hero title
     const welcomeMsg = document.querySelector('.hero h1');
     if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${user.username}!`;
-    
-    // Update navbar CTA on landing page to show Dashboard/Logout instead of Login/Signup
+
+    // Landing page nav CTA
     const navCtaGroup = document.querySelector('.nav-cta-group');
     if (navCtaGroup) {
       navCtaGroup.innerHTML = `
         <a href="portfolio.html" class="btn-secondary" style="border-radius: 10px; padding: 8px 18px; font-size: 0.875rem;">Dashboard</a>
         <button onclick="logout()" class="btn" style="border-radius: 10px; padding: 8px 18px; font-size: 0.875rem; border: none; cursor: pointer; color: white;">Logout</button>
       `;
+    }
+  }
+
+  static updateUIForLoggedInUser() {
+    const user = AuthManager.getCurrentUser();
+    if (user) {
+      PageGuard.renderUserElements(user);
     }
   }
 }
