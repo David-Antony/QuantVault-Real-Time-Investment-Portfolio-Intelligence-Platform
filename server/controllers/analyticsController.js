@@ -92,7 +92,7 @@ const getAnalytics = async (req, res, next) => {
       data: {
         totalValue: Math.round(totalValue * 100) / 100,
         totalInvested: Math.round(totalInvested * 100) / 100,
-        totalGainLoss: Math.round((totalValue - totalInvested - cashBalance + cashBalance - totalInvested) * 100) / 100,
+        totalGainLoss: Math.round((totalAssetValue - totalInvested) * 100) / 100,
         overallReturn: totalInvested > 0
           ? Math.round(((totalAssetValue - totalInvested) / totalInvested) * 10000) / 100
           : 0,
