@@ -87,6 +87,15 @@
                 <p>Enter your credentials to access your dashboard.</p>
             </div>
 
+            <!-- Quick Demo Credentials Box -->
+            <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 10px; padding: 12px 14px; margin: 16px 0; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div>
+                    <strong style="color: #60a5fa; display: flex; align-items: center; gap: 5px; font-size: 0.85rem; margin-bottom: 2px;">⚡ Demo Account Ready</strong>
+                    <span style="color: #94a3b8; font-size: 0.8rem;">demo@quantvault.com &bull; Password123!</span>
+                </div>
+                <button type="button" id="fillDemoBtn" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #93c5fd; font-weight: 500;">Fill</button>
+            </div>
+
             <div id="errorMessage" class="error-message"></div>
             <div id="successMessage" class="success-message"></div>
 
@@ -107,7 +116,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn w-full">
+                    <button type="submit" id="loginSubmitBtn" class="btn w-full">
                         Sign In to QuantVault
                     </button>
                 </div>
@@ -142,9 +151,16 @@
             var credentialsFields = document.getElementById('credentialsFields');
             var twoFactorFields = document.getElementById('twoFactorFields');
             var verify2faBtn = document.getElementById('verify2faBtn');
+            var loginSubmitBtn = document.getElementById('loginSubmitBtn');
+            var fillDemoBtn = document.getElementById('fillDemoBtn');
             var activeUserId = null;
 
-            // Check auth state on load
+            if (fillDemoBtn) {
+                fillDemoBtn.addEventListener('click', function() {
+                    document.getElementById('email').value = 'demo@quantvault.com';
+                    document.getElementById('password').value = 'Password123!';
+                });
+            }
 
             function showError(message) {
                 errorMessage.textContent = message;
@@ -172,6 +188,9 @@
                     return;
                 }
 
+                loginSubmitBtn.disabled = true;
+                loginSubmitBtn.textContent = 'Signing In...';
+
                 try {
                     var result = await AuthManager.login(email, password);
                     if (result.success) {
@@ -181,16 +200,19 @@
                             twoFactorFields.style.display = 'block';
                             showSuccess('Two-factor authentication required. Please enter the code from your authenticator app.');
                         } else {
-                            showSuccess('Login successful! Redirecting...');
+                            showSuccess('Login successful! Redirecting to dashboard...');
                             setTimeout(function() {
-                                window.location.href = 'index.html';
-                            }, 800);
+                                window.location.href = 'portfolio.html';
+                            }, 600);
                         }
                     } else {
                         showError(result.message || 'Login failed');
                     }
                 } catch (err) {
                     showError('Connection error. Please try again.');
+                } finally {
+                    loginSubmitBtn.disabled = false;
+                    loginSubmitBtn.textContent = 'Sign In to QuantVault';
                 }
             });
 
@@ -202,18 +224,24 @@
                 }
 
                 errorMessage.style.display = 'none';
+                verify2faBtn.disabled = true;
+                verify2faBtn.textContent = 'Verifying...';
+
                 try {
                     var result = await AuthManager.verify2FA(activeUserId, token);
                     if (result.success) {
                         showSuccess('Verification successful! Redirecting...');
                         setTimeout(function() {
-                            window.location.href = 'index.html';
-                        }, 800);
+                            window.location.href = 'portfolio.html';
+                        }, 600);
                     } else {
                         showError(result.message || 'Verification failed');
                     }
                 } catch (err) {
                     showError('Verification failed. Please try again.');
+                } finally {
+                    verify2faBtn.disabled = false;
+                    verify2faBtn.textContent = 'Verify & Sign In';
                 }
             });
 
