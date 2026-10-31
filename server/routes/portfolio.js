@@ -19,8 +19,9 @@ const transactionValidation = [
     .notEmpty()
     .withMessage('Asset name is required'),
   body('type')
-    .isIn(['buy', 'sell', 'dividend', 'interest'])
-    .withMessage('Type must be buy, sell, dividend, or interest'),
+    .customSanitizer((value) => (typeof value === 'string' ? value.toLowerCase() : value))
+    .isIn(['buy', 'sell', 'dividend', 'interest', 'deposit', 'withdrawal'])
+    .withMessage('Type must be buy, sell, dividend, interest, deposit, or withdrawal'),
   body('amount')
     .isFloat({ min: 0.01 })
     .withMessage('Amount must be a positive number'),
