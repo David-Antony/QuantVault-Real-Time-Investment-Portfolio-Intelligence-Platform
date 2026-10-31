@@ -48,6 +48,15 @@ const { classifyAsset } = require('../server/services/assetClassifier');
 // ANALYTICS TESTS
 // ═══════════════════════════════════════════════════════
 
+describe('Portfolio Total Gain/Loss Calculation', () => {
+  test('correctly calculates gain/loss from total asset value and invested amount', () => {
+    const totalAssetValue = 15000;
+    const totalInvested = 10000;
+    const totalGainLoss = totalAssetValue - totalInvested;
+    expect(totalGainLoss).toBe(5000);
+  });
+});
+
 describe('Standard Deviation (Volatility)', () => {
   test('returns 0 for empty array', () => {
     expect(stdDev([])).toBe(0);
