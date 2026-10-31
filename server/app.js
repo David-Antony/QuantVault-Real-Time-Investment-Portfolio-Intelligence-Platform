@@ -83,9 +83,6 @@ app.use('/api/reports', apiLimiter, reportsRoutes);
 app.use('/api/market', apiLimiter, marketRoutes);
 app.use('/api/admin', apiLimiter, adminRoutes);
 
-// Global Health Check
-app.get('/api/health', (req, res) => res.json({ status: 'OK', timestamp: new Date() }));
-
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ success: false, message: 'API endpoint not found' });
@@ -112,9 +109,9 @@ app.get('*', (req, res) => {
     return res.sendFile(path.join(__dirname, '..', 'public', requestedPage));
   }
 
-  // Root '/' -> redirect to login
+  // Root '/' -> serve index.html (auth.js handles redirect to login.html if not logged in)
   if (requestedPage === '') {
-      return res.redirect('/login.html');
+    return res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
   }
 
   // Any other unknown path -> 404
