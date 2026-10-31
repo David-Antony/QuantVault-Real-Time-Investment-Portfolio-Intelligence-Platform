@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let pulses = []; // {path: [vId1, vId2...], progress: 0, speed: 0.05, color: '#38BDF8', alpha: 1}
     
     // Styling colors
-    let gridColor = 'rgba(255, 255, 255, 0.08)';
-    let neonColors = ['#38BDF8', '#818CF8', '#10B981']; // Cyan, Purple, Emerald
+    let gridColor = 'rgba(255, 255, 255, 0.04)';
+    let neonColors = ['#6366F1', '#8B5CF6', '#10B981']; // Indigo, Violet, Emerald
     
     function resize() {
         width = canvas.width = window.innerWidth;
