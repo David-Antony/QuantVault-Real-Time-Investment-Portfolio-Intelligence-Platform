@@ -127,7 +127,7 @@
                 </div>
 
                 </div>
-                <button type="submit" class="btn w-full">
+                <button type="submit" id="signupSubmitBtn" class="btn w-full">
                     Create My Account
                 </button>
             </form>
@@ -147,9 +147,7 @@
             var signupForm = document.getElementById('signupForm');
             var errorMessage = document.getElementById('errorMessage');
             var successMessage = document.getElementById('successMessage');
-
-            // Ensure user state is properly handled for authentication flow
-            // Initialize auth context
+            var signupSubmitBtn = document.getElementById('signupSubmitBtn');
 
             function showError(message) {
                 errorMessage.textContent = message;
@@ -189,18 +187,28 @@
                     return;
                 }
 
+                if (signupSubmitBtn) {
+                    signupSubmitBtn.disabled = true;
+                    signupSubmitBtn.textContent = 'Creating Account...';
+                }
+
                 try {
                     var result = await AuthManager.register(username, email, password);
                     if (result.success) {
-                        showSuccess('Account created! Redirecting...');
+                        showSuccess('Account created! Redirecting to dashboard...');
                         setTimeout(function() {
-                            window.location.href = 'index.html';
-                        }, 800);
+                            window.location.href = 'portfolio.html';
+                        }, 600);
                     } else {
                         showError(result.message || 'Registration failed');
                     }
                 } catch (err) {
                     showError('Connection error. Please try again.');
+                } finally {
+                    if (signupSubmitBtn) {
+                        signupSubmitBtn.disabled = false;
+                        signupSubmitBtn.textContent = 'Create My Account';
+                    }
                 }
             });
 
