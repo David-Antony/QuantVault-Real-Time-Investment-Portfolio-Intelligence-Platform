@@ -37,7 +37,14 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Do NOT attempt token refresh for authentication endpoints (login, register, refresh, verify-2fa)
+    const requestUrl = originalRequest?.url || '';
+    const isAuthEndpoint = requestUrl.includes('/auth/login') ||
+                           requestUrl.includes('/auth/register') ||
+                           requestUrl.includes('/auth/refresh') ||
+                           requestUrl.includes('/auth/verify-2fa');
+
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -53,8 +60,12 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const response = await apiClient.post('/auth/refresh');
-        const newAccessToken = response.data.data.accessToken;
+        // Use raw axios to prevent re-entering apiClient interceptors
+        const response = await axios.post('/api/auth/refresh', {}, { withCredentials: true });
+        const newAccessToken = response.data?.data?.accessToken;
+        if (!newAccessToken) {
+          throw new Error('No access token received from refresh');
+        }
         localStorage.setItem('accessToken', newAccessToken);
 
         processQueue(null, newAccessToken);
