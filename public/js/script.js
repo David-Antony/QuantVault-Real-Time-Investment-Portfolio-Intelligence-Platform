@@ -739,7 +739,7 @@ function initProfilePage() {
             if (heroTitle) heroTitle.textContent = `Welcome back, ${updatedName}!`;
 
             if (window.PageGuard) {
-                PageGuard.renderUserElements({ ...user, username: updatedName, avatarPreset: presetId });
+                window.PageGuard.renderUserElements({ ...user, username: updatedName, avatarPreset: presetId });
             }
         } catch (err) {
             showNotification('Failed to update profile', 'error');
