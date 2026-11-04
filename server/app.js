@@ -4,19 +4,9 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 
-const authRoutes = require('./routes/auth');
-const portfolioRoutes = require('./routes/portfolio');
-const profileRoutes = require('./routes/profile');
-const alertRoutes = require('./routes/alerts');
-const auditRoutes = require('./routes/audit');
-const watchlistRoutes = require('./routes/watchlist');
-const twoFactorRoutes = require('./routes/twoFactor');
-const reportsRoutes = require('./routes/reports');
-const marketRoutes = require('./routes/market');
-const adminRoutes = require('./routes/admin');
+const apiRoutes = require('./routes/api');
 const errorHandler = require('./middleware/errorHandler');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
@@ -47,41 +37,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customSiteTitle: "QuantVault API Documentation"
 }));
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  message: { success: false, message: 'Too many auth attempts, please try again later' },
-  standardHeaders: true,
-  legacyHeaders: false
-});
-
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 200,
-  message: { success: false, message: 'Too many requests, please try again later' },
-  standardHeaders: true,
-  legacyHeaders: false
-});
-
-app.get('/api/health', (req, res) => {
-  res.json({
-    success: true,
-    message: 'QuantVault API is running',
-    version: '2.1.0',
-    timestamp: new Date().toISOString()
-  });
-});
-
-app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/portfolio', apiLimiter, portfolioRoutes);
-app.use('/api/profile', apiLimiter, profileRoutes);
-app.use('/api/alerts', apiLimiter, alertRoutes);
-app.use('/api/audit', apiLimiter, auditRoutes);
-app.use('/api/watchlist', apiLimiter, watchlistRoutes);
-app.use('/api/auth/2fa', apiLimiter, twoFactorRoutes);
-app.use('/api/reports', apiLimiter, reportsRoutes);
-app.use('/api/market', apiLimiter, marketRoutes);
-app.use('/api/admin', apiLimiter, adminRoutes);
+// Consolidated API routes
+app.use('/api', apiRoutes);
 
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
