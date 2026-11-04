@@ -14,7 +14,9 @@
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
     "test": "jest --forceExit --detectOpenHandles",
+    "test:coverage": "jest --coverage --forceExit --detectOpenHandles",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "clean": "rm -rf dist build",
     "format": "prettier --write .",
     "db:seed": "node prisma/seed.js"
