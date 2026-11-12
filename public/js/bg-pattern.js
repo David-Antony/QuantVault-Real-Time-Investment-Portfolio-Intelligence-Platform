@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let pulses = []; // {path: [vId1, vId2...], progress: 0, speed: 0.05, color: '#38BDF8', alpha: 1}
     
     // Styling colors
-    let gridColor = 'rgba(255, 255, 255, 0.04)';
-    let neonColors = ['#6366F1', '#8B5CF6', '#10B981']; // Indigo, Violet, Emerald
+    let gridColor = 'rgba(56, 189, 248, 0.09)';
+    let neonColors = ['#38BDF8', '#818CF8', '#34D399', '#A78BFA', '#FBBF24', '#FB7185']; // Vibrant neon palette
     
     function resize() {
         width = canvas.width = window.innerWidth;
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Detect theme to adjust grid color
         const isLightMode = document.documentElement.getAttribute('data-theme') === 'light';
-        gridColor = isLightMode ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.08)';
+        gridColor = isLightMode ? 'rgba(0, 0, 0, 0.12)' : 'rgba(56, 189, 248, 0.095)';
         
         buildGrid();
     }
@@ -209,17 +209,17 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             
             // Render Neon Glow
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = 18;
             ctx.shadowColor = p.color;
             ctx.strokeStyle = p.color;
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 2.4;
             ctx.globalAlpha = p.alpha;
             ctx.stroke();
             
             // Render bright core
             ctx.shadowBlur = 0;
             ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 1.2;
             ctx.stroke();
             
             ctx.globalAlpha = 1;
@@ -237,11 +237,8 @@ document.addEventListener("DOMContentLoaded", () => {
     resize();
     draw();
     
-    // Spawn pulses randomly
+    // Spawn pulses regularly for continuous flowing effect
     setInterval(() => {
-        // Spawn 1-3 pulses at random times
-        if (Math.random() > 0.3) {
-            spawnPulse();
-        }
-    }, 800);
+        spawnPulse();
+    }, 550);
 });
