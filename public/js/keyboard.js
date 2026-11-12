@@ -98,21 +98,23 @@
     overlay.style.cssText = `
       display: none; position: fixed; inset: 0; z-index: 9999;
       align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+      background: rgba(4, 7, 16, 0.55); backdrop-filter: blur(8px);
       opacity: 0; transition: opacity 250ms ease;
     `;
     overlay.innerHTML = `
       <div style="
-        background: hsl(222,42%,9%); border: 1px solid rgba(56,189,248,0.2);
-        border-radius: 16px; padding: 32px 40px; max-width: 420px; width: 90%;
-        box-shadow: 0 24px 64px rgba(0,0,0,0.7);
+        background: rgba(12, 17, 34, 0.65); backdrop-filter: blur(10px) saturate(140%);
+        -webkit-backdrop-filter: blur(10px) saturate(140%);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 20px; padding: 32px 36px; max-width: 440px; width: 90%;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 30px rgba(56,189,248,0.2), inset 0 1px 0 rgba(255,255,255,0.18);
       ">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-          <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;color:#F1F5F9;margin:0">
+          <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;color:#FFFFFF;margin:0;text-shadow:0 0 12px rgba(56,189,248,0.35)">
             ⌨️ Keyboard Shortcuts
           </h2>
           <button id="qv-kb-close" style="
-            background:none;border:none;color:#94A3B8;cursor:pointer;
+            background:none;border:none;color:#CBD5E1;cursor:pointer;
             font-size:1.25rem;padding:4px;
           ">✕</button>
         </div>
@@ -127,17 +129,17 @@
             ['?', 'Show this shortcuts panel'],
             ['Esc', 'Close this panel']
           ].map(([kb, desc]) => `
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
-              <span style="color:#94A3B8;font-size:0.875rem;font-family:'Inter',sans-serif">${desc}</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08)">
+              <span style="color:#E2E8F0;font-size:0.875rem;font-family:'Inter',sans-serif">${desc}</span>
               <span style="
-                font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#38BDF8;
-                background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);
-                padding:3px 8px;border-radius:6px;white-space:nowrap
+                font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:#38BDF8;font-weight:600;
+                background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);
+                padding:4px 10px;border-radius:6px;white-space:nowrap;box-shadow:0 0 10px rgba(56,189,248,0.15)
               ">${kb}</span>
             </div>
           `).join('')}
         </div>
-        <p style="margin-top:16px;color:#64748B;font-size:0.75rem;text-align:center">
+        <p style="margin-top:16px;color:#94A3B8;font-size:0.75rem;text-align:center">
           Press <strong style="color:#38BDF8">G</strong> then the letter to navigate instantly
         </p>
       </div>
