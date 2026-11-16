@@ -11,7 +11,7 @@ const STATIC_ASSETS = [
   '/js/api/apiClient.js',
   '/js/api/authApi.js',
   '/js/auth.js',
-  '/images/futuristic_fintech_bg.png',
+  '/assets/images/futuristic_fintech_bg.png',
   '/manifest.json'
 ];
 
@@ -63,8 +63,8 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: data.body || 'A price alert was triggered.',
-    icon: '/images/futuristic_fintech_bg.png',
-    badge: '/images/futuristic_fintech_bg.png',
+    icon: '/assets/images/futuristic_fintech_bg.png',
+    badge: '/assets/images/futuristic_fintech_bg.png',
     tag: data.tag || 'qv-alert',
     data: { url: data.url || '/alerts.html' },
     actions: [
