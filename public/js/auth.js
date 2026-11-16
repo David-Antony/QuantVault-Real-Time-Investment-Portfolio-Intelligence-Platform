@@ -118,7 +118,7 @@ class PageGuard {
       // If on an auth page and already logged in → go to portfolio dashboard
       if (authPages.includes(currentPage)) {
         if (AuthApi.isLoggedIn()) {
-          window.location.href = 'portfolio.html';
+          window.location.href = '/portfolio.html';
         }
         return; 
       }
@@ -133,7 +133,7 @@ class PageGuard {
 
       // Every other page requires authentication.
       if (!AuthApi.isLoggedIn()) {
-        window.location.href = 'login.html';
+        window.location.href = '/login.html';
         return;
       }
 
