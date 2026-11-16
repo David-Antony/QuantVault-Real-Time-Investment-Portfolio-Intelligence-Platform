@@ -419,7 +419,7 @@ function updateHoldingsTable() {
                 <div class="empty-state-icon" style="font-size: 2rem; margin-bottom: 0.5rem;">💼</div>
                 <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem;">No Active Holdings</h3>
                 <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">You currently don't own any assets. Add your first transaction to build your portfolio.</p>
-                <a href="transactions.html" class="btn btn-primary" style="display: inline-block; padding: 8px 18px; font-size: 0.85rem;">+ Add Buy Transaction</a>
+                <a href="/transactions.html" class="btn btn-primary" style="display: inline-block; padding: 8px 18px; font-size: 0.85rem;">+ Add Buy Transaction</a>
             </div>
         `;
         return;
@@ -481,7 +481,7 @@ function updateHoldingsTable() {
 }
 
 window.tradeAsset = function(symbol) {
-    window.location.href = `transactions.html?asset=${encodeURIComponent(symbol)}`;
+    window.location.href = `/transactions.html?asset=${encodeURIComponent(symbol)}`;
 };
 
 function updateReportsPage() {
@@ -614,7 +614,7 @@ function updateTransactionHistory() {
     if (!container) return;
     const p = PortfolioDataStore.getPortfolio();
     if (!p || p.transactions.length === 0) {
-        container.innerHTML = '<div class="no-transactions"><p>No transactions yet</p><button onclick="window.location.href=\'transactions.html\'" class="btn btn-primary" style="margin-top: 16px;">Add Transaction</button></div>';
+        container.innerHTML = '<div class="no-transactions"><p>No transactions yet</p><button onclick="window.location.href=\'/transactions.html\'" class="btn btn-primary" style="margin-top: 16px;">Add Transaction</button></div>';
         return;
     }
 
