@@ -45,6 +45,11 @@ app.get('*', (req, res) => {
     return res.status(404).json({ success: false, message: 'API endpoint not found' });
   }
 
+  // Serve manifest if requested from root
+  if (req.path === '/manifest.json') {
+    return res.sendFile(path.join(__dirname, '..', 'public', 'assets', 'manifest.json'));
+  }
+
   // Pages that do NOT require authentication (public)
   const publicPages = ['login.html', 'signup.html'];
 
@@ -54,25 +59,33 @@ app.get('*', (req, res) => {
     'reports.html', 'profile.html', 'alerts.html', 'watchlist.html', 'admin.html'
   ];
 
-  const requestedPage = req.path.replace(/^\//, '');
+  let requestedPage = req.path.replace(/^\//, '');
+  if (requestedPage.startsWith('pages/')) {
+    requestedPage = requestedPage.replace(/^pages\//, '');
+  }
+
+  // Support both page.html and extensionless page requests
+  const pageWithExt = requestedPage.endsWith('.html') ? requestedPage : `${requestedPage}.html`;
 
   // Serve public pages directly
-  if (publicPages.includes(requestedPage)) {
-    return res.sendFile(path.join(__dirname, '..', 'public', requestedPage));
+  if (publicPages.includes(requestedPage) || publicPages.includes(pageWithExt)) {
+    const targetFile = publicPages.includes(requestedPage) ? requestedPage : pageWithExt;
+    return res.sendFile(path.join(__dirname, '..', 'public', 'pages', targetFile));
   }
 
   // Serve protected pages (client-side auth guard in auth.js will redirect if not logged in)
-  if (protectedPages.includes(requestedPage)) {
-    return res.sendFile(path.join(__dirname, '..', 'public', requestedPage));
+  if (protectedPages.includes(requestedPage) || protectedPages.includes(pageWithExt)) {
+    const targetFile = protectedPages.includes(requestedPage) ? requestedPage : pageWithExt;
+    return res.sendFile(path.join(__dirname, '..', 'public', 'pages', targetFile));
   }
 
   // Root '/' -> serve index.html (auth.js handles redirect to login.html if not logged in)
   if (requestedPage === '') {
-    return res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+    return res.sendFile(path.join(__dirname, '..', 'public', 'pages', 'index.html'));
   }
 
   // Any other unknown path -> 404
-  res.status(404).sendFile(path.join(__dirname, '..', 'public', '404.html'));
+  res.status(404).sendFile(path.join(__dirname, '..', 'public', 'pages', '404.html'));
 });
 
 app.use(errorHandler);
