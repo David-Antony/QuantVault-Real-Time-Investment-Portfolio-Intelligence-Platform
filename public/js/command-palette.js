@@ -14,14 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Available commands/routes
     const commands = [
-        { id: 'home', icon: '🏠', title: 'Go to Home', subtitle: 'Navigate to the dashboard landing', action: () => window.location.href = 'index.html' },
-        { id: 'portfolio', icon: '💼', title: 'Go to Portfolio', subtitle: 'View real-time portfolio metrics', action: () => window.location.href = 'portfolio.html' },
-        { id: 'transactions', icon: '💰', title: 'Go to Transactions', subtitle: 'View ledger & add trades', action: () => window.location.href = 'transactions.html' },
-        { id: 'reports', icon: '📈', title: 'Go to Reports', subtitle: 'View analytics & AI insights', action: () => window.location.href = 'reports.html' },
-        { id: 'watchlist', icon: '👁️', title: 'Go to Watchlist', subtitle: 'Track market assets', action: () => window.location.href = 'watchlist.html' },
-        { id: 'alerts', icon: '🔔', title: 'Go to Alerts', subtitle: 'Manage price thresholds', action: () => window.location.href = 'alerts.html' },
-        { id: 'profile', icon: '👤', title: 'Go to Profile', subtitle: 'Manage settings & 2FA', action: () => window.location.href = 'profile.html' },
-        { id: 'add-transaction', icon: '➕', title: 'Add Transaction', subtitle: 'Record a new trade', action: () => window.location.href = 'transactions.html?action=add' },
+        { id: 'home', icon: '🏠', title: 'Go to Home', subtitle: 'Navigate to the dashboard landing', action: () => window.location.href = '/index.html' },
+        { id: 'portfolio', icon: '💼', title: 'Go to Portfolio', subtitle: 'View real-time portfolio metrics', action: () => window.location.href = '/portfolio.html' },
+        { id: 'transactions', icon: '💰', title: 'Go to Transactions', subtitle: 'View ledger & add trades', action: () => window.location.href = '/transactions.html' },
+        { id: 'reports', icon: '📈', title: 'Go to Reports', subtitle: 'View analytics & AI insights', action: () => window.location.href = '/reports.html' },
+        { id: 'watchlist', icon: '👁️', title: 'Go to Watchlist', subtitle: 'Track market assets', action: () => window.location.href = '/watchlist.html' },
+        { id: 'alerts', icon: '🔔', title: 'Go to Alerts', subtitle: 'Manage price thresholds', action: () => window.location.href = '/alerts.html' },
+        { id: 'profile', icon: '👤', title: 'Go to Profile', subtitle: 'Manage settings & 2FA', action: () => window.location.href = '/profile.html' },
+        { id: 'add-transaction', icon: '➕', title: 'Add Transaction', subtitle: 'Record a new trade', action: () => window.location.href = '/transactions.html?action=add' },
         { id: 'theme-toggle', icon: '🌓', title: 'Toggle Theme', subtitle: 'Switch between light and dark mode', action: () => {
             const btn = document.querySelector('.theme-toggle-btn');
             if (btn) btn.click();
