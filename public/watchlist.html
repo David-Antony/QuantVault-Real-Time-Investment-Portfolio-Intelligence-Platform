@@ -1,86 +1,97 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#38BDF8" />
   <meta name="description" content="Track your favorite assets and setup price alerts to stay ahead of the market.">
   <meta property="og:title" content="QuantVault — Watchlist">
-  <meta property="og:description" content="Track your favorite assets and setup price alerts to stay ahead of the market.">
+  <meta property="og:description"
+    content="Track your favorite assets and setup price alerts to stay ahead of the market.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <title>QuantVault — Watchlist</title>
   <link rel="manifest" href="/manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
-<body>
-    <canvas id="bgCanvas"></canvas>
 
-    <!-- Global Command Palette -->
-    <div class="cmd-backdrop" id="cmdBackdrop"></div>
-    <div class="cmd-palette" id="commandPalette">
-        <div class="cmd-header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" class="cmd-input" id="cmdInput" placeholder="Search commands, pages, and actions..." autocomplete="off">
-        </div>
-        <div class="cmd-body" id="cmdResults">
-            <!-- Results populated by JS -->
-        </div>
+<body>
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- Global Command Palette -->
+  <div class="cmd-backdrop" id="cmdBackdrop"></div>
+  <div class="cmd-palette" id="commandPalette">
+    <div class="cmd-header">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" class="cmd-input" id="cmdInput" placeholder="Search commands, pages, and actions..."
+        autocomplete="off">
     </div>
+    <div class="cmd-body" id="cmdResults">
+      <!-- Results populated by JS -->
+    </div>
+  </div>
 
   <div class="app-shell">
     <!-- ── SIDEBAR ── -->
     <aside class="sidebar" id="appSidebar">
-    <div class="sidebar-logo">
+      <div class="sidebar-logo">
         <div class="sidebar-logo-mark">QV</div>
         <span class="sidebar-logo-text">QuantVault</span>
-    </div>
+      </div>
 
-    <nav class="sidebar-nav" aria-label="Main navigation">
+      <nav class="sidebar-nav" aria-label="Main navigation">
         <span class="sidebar-section-label">Platform</span>
         <a href="index.html" class="nav-item">
-            <span class="nav-icon">🏠</span> Home
+          <span class="nav-icon">🏠</span> Home
         </a>
         <a href="portfolio.html" class="nav-item">
-            <span class="nav-icon">💼</span> Portfolio
+          <span class="nav-icon">💼</span> Portfolio
         </a>
         <a href="transactions.html" class="nav-item">
-            <span class="nav-icon">💰</span> Transactions
+          <span class="nav-icon">💰</span> Transactions
         </a>
         <a href="reports.html" class="nav-item">
-            <span class="nav-icon">📈</span> Reports
+          <span class="nav-icon">📈</span> Reports
         </a>
         <a href="watchlist.html" class="nav-item active">
-            <span class="nav-icon">👁️</span> Watchlist
+          <span class="nav-icon">👁️</span> Watchlist
         </a>
         <a href="alerts.html" class="nav-item">
-            <span class="nav-icon">🔔</span> Alerts
+          <span class="nav-icon">🔔</span> Alerts
         </a>
 
         <div class="sidebar-divider"></div>
 
         <span class="sidebar-section-label">Account</span>
         <a href="profile.html" class="nav-item">
-            <span class="nav-icon">👤</span> Profile
+          <span class="nav-icon">👤</span> Profile
         </a>
         <a href="#" class="nav-item" onclick="logout(); return false;">
-            <span class="nav-icon">🚪</span> Logout
+          <span class="nav-icon">🚪</span> Logout
         </a>
-    </nav>
+      </nav>
 
-    <div class="sidebar-footer">
+      <div class="sidebar-footer">
         <div class="sidebar-user">
-            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Nova" alt="Avatar" class="sidebar-avatar" id="sidebarAvatar">
-            <div class="sidebar-user-info">
-                <div class="sidebar-username" id="sidebarUsername">Loading...</div>
-                <div class="sidebar-user-role">Investor</div>
-            </div>
+          <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Nova" alt="Avatar" class="sidebar-avatar"
+            id="sidebarAvatar">
+          <div class="sidebar-user-info">
+            <div class="sidebar-username" id="sidebarUsername">Loading...</div>
+            <div class="sidebar-user-role">Investor</div>
+          </div>
         </div>
-    </div>
-</aside>
+      </div>
+    </aside>
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <!-- ── MAIN AREA ── -->
@@ -88,14 +99,18 @@
       <header class="topbar">
         <div class="topbar-left">
           <button class="topbar-menu-btn" id="menuBtn" aria-label="Toggle menu">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
           </button>
           <h1 class="page-title">Watchlist</h1>
         </div>
         <div class="topbar-right">
           <div class="live-badge"><span class="live-dot"></span> LIVE</div>
           <button class="theme-toggle-btn btn btn-ghost" aria-label="Toggle theme"></button>
-          
+
         </div>
       </header>
 
@@ -108,20 +123,23 @@
             <div class="form-row" style="grid-template-columns:1fr 1fr 1fr auto;gap:var(--space-4);align-items:end">
               <div class="form-group">
                 <label class="form-label">Symbol <span style="color:var(--rose)">*</span></label>
-              <div class="autocomplete-container">
-                <input type="text" id="wlSymbol" class="form-input" placeholder="e.g. NVDA" maxlength="30" required autocomplete="off" />
-                <div id="wlAutocomplete" class="autocomplete-results"></div>
-              </div>
+                <div class="autocomplete-container">
+                  <input type="text" id="wlSymbol" class="form-input" placeholder="e.g. NVDA" maxlength="30" required
+                    autocomplete="off" />
+                  <div id="wlAutocomplete" class="autocomplete-results"></div>
+                </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Name <span style="color:var(--rose)">*</span></label>
-                <input type="text" id="wlName" class="form-input" placeholder="e.g. NVIDIA Corporation" required autocomplete="off" />
+                <input type="text" id="wlName" class="form-input" placeholder="e.g. NVIDIA Corporation" required
+                  autocomplete="off" />
               </div>
               <div class="form-group">
                 <label class="form-label">Target Price (optional)</label>
                 <input type="number" id="wlTarget" class="form-input" placeholder="e.g. 500.00" step="0.01" min="0" />
               </div>
-              <button type="submit" class="btn btn-primary" id="wlAddBtn" data-tooltip="Track this asset on your watchlist" aria-label="Add asset to watchlist">Add</button>
+              <button type="submit" class="btn btn-primary" id="wlAddBtn"
+                data-tooltip="Track this asset on your watchlist" aria-label="Add asset to watchlist">Add</button>
             </div>
           </form>
         </div>
@@ -153,7 +171,7 @@
   <script>
     // Register service worker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+      navigator.serviceWorker.register('/sw.js').catch(() => { });
     }
 
     // Sidebar toggle
@@ -187,7 +205,7 @@
       input.addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
         const query = e.target.value.trim();
-        
+
         if (query.length < 1) {
           resultsContainer.innerHTML = '';
           resultsContainer.classList.remove('active');
@@ -198,7 +216,7 @@
           try {
             const res = await apiClient.get(`/market/search?q=${encodeURIComponent(query)}`);
             const results = res.data.data || [];
-            
+
             if (results.length === 0) {
               resultsContainer.innerHTML = '<div class="autocomplete-item"><span class="autocomplete-name">No results found</span></div>';
             } else {
@@ -208,7 +226,7 @@
                   <span class="autocomplete-name">${item.name} &middot; ${item.exchange}</span>
                 </div>
               `).join('');
-              
+
               resultsContainer.querySelectorAll('.autocomplete-item').forEach(el => {
                 if (el.hasAttribute('data-symbol')) {
                   el.addEventListener('click', () => {
@@ -266,10 +284,10 @@
                 <span style="font-size:var(--text-xs);color:var(--text-muted)">${item.name}</span>
               </div>
               <div style="display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap">
-                <span class="font-mono" style="font-size:var(--text-base);color:var(--cyan)">$${item.currentPrice.toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+                <span class="font-mono" style="font-size:var(--text-base);color:var(--cyan)">$${item.currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 ${hasTarget ? `
                   <span class="condition-badge ${isAboveTarget ? 'above' : isBelowTarget ? 'below' : 'above'}" style="font-size:var(--text-xs)">
-                    Target: $${item.targetPrice.toLocaleString('en-US', {minimumFractionDigits:2})} ${isAboveTarget ? '▲' : isBelowTarget ? '▼' : '✓'}
+                    Target: $${item.targetPrice.toLocaleString('en-US', { minimumFractionDigits: 2 })} ${isAboveTarget ? '▲' : isBelowTarget ? '▼' : '✓'}
                   </span>` : ''}
                 ${item.notes ? `<span style="font-size:var(--text-xs);color:var(--text-muted)">${item.notes}</span>` : ''}
               </div>
@@ -325,7 +343,8 @@
       setTimeout(() => { el.style.display = 'none'; }, 3500);
     }
   </script>
-    <script src="/js/bg-pattern.js"></script>
-    <script src="/js/command-palette.js"></script>
+  <script src="/js/bg-pattern.js"></script>
+  <script src="/js/command-palette.js"></script>
 </body>
+
 </html>
