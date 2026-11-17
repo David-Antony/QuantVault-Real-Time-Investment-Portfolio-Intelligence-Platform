@@ -331,16 +331,19 @@ function updateTransactionList() {
     recent.forEach((t) => {
         const row = document.createElement('tr');
         const tDate = t.date ? new Date(t.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
+        const formattedAmt = Number(t.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const formattedPrice = t.price ? '$' + Number(t.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A';
+        const formattedQty = t.quantity ? Number(t.quantity).toLocaleString(undefined, { maximumFractionDigits: 4 }) : 'N/A';
         row.innerHTML = `
-            <td>${tDate}</td>
+            <td><span style="white-space: nowrap; font-weight: 500;">${tDate}</span></td>
             <td><strong>${t.assetName}</strong></td>
             <td><span class="transaction-type ${t.type}">${t.type.toUpperCase()}</span></td>
-            <td><strong>$${t.amount.toFixed(2)}</strong></td>
-            <td>${t.price ? '$' + t.price.toFixed(2) : 'N/A'}</td>
-            <td>${t.quantity ? t.quantity.toFixed(4) : 'N/A'}</td>
-            <td class="status ${t.status}">${t.status.charAt(0).toUpperCase() + t.status.slice(1)}</td>
+            <td><strong>$${formattedAmt}</strong></td>
+            <td>${formattedPrice}</td>
+            <td>${formattedQty}</td>
+            <td><span class="badge status-badge ${t.status}">${t.status.charAt(0).toUpperCase() + t.status.slice(1)}</span></td>
             <td>
-                <button type="button" onclick="handleDeleteTx(${t.id})" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; border-radius: 6px; padding: 3px 8px; font-size: 0.75rem; cursor: pointer;" title="Delete transaction">
+                <button type="button" onclick="handleDeleteTx(${t.id})" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; transition: all 150ms ease;" title="Delete transaction">
                     Delete
                 </button>
             </td>
@@ -349,28 +352,6 @@ function updateTransactionList() {
     });
 
     transactionList.appendChild(table);
-
-    if (!document.querySelector('#transaction-styles')) {
-        const style = document.createElement('style');
-        style.id = 'transaction-styles';
-        style.textContent = `
-            .transactions-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: transparent; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 30px rgba(2,6,23,0.25); }
-            .transactions-table th { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #94a3b8; padding: 12px 15px; text-align: left; font-weight: 600; border-bottom: 1px solid var(--border-subtle); }
-            .transactions-table td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
-            .transactions-table tbody tr:hover { background-color: rgba(255,255,255,0.02); }
-            .transaction-type { padding: 3px 8px; border-radius: 12px; font-weight: 600; font-size: 0.75rem; display: inline-block; }
-            .transaction-type.buy { background-color: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
-            .transaction-type.sell { background-color: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-            .transaction-type.deposit { background-color: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
-            .transaction-type.withdrawal { background-color: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
-            .transaction-type.dividend { background-color: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
-            .transaction-type.interest { background-color: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
-            .status.completed { color: #34d399; }
-            .status.pending { color: #fbbf24; }
-            .status.cancelled { color: #f87171; }
-        `;
-        document.head.appendChild(style);
-    }
 }
 
 function updatePortfolioSummary() {
@@ -452,7 +433,9 @@ function updateHoldingsTable() {
         const gainLossPct = totalInvested > 0 ? (gainLoss / totalInvested) * 100 : 0;
         const isPos = gainLoss >= 0;
         const gainLossColor = isPos ? 'var(--emerald-light, #34d399)' : 'var(--rose-light, #f87171)';
-        const sign = isPos ? '+' : '';
+        const gainSign = isPos ? '+' : '-';
+        const gainFormatted = `${gainSign}$${Math.abs(gainLoss).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const gainPctFormatted = `(${gainSign}${Math.abs(gainLossPct).toFixed(2)}%)`;
 
         html += `
             <tr class="transaction-row">
@@ -462,12 +445,12 @@ function updateHoldingsTable() {
                     </div>
                 </td>
                 <td><span class="badge" style="background: rgba(99, 102, 241, 0.12); color: var(--indigo); font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; border: 1px solid rgba(99, 102, 241, 0.25);">${a.type || 'Stock'}</span></td>
-                <td style="font-weight: 600; font-family: var(--font-mono);">${qty.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 4 })}</td>
-                <td style="font-family: var(--font-mono);">$${avgCost.toFixed(2)}</td>
-                <td style="font-family: var(--font-mono);"><strong>$${curPrice.toFixed(2)}</strong></td>
-                <td style="font-family: var(--font-mono);"><strong>$${mktVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
-                <td style="color: ${gainLossColor}; font-weight: 600; font-family: var(--font-mono);">
-                    ${sign}$${gainLoss.toFixed(2)} (${sign}${gainLossPct.toFixed(2)}%)
+                <td style="font-weight: 600; font-family: var(--font-mono); white-space: nowrap;">${qty.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 4 })}</td>
+                <td style="font-family: var(--font-mono); white-space: nowrap;">$${avgCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td style="font-family: var(--font-mono); white-space: nowrap;"><strong>$${curPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+                <td style="font-family: var(--font-mono); white-space: nowrap;"><strong>$${mktVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+                <td style="color: ${gainLossColor}; font-weight: 600; font-family: var(--font-mono); white-space: nowrap;">
+                    ${gainFormatted} ${gainPctFormatted}
                 </td>
                 <td>
                     <button onclick="tradeAsset('${a.name}')" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 12px; cursor: pointer; border-radius: 6px;">Trade</button>
@@ -492,7 +475,7 @@ function updateReportsPage() {
     const reportGrowthElem = document.getElementById('reportGrowth');
     const reportTopAssetElem = document.getElementById('reportTopAsset');
 
-    if (reportTotalValueElem) reportTotalValueElem.textContent = `$${p.totalValue.toFixed(2)}`;
+    if (reportTotalValueElem) reportTotalValueElem.textContent = `$${p.totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     if (reportGrowthElem) {
         const cls = p.totalGainLossPercentage >= 0 ? 'positive' : 'negative';
         reportGrowthElem.innerHTML = `<span class="${cls}">${p.totalGainLossPercentage >= 0 ? '+' : ''}${p.totalGainLossPercentage.toFixed(2)}%</span>`;
@@ -519,7 +502,8 @@ function updateReportsTransactionTable() {
     let html = '';
     sorted.forEach((t) => {
         const tDate = t.date ? new Date(t.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
-        html += `<tr><td>${tDate}</td><td>${t.assetName}</td><td><span class="transaction-type ${t.type}">${t.type.toUpperCase()}</span></td><td>$${t.amount.toFixed(2)}</td><td class="status ${t.status}">${t.status.charAt(0).toUpperCase() + t.status.slice(1)}</td></tr>`;
+        const formattedAmt = Number(t.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        html += `<tr><td><span style="white-space:nowrap;font-weight:500;">${tDate}</span></td><td><strong>${t.assetName}</strong></td><td><span class="transaction-type ${t.type}">${t.type.toUpperCase()}</span></td><td><strong>$${formattedAmt}</strong></td><td><span class="badge status-badge ${t.status}">${t.status.charAt(0).toUpperCase() + t.status.slice(1)}</span></td></tr>`;
     });
     tableBody.innerHTML = html;
 }
@@ -623,7 +607,8 @@ function updateTransactionHistory() {
 
     sorted.forEach((t) => {
         const tDate = t.date ? new Date(t.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A';
-        html += `<tr class="transaction-row"><td>${tDate}</td><td><strong>${t.assetName}</strong></td><td><span class="transaction-type ${t.type}">${t.type.charAt(0).toUpperCase() + t.type.slice(1)}</span></td><td class="amount-cell">$${t.amount.toFixed(2)}</td><td><span class="status-badge ${t.status}">${t.status}</span></td></tr>`;
+        const formattedAmt = Number(t.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        html += `<tr class="transaction-row"><td><span style="white-space:nowrap;font-weight:500;">${tDate}</span></td><td><strong>${t.assetName}</strong></td><td><span class="transaction-type ${t.type}">${t.type.charAt(0).toUpperCase() + t.type.slice(1)}</span></td><td class="amount-cell" style="white-space:nowrap;"><strong>$${formattedAmt}</strong></td><td><span class="status-badge ${t.status}">${t.status}</span></td></tr>`;
     });
 
     html += '</tbody></table>';
