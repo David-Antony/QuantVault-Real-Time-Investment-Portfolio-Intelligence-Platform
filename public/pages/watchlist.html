@@ -120,7 +120,7 @@
         <div class="glass-card mb-6">
           <h2 style="margin-bottom:var(--space-4);font-size:var(--text-xl)">➕ Add to Watchlist</h2>
           <form id="watchlistForm" onsubmit="addToWatchlist(event)">
-            <div class="form-row" style="grid-template-columns:1fr 1fr 1fr auto;gap:var(--space-4);align-items:end">
+            <div class="form-row" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto; gap: var(--space-5); align-items: flex-end;">
               <div class="form-group">
                 <label class="form-label">Symbol <span style="color:var(--rose)">*</span></label>
                 <div class="autocomplete-container">
@@ -135,10 +135,10 @@
                   autocomplete="off" />
               </div>
               <div class="form-group">
-                <label class="form-label">Target Price (optional)</label>
+                <label class="form-label">Target Price <span style="font-size: var(--text-xs); color: var(--text-muted);">(optional)</span></label>
                 <input type="number" id="wlTarget" class="form-input" placeholder="e.g. 500.00" step="0.01" min="0" />
               </div>
-              <button type="submit" class="btn btn-primary" id="wlAddBtn"
+              <button type="submit" class="btn btn-primary" id="wlAddBtn" style="height: 44px; min-width: 110px; display: inline-flex; align-items: center; justify-content: center;"
                 data-tooltip="Track this asset on your watchlist" aria-label="Add asset to watchlist">Add</button>
             </div>
           </form>
