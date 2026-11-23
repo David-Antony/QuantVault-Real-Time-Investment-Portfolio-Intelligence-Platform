@@ -41,7 +41,7 @@
     "opossum": "^10.0.0",
     "pdfkit": "^0.19.1",
     "qrcode": "^1.5.4",
-    "socket.io": "^4.8.3",
+    "socket.io": "^4.8.4",
     "speakeasy": "^2.0.0",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1"
